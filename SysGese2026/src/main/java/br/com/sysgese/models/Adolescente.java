@@ -1,6 +1,22 @@
 package br.com.sysgese.models;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.sysgese.enumerators.GeneroEnum;
+import br.com.sysgese.enumerators.RacaCorEnum;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,11 +47,11 @@ public class Adolescente {
     
     @Enumerated(EnumType.STRING)
     @Column(name = "GENERO", nullable = false, columnDefinition = "ENUM('MASCULINO','FEMININO','TRANS_MASCULINO','TRANS_FEMININO','NAO_INFORMADO','OUTRO')")
-    private Genero genero = Genero.NAO_INFORMADO;
+    private GeneroEnum genero = GeneroEnum.NAO_INFORMADO;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "RACA_COR", nullable = false, columnDefinition = "ENUM('BRANCO','NEGRO','PARDO','AMARELO','INDIGENA','OUTRO','NAO_INFORMADO')")
-    private RacaCor racaCor = RacaCor.NAO_INFORMADO;
+    private RacaCorEnum racaCor = RacaCorEnum.NAO_INFORMADO;
     
     @Column(name = "PAI", length = 255)
     private String pai;
@@ -216,19 +232,19 @@ public class Adolescente {
         this.dataEstimada = dataEstimada;
     }
     
-    public Genero getGenero() {
+    public GeneroEnum getGenero() {
         return genero;
     }
     
-    public void setGenero(Genero genero) {
+    public void setGenero(GeneroEnum genero) {
         this.genero = genero;
     }
     
-    public RacaCor getRacaCor() {
+    public RacaCorEnum getRacaCor() {
         return racaCor;
     }
     
-    public void setRacaCor(RacaCor racaCor) {
+    public void setRacaCor(RacaCorEnum racaCor) {
         this.racaCor = racaCor;
     }
     
