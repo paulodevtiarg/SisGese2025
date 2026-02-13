@@ -1,0 +1,143 @@
+package br.com.sysgese.dtos;
+
+import java.time.LocalDate;
+
+import br.com.sysgese.enumerators.GeneroEnum;
+import br.com.sysgese.enumerators.RacaCorEnum;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
+public class AdolescenteDTO {
+	  private Long id;
+
+	    // ==============================
+	    // Dados Pessoais
+	    // ==============================
+
+	    @NotBlank(message = "Nome é obrigatório")
+	    @Size(max = 255, message = "Nome não pode ter mais de 255 caracteres")
+	    private String nome;
+
+	    @Size(max = 255, message = "Apelido não pode ter mais de 255 caracteres")
+	    private String apelido;
+
+	    @Past(message = "Data de nascimento deve ser no passado")
+	    private LocalDate dataNascimento;
+
+	    @NotBlank(message = "Cidade de nascimento é obrigatória")
+	    @Size(max = 255, message = "Cidade de nascimento não pode ter mais de 255 caracteres")
+	    private String cidadeNascimento;
+
+	    @NotBlank(message = "UF de nascimento é obrigatória")
+	    @Size(min = 2, max = 2, message = "UF deve ter exatamente 2 caracteres")
+	    private String ufNascimento;
+
+	    private Boolean dataEstimada;
+
+	    @NotNull(message = "Gênero é obrigatório")
+	    private GeneroEnum genero;
+
+	    @NotNull(message = "Raça/Cor é obrigatória")
+	    private RacaCorEnum racaCor;
+
+	    // ==============================
+	    // Responsáveis
+	    // ==============================
+
+	    @Size(max = 255)
+	    private String pai;
+
+	    @Size(max = 255)
+	    private String mae;
+
+	    @Size(max = 255)
+	    private String responsavel;
+
+	    @Size(max = 255)
+	    private String parentescoResponsavel;
+
+	    // ==============================
+	    // Endereço
+	    // ==============================
+
+	    @Size(max = 255)
+	    private String logradouro;
+
+	    @Size(max = 255)
+	    private String bairro;
+
+	    @Size(max = 255)
+	    private String cidade;
+
+	    @Size(min = 2, max = 2, message = "UF deve ter exatamente 2 caracteres")
+	    private String ufEndereco;
+
+	    @Size(max = 10)
+	    private String cep;
+
+	    @Size(max = 255)
+	    private String numero;
+
+	    @Size(max = 355)
+	    private String referenciaEndereco;
+
+	    // ==============================
+	    // Contatos
+	    // ==============================
+
+	    @Size(max = 13)
+	    private String telefone1;
+
+	    @Size(max = 13)
+	    private String telefone2;
+
+	    @Size(max = 13)
+	    private String telefone3;
+
+	    @Size(max = 13)
+	    private String telefoneRecado;
+
+	    @Size(max = 255)
+	    private String nomeContatoRecado;
+
+	    // ==============================
+	    // Documentos
+	    // ==============================
+
+	    @Size(max = 255)
+	    private String registroCivil;
+
+	    @Size(max = 255)
+	    private String cartorio;
+
+	    @Size(max = 255)
+	    private String identidade;
+
+	    @Size(max = 255)
+	    private String cpf;
+
+	    @Size(max = 255)
+	    private String reservista;
+
+	    @Size(max = 255)
+	    private String tituloEleitor;
+
+	    // ==============================
+	    // Controle
+	    // ==============================
+
+	    @NotNull(message = "Data de cadastro é obrigatória")
+	    private LocalDate dataCad;
+
+	    @NotNull(message = "Data de alteração é obrigatória")
+	    private LocalDate dataAlt;
+
+	    @NotNull(message = "Status é obrigatório")
+	    private Integer status;
+	    
+	    private List<CicatrizDTO> cicatrizes;
+	    private List<TatuagemDTO> tatuagens;
+
+}

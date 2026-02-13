@@ -13,32 +13,42 @@ import jakarta.validation.constraints.Size;
 
 public class CicatrizDTO {
 	  
-    private Long id;
-    
-    @NotBlank(message = "Local da cicatriz é obrigatório")
-    @Size(max = 255, message = "Local não pode ter mais de 255 caracteres")
-    private String local;
-    
-    @NotBlank(message = "Forma da cicatriz é obrigatória")
-    @Size(max = 255, message = "Forma não pode ter mais de 255 caracteres")
-    private String forma;
-    
-    @Size(max = 355, message = "Descrição detalhada não pode ter mais de 355 caracteres")
-    private String descricaoDetalhe;
-    
-    @NotNull(message = "Tamanho em cm é obrigatório")
-    @DecimalMin(value = "0.01", message = "Tamanho deve ser maior que 0")
-    @DecimalMax(value = "999.99", message = "Tamanho não pode ser maior que 999.99 cm")
-    private BigDecimal tamanhoCm;
-    
-    @PastOrPresent(message = "Data de ocorrência não pode ser futura")
-    private LocalDate dataOcorrido;
-    
-    private TipoCicatrizEnum tipo;
-    
-    // Para fotos, normalmente usamos String em Base64 ou o nome do arquivo
-    // Se for armazenar como Base64 no DTO
-    private String fotoBase64;
+	 private Long id;
+
+	    @NotNull(message = "Adolescente é obrigatório")
+	    private Long adolescenteId;
+
+	    @NotBlank(message = "Local da cicatriz é obrigatório")
+	    @Size(max = 255, message = "Local não pode ter mais de 255 caracteres")
+	    private String local;
+
+	    @NotBlank(message = "Forma da cicatriz é obrigatória")
+	    @Size(max = 255, message = "Forma não pode ter mais de 255 caracteres")
+	    private String forma;
+
+	    @Size(max = 355, message = "Descrição detalhada não pode ter mais de 355 caracteres")
+	    private String descricaoDetalhe;
+
+	    @NotNull(message = "Tamanho em cm é obrigatório")
+	    @DecimalMin(value = "0.01", message = "Tamanho deve ser maior que 0")
+	    @DecimalMax(value = "999.99", message = "Tamanho não pode ser maior que 999.99 cm")
+	    private BigDecimal tamanhoCm;
+
+	    @PastOrPresent(message = "Data de ocorrência não pode ser futura")
+	    private LocalDate dataOcorrido;
+
+	    private TipoCicatrizEnum tipo;
+
+	    // Foto em Base64
+	    private String fotoBase64;
+
+	public Long getAdolescenteId() {
+			return adolescenteId;
+		}
+
+		public void setAdolescenteId(Long adolescenteId) {
+			this.adolescenteId = adolescenteId;
+		}
 
 	public Long getId() {
 		return id;

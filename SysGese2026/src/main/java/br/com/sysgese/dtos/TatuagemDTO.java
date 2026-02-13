@@ -35,7 +35,20 @@ private Long id;
     @NotNull(message = "Informe se há interesse em remover")
     private Boolean interesseRemover;
     
-    private String fotoBase64;
+    
+    @NotNull(message = "Adolescente é obrigatório")
+    private Long adolescenteId;
+    
+    
+    public Long getAdolescenteId() {
+		return adolescenteId;
+	}
+
+	public void setAdolescenteId(Long adolescenteId) {
+		this.adolescenteId = adolescenteId;
+	}
+
+	private String fotoBase64;
 
 	public Long getId() {
 		return id;

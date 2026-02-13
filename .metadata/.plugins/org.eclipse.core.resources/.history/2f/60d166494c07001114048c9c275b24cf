@@ -1,0 +1,13 @@
+package br.com.sysgese.dtos;
+
+
+public class PerfilDTO {
+
+    private Long id;
+    private String descricao;
+    private Integer status;
+    private LocalDate dataCad;
+    private LocalDate dataAlt;
+
+    // getters e setters
+}

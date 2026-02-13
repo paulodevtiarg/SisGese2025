@@ -1,0 +1,78 @@
+package br.com.sysgese.models;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "UNIDADE")
+public class Unidade {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "NOME", nullable = false, length = 255)
+    private String nome;
+
+    @Column(name = "LOGRADOURO", length = 255)
+    private String logradouro;
+
+    @Column(name = "CEP", length = 10)
+    private String cep;
+
+    @Column(name = "CIDADE", length = 255)
+    private String cidade;
+
+    @Column(name = "ESTADO", length = 2)
+    private String estado;
+
+    @Column(name = "CNPJ", length = 18)
+    private String cnpj;
+
+    @Column(name = "IE", length = 50)
+    private String ie;
+
+    @Column(name = "BAIRRO", length = 255)
+    private String bairro;
+
+    @Column(name = "TELEFONE", length = 13)
+    private String telefone;
+
+    @Column(name = "CELULAR", length = 14)
+    private String celular;
+
+    @Lob
+    @Column(name = "OBSERVACOES", columnDefinition = "TEXT")
+    private String observacoes;
+
+    @Column(name = "STATUS")
+    private Integer status;
+
+    @Column(name = "DATA_CAD")
+    private LocalDateTime dataCad;
+
+    @Column(name = "DATA_ALT")
+    private LocalDateTime dataAlt;
+
+    @Column(name = "EMAIL", length = 255)
+    private String email;
+
+    // ==============================
+    // Controle automático de datas
+    // ==============================
+
+    @PrePersist
+    public void prePersist() {
+        this.dataCad = LocalDateTime.now();
+        this.dataAlt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = 1; // ativo por padrão
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.dataAlt = LocalDateTime.now();
+    }

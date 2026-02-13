@@ -1,0 +1,40 @@
+package br.com.sysgese.dtos;
+
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+public class InternacaoDTO {
+
+    private Long id;
+
+    @NotNull(message = "Adolescente é obrigatório")
+    private Long idAdolescente;
+
+    @NotNull(message = "Unidade é obrigatória")
+    private Long idUnidade;
+
+    @NotBlank(message = "Número do processo é obrigatório")
+    @Size(max = 50)
+    private String numeroProcesso;
+
+    @NotNull(message = "Tipo de medida é obrigatório")
+    private TipoMedidaEnum tipoMedida;
+
+    @NotNull(message = "Data de início é obrigatória")
+    private LocalDate dataInicio;
+
+    private LocalDate dataPrevisaoSaida;
+
+    private LocalDate dataSaida;
+
+    @NotBlank(message = "Motivo é obrigatório")
+    private String motivo;
+
+    @NotNull(message = "Status é obrigatório")
+    private StatusInternacaoEnum status;
+
+    // getters e setters
+}

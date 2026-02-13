@@ -1,0 +1,54 @@
+package br.com.sysgese.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/login", "/css/**", "/js/**", "/img/**").permitAll()
+                
+                .requestMatchers(HttpMethod.POST, "/perfis/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.PUT, "/perfis/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.DELETE, "/perfis/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.GET, "/perfis/**").authenticated()
+                
+                .requestMatchers(HttpMethod.POST, "/unidades/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.PUT, "/unidades/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.DELETE, "/unidades/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.GET, "/unidades/**").authenticated()
+                
+                .anyRequest().authenticated()
+            )
+            .csrf(csrf -> csrf
+                // Usa cookie para armazenar o token CSRF, sem criar sessão prematuramente
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/home", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+            );
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}

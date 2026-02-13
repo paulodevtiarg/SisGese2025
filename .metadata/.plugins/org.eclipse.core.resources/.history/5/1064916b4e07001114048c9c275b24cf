@@ -1,0 +1,111 @@
+package br.com.sysgese.models;
+
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "SERVIDOR")
+public class Servidor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "NOME", nullable = false, length = 255)
+    private String nome;
+
+    @Column(name = "MATRICULA", nullable = false, length = 255)
+    private String matricula;
+
+    @Column(name = "LOGIN", nullable = false, length = 20)
+    private String login;
+
+    @Column(name = "SENHA", nullable = false, length = 10)
+    private String senha;
+
+    @Column(name = "TELEFONE", length = 13)
+    private String telefone;
+
+    @Column(name = "CELULAR", length = 14)
+    private String celular;
+
+    @Column(name = "SEXO", length = 1)
+    private String sexo;
+
+    @Column(name = "LOGRADOURO", length = 200)
+    private String logradouro;
+
+    @Column(name = "CEP", length = 10)
+    private String cep;
+
+    @Column(name = "BAIRRO", length = 255)
+    private String bairro;
+
+    @Column(name = "NUMERO", length = 255)
+    private String numero;
+
+    @Column(name = "CIDADE", nullable = false, length = 255)
+    private String cidade;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "UF", nullable = false, length = 2)
+    private EstadosEnum uf;
+
+    @Column(name = "EMAIL", nullable = false, length = 255)
+    private String email;
+
+    // =============================
+    // RELACIONAMENTOS
+    // =============================
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_PERFIL", nullable = false)
+    private Perfil perfil;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_FUNCAO", nullable = false)
+    private Funcao funcao;
+
+    @Column(name = "STATUS", nullable = false)
+    private Integer status;
+
+    @Column(name = "DATA_CAD")
+    private LocalDate dataCad;
+
+    @Column(name = "DATA_ALT")
+    private LocalDate dataAlt;
+
+    // =============================
+    // CONTROLE AUTOMÁTICO
+    // =============================
+
+    @PrePersist
+    public void prePersist() {
+        this.dataCad = LocalDate.now();
+        this.dataAlt = LocalDate.now();
+        if (this.status == null) {
+            this.status = 1;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.dataAlt = LocalDate.now();
+    }
+
+    // getters e setters
+}

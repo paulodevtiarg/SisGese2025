@@ -1,0 +1,13 @@
+package br.com.sysgese.repository;
+
+import java.util.Optional;
+import br.com.sysgese.models.Servidor;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ServidorRepository extends JpaRepository<Servidor, Long> {
+
+	Optional<Servidor> findByLoginOrCpfOrMatricula(
+            String login,
+            String cpf,
+            String matricula);
+}

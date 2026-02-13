@@ -1,0 +1,81 @@
+package br.com.sysgese.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+
+            // =========================
+            // AUTORIZAÇÃO
+            // =========================
+            .authorizeHttpRequests(auth -> auth
+
+                // públicos
+                .requestMatchers(
+                        "/login",
+                        "/css/**",
+                        "/js/**",
+                        "/img/**"
+                ).permitAll()
+
+                // PERFIS - somente MASTER altera
+                .requestMatchers(HttpMethod.POST, "/perfis/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.PUT, "/perfis/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.DELETE, "/perfis/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.GET, "/perfis/**").authenticated()
+
+                // UNIDADES - somente MASTER altera
+                .requestMatchers(HttpMethod.POST, "/unidades/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.PUT, "/unidades/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.DELETE, "/unidades/**").hasAuthority("MASTER")
+                .requestMatchers(HttpMethod.GET, "/unidades/**").authenticated()
+
+                // qualquer outra rota exige login
+                .anyRequest().authenticated()
+            )
+
+            // =========================
+            // CSRF (PADRÃO DO SPRING)
+            // =========================
+            .csrf(Customizer.withDefaults())
+
+            // =========================
+            // LOGIN
+            // =========================
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/home", true)
+                    .permitAll()
+            )
+
+            // =========================
+            // LOGOUT (POST + CSRF)
+            // =========================
+            .logout(logout -> logout
+                    .logoutUrl("/logout") // POST
+                    .logoutSuccessUrl("/login?logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
+            );
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}

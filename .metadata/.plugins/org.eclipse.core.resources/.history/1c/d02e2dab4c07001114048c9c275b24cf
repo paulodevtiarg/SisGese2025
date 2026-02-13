@@ -1,0 +1,21 @@
+package br.com.sysgese.mappers;
+
+
+@Mapper(componentModel = "spring")
+public interface FuncaoMapper {
+
+    FuncaoDTO toDTO(Funcao entity);
+
+    List<FuncaoDTO> toDTOList(List<Funcao> entities);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dataCad", ignore = true)
+    @Mapping(target = "dataAlt", ignore = true)
+    Funcao toEntity(FuncaoDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dataCad", ignore = true)
+    @Mapping(target = "dataAlt", ignore = true)
+    void updateEntityFromDTO(FuncaoDTO dto, @MappingTarget Funcao entity);
+}

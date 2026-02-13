@@ -1,0 +1,54 @@
+package br.com.sysgese.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import br.com.sysgese.models.Servidor;
+import br.com.sysgese.repository.ServidorRepository;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+@RequestMapping("/")
+public class LoginController {
+	@Autowired
+    private ServidorRepository servidorRepository;
+	
+	@GetMapping("/login")
+    public String loginPage() {
+        return "login/index";
+    }
+	
+	@PostMapping("/login")
+	public String login(
+	        @RequestParam String username,
+	        @RequestParam String password,
+	        HttpSession session,
+	        RedirectAttributes ra) {
+
+	    Servidor servidor =
+	        servidorRepository
+	            .findByLoginOrCpfOrMatricula(username, username, username)
+	            .orElse(null);
+
+	    if (servidor == null || !servidor.getSenha().equals(password)) {
+	        ra.addFlashAttribute("erro", "Usuário ou senha inválidos");
+	        return "redirect:/login";
+	    }
+
+	    session.setAttribute("usuarioLogado", servidor);
+
+	    return "redirect:/home";
+	}
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+	
+}

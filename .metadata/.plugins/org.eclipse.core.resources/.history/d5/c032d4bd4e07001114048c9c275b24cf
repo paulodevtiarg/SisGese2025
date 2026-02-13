@@ -1,0 +1,77 @@
+package br.com.sysgese.dtos;
+
+import java.time.LocalDate;
+
+import br.com.sysgese.enumerators.EstadosEnum;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+public class ServidorDTO {
+
+    private Long id;
+
+    @NotBlank(message = "Nome é obrigatório")
+    @Size(max = 255, message = "Nome deve ter no máximo 255 caracteres")
+    private String nome;
+
+    @NotBlank(message = "Matrícula é obrigatória")
+    @Size(max = 255)
+    private String matricula;
+
+    @NotBlank(message = "Login é obrigatório")
+    @Size(max = 20)
+    private String login;
+
+    @NotBlank(message = "Senha é obrigatória")
+    @Size(max = 10)
+    private String senha;
+
+    @Size(max = 13)
+    private String telefone;
+
+    @Size(max = 14)
+    private String celular;
+
+    @Size(max = 1, message = "Sexo deve ter 1 caractere")
+    private String sexo;
+
+    @Size(max = 200)
+    private String logradouro;
+
+    @Size(max = 10)
+    private String cep;
+
+    @Size(max = 255)
+    private String bairro;
+
+    @Size(max = 255)
+    private String numero;
+
+    @NotBlank(message = "Cidade é obrigatória")
+    @Size(max = 255)
+    private String cidade;
+
+    @NotNull(message = "UF é obrigatória")
+    private EstadosEnum uf;
+
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email inválido")
+    @Size(max = 255)
+    private String email;
+
+    @NotNull(message = "Perfil é obrigatório")
+    private Long perfilId;
+
+    @NotNull(message = "Função é obrigatória")
+    private Long funcaoId;
+
+    @NotNull(message = "Status é obrigatório")
+    private Integer status;
+
+    private LocalDate dataCad;
+    private LocalDate dataAlt;
+
+    // getters e setters
+}

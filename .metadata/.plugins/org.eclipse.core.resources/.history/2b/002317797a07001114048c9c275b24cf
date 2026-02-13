@@ -1,0 +1,12 @@
+package br.com.sysgese.controllers;
+@Controller
+@RequestMapping("/home")
+public class HomeController {
+    
+	@GetMapping
+	public String home(Model model) {
+	    model.addAttribute("pageTitle", "Dashboard");
+	    model.addAttribute("pageContent", "home/index :: home-content");
+	    return "layout/base";
+	}
+}

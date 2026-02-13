@@ -1,0 +1,44 @@
+package br.com.sysgese.models;
+package br.com.sysgese.models;
+
+import java.time.LocalDate;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "PERFIL")
+public class Perfil {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "DESCRICAO", nullable = false, length = 100)
+    private String descricao;
+
+    @Column(name = "STATUS")
+    private Integer status;
+
+    @Column(name = "DATA_CAD")
+    private LocalDate dataCad;
+
+    @Column(name = "DATA_ALT")
+    private LocalDate dataAlt;
+
+    @PrePersist
+    public void prePersist() {
+        this.dataCad = LocalDate.now();
+        this.dataAlt = LocalDate.now();
+        if (this.status == null) {
+            this.status = 1;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.dataAlt = LocalDate.now();
+    }
+
+    // getters e setters
+}

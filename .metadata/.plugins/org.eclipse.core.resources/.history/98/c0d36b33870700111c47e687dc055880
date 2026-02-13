@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <title th:text="${title} ?: 'Dashboard'">Dashboard</title>
+    <link th:href="@{/sd-admin/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+    <link th:href="@{/sd-admin/css/sb-admin-2.css}" rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+
+<body id="page-top">
+    <div th:fragment="layout(title, content)">
+        <div th:replace="~{this :: head(${title})}"></div>
+        
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <!-- Topbar -->
+                    <div th:replace="~{fragments/topbar :: topbar}"></div>
+
+                    <!-- Page Content -->
+                    <div class="container-fluid">
+                    <!-- Conteudo da pagina -->
+                     <div th:replace="${content}"></div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div th:replace="~{fragments/footer :: footer}"></div>
+            </div>
+        </div>
+
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Scripts -->
+        <div th:replace="~{fragments/scripts :: scripts}"></div>
+    </div>
+</body>
+</html>

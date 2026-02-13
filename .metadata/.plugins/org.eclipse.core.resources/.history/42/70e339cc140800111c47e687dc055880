@@ -1,0 +1,42 @@
+package br.com.sysgese.security;
+
+
+
+public class ServidorDetails implements UserDetails {
+
+    private final Usuario usuario;
+
+    public UsuarioDetails(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(
+            new SimpleGrantedAuthority(usuario.getPerfil().getDescricao())
+        );
+    }
+
+    @Override
+    public String getPassword() {
+        return usuario.getSenha();
+    }
+
+    @Override
+    public String getUsername() {
+        return usuario.getLogin(); // campo usado no login
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return usuario.getStatus() != null && usuario.getStatus() == 1;
+    }
+
+    @Override public boolean isAccountNonExpired() { return true; }
+    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+}

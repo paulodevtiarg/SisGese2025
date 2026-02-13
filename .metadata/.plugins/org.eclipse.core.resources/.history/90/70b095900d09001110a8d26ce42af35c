@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: layout(${pageTitle}, ~{::content})}">
+
+<head>
+<title>Perfil</title>
+<!-- Este será substituído -->
+</head>
+
+<body>
+	<div th:fragment="content">
+
+
+		<div class="container-fluid p-2">
+			<div class="row">
+				<div class="col-12">
+					<nav aria-label="breadcrumb card"
+						style="margin-top: -25px; font-size: 0.8rem;">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a th:href="@{/home}"> <i
+									class="fa-duotone fa-solid fa-house fs-7"></i> Home
+							</a></li>
+							<li class="breadcrumb-item"><a href="#"> <i
+									class="fa-duotone fa-solid fa-address-card"></i> Perfil
+							</a></li>
+
+						</ol>
+					</nav>
+				</div>
+				<div class="col-12">
+					<!-- Mensagens de erro e de ok -->
+				</div>
+				<div class="col-12">
+					<div class="card">
+						<div
+							class="card-header card-header d-flex justify-content-between align-items-center fs-5 pr-custom-text  fw-semibold text-uppercase">
+							Perfil</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-12">
+									<form th:action="@{/perfil}" method="get" class="d-flex mb-3">
+										<input type="text" name="nome" th:value="${nomeBusca}"
+											placeholder="Buscar por nome" class="form-control me-2">
+
+										<select name="status" class="form-select me-2">
+											<option value="ativos"
+												th:selected="${statusFiltro == 'ativos'}">Ativos</option>
+											<option value="inativos"
+												th:selected="${statusFiltro == 'inativos'}">Inativos</option>
+											<option value="todos"
+												th:selected="${statusFiltro == 'todos'}">Todos</option>
+										</select> <select name="tamanho" class="form-select me-2">
+											<option value="10" th:selected="${tamanhoPagina == 10}">10</option>
+											<option value="15" th:selected="${tamanhoPagina == 15}">15</option>
+											<option value="20" th:selected="${tamanhoPagina == 20}">20</option>
+											<option value="25" th:selected="${tamanhoPagina == 25}">25</option>
+											<option value="30" th:selected="${tamanhoPagina == 30}">30</option>
+										</select>
+
+										<button type="submit" class="btn btn-primary">Buscar</button>
+									</form>
+								</div>
+								<div class="col-12">
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Descrição</th>
+												<th>Status</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="perfil : ${perfis}">
+												<td th:text="${perfil.id}"></td>
+												<td th:text="${perfil.descricao}"></td>
+												<td th:text="${perfil.status == 1 ? 'Ativo' : 'Inativo'}"></td>
+											</tr>
+										</tbody>
+									</table>
+
+									<!-- Paginação -->
+									<nav aria-label="Paginações">
+										<ul class="pagination">
+											<li th:classappend="${paginaAtual == 0} ? 'disabled'"
+												class="page-item"><a class="page-link"
+												th:href="@{/perfil(pagina=${paginaAtual - 1}, nome=${nomeBusca}, status=${statusFiltro}, tamanho=${tamanhoPagina})}">Anterior</a>
+											</li>
+											<li th:each="i : ${#numbers.sequence(0, totalPaginas-1)}"
+												class="page-item"
+												th:classappend="${i == paginaAtual} ? 'active'"><a
+												class="page-link"
+												th:href="@{/perfil(pagina=${i}, nome=${nomeBusca}, status=${statusFiltro}, tamanho=${tamanhoPagina})}"
+												th:text="${i + 1}"></a></li>
+											<li
+												th:classappend="${paginaAtual + 1 >= totalPaginas} ? 'disabled'"
+												class="page-item"><a class="page-link"
+												th:href="@{/perfil(pagina=${paginaAtual + 1}, nome=${nomeBusca}, status=${statusFiltro}, tamanho=${tamanhoPagina})}">Próxima</a>
+											</li>
+										</ul>
+									</nav>
+								</div>
+							</div>
+
+						</div>
+						<div class="card-footer">2026</div>
+
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+
+
+	</div>
+</body>
+</html>

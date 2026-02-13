@@ -1,0 +1,25 @@
+package br.com.sysgese.controllers;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/")
+public class LoginController {
+	
+	@GetMapping
+    public String rootRedirect() {
+		return "redirect:/login";
+    }
+	 @GetMapping("/login")
+	    public String loginForm() {
+		 return "login/index";  // Remove a barra inicial
+	    }
+	 
+	 @GetMapping("/logout")
+	    public String logout() {
+	        //usuarioSession.logout();
+		 return "redirect:/login";
+	    }
+}

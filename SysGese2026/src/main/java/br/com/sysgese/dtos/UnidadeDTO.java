@@ -1,0 +1,194 @@
+package br.com.sysgese.dtos;
+
+import java.time.LocalDateTime;
+
+import br.com.sysgese.enumerators.EstadosEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public class UnidadeDTO {
+
+    private Long id;
+
+    @NotBlank(message = "Nome da unidade é obrigatório")
+    @Size(max = 255)
+    private String nome;
+
+    @Size(max = 255)
+    private String logradouro;
+
+    @Size(max = 10)
+    private String cep;
+
+    @Size(max = 255)
+    private String cidade;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ESTADO", length = 2)
+    private EstadosEnum estado;
+
+    @Size(max = 18)
+    private String cnpj;
+
+    @Size(max = 50)
+    private String ie;
+
+    @Size(max = 255)
+    private String bairro;
+
+    @Size(max = 13)
+    private String telefone;
+
+    @Size(max = 14)
+    private String celular;
+
+    private String observacoes;
+
+    private Integer status;
+
+    private LocalDateTime dataCad;
+
+    private LocalDateTime dataAlt;
+
+    @Email(message = "Email inválido")
+    @Size(max = 255)
+    private String email;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getLogradouro() {
+		return logradouro;
+	}
+
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	
+
+	public EstadosEnum getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadosEnum estado) {
+		this.estado = estado;
+	}
+
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
+
+	public String getIe() {
+		return ie;
+	}
+
+	public void setIe(String ie) {
+		this.ie = ie;
+	}
+
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public String getCelular() {
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
+	}
+
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public LocalDateTime getDataCad() {
+		return dataCad;
+	}
+
+	public void setDataCad(LocalDateTime dataCad) {
+		this.dataCad = dataCad;
+	}
+
+	public LocalDateTime getDataAlt() {
+		return dataAlt;
+	}
+
+	public void setDataAlt(LocalDateTime dataAlt) {
+		this.dataAlt = dataAlt;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+    // Getters e Setters
+    
+}
+

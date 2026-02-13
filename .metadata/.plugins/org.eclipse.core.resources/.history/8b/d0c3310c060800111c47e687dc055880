@@ -1,0 +1,5 @@
+package br.com.sysgese.dtos;
+
+public class InternacaoDTO {
+
+}

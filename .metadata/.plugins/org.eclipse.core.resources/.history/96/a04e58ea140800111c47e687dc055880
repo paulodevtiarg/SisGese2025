@@ -1,0 +1,49 @@
+package br.com.sysgese.security;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import br.com.sysgese.models.Servidor;
+
+public class ServidorDetails implements UserDetails {
+
+    private final Servidor servidor;
+
+    public ServidorDetails(Servidor servidor) {
+        this.servidor = servidor;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(
+            new SimpleGrantedAuthority(servidor.getPerfil().getDescricao())
+        );
+    }
+
+    @Override
+    public String getPassword() {
+        return servidor.getSenha();
+    }
+
+    @Override
+    public String getUsername() {
+        return servidor.getLogin(); // campo usado no login
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return servidor.getStatus() != null && servidor.getStatus() == 1;
+    }
+
+    @Override public boolean isAccountNonExpired() { return true; }
+    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
+
+    public Servidor getServidor() {
+        return servidor;
+    }
+}
