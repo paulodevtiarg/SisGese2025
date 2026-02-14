@@ -1,8 +1,8 @@
 # Environment variables
 .env
-.application.properties
+
 *.properties.local
-application-local.properties
+
 
 # IDE
 .classpath
