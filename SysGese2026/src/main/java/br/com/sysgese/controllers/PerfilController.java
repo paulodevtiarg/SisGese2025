@@ -34,17 +34,14 @@ public class PerfilController {
     ) {
        
 
-        // Transformar statusFiltro em array de inteiros
+    	// Transformar statusFiltro em array de inteiros
         Integer[] status;
-        switch (statusFiltro) {
-            case "ativos":
-                status = new Integer[]{1};
-                break;
-            case "inativos":
-                status = new Integer[]{0};
-                break;
-            default: // todos
-                status = new Integer[]{0,1};
+        if ("ativos".equalsIgnoreCase(statusFiltro) || "1".equals(statusFiltro)) {
+            status = new Integer[]{1};  // Só ativos
+        } else if ("inativos".equalsIgnoreCase(statusFiltro) || "0".equals(statusFiltro)) {
+            status = new Integer[]{0};  // Só inativos
+        } else {
+            status = new Integer[]{0, 1};  // Todos
         }
 
         Pageable pageable = PageRequest.of(pagina, tamanho);

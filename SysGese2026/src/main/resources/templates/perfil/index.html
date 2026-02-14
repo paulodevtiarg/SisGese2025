@@ -120,11 +120,17 @@
 													class="btn btn-outline-info btn-sm px-2"
 													data-bs-toggle="tooltip" title="Detalhes"> <i
 														class="fa-duotone fa-eye"></i>
-												</a> <a th:href="@{/perfil/editar/{id}(id=${perfil.id})}"
+												</a> <a 
+												th:href="${isMaster} ? @{/perfil/editar/{id}(id=${perfil.id})} : '#'"
+												    th:classappend="${!isMaster} ? ' disabled opacity-50'"
+											
 													class="btn btn-outline-warning btn-sm px-2"
 													data-bs-toggle="tooltip" title="Editar"> <i
 														class="fa-duotone fa-pen-to-square"></i>
-												</a> <a th:href="@{/perfil/excluir/{id}(id=${perfil.id})}"
+												</a> <a 
+												th:href="${isMaster} ? @{/perfil/excluir/{id}(id=${perfil.id})} : '#'"
+												    th:classappend="${!isMaster} ? ' disabled opacity-50'"
+												
 													class="btn btn-outline-danger btn-sm px-2"
 													data-bs-toggle="tooltip" title="Excluir"
 													onclick="return confirm('Deseja excluir este perfil?');">
