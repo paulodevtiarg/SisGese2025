@@ -1,0 +1,4 @@
+DB_URL=jdbc:mysql://db-sysgese2025-paulodevtiarg-0502.g.aivencloud.com:11351/db-sysgese?ssl-mode=REQUIRED
+DB_USERNAME=avnadmin
+DB_PASSWORD=AVNS_ON4iUz6jLuyL0JvOwZ0
+PORT=8080
