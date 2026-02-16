@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: layout(${pageTitle}, ~{::content})}">
+
+<head>
+<title>Perfil</title>
+<!-- Este será substituído -->
+</head>
+
+<body>
+	<div th:fragment="content">
+
+
+		<div class="container-fluid p-2">
+			<div class="row">
+				<div class="col-12">
+					<nav aria-label="breadcrumb card"
+						style="margin-top: -25px; font-size: 0.8rem;">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a th:href="@{/home}"> <i
+									class="fa-duotone fa-solid fa-house fs-7"></i> Home
+							</a></li>
+							<li class="breadcrumb-item"><span class="text-muted">
+									<i class="fa-duotone fa-user-gear"></i> Função
+							</span></li>
+
+						</ol>
+					</nav>
+				</div>
+				<div class="col-12">
+					<!-- Mensagens de erro e de ok -->
+				</div>
+				<div class="col-12">
+					<div class="card">
+						<div
+							class="card-header d-flex justify-content-between align-items-center fs-5 fw-semibold text-uppercase">
+
+							<span>Funcao</span> <a
+								th:href="${isMaster} ? @{/funcao/novo} : '#'"
+								class="btn btn-primary btn-sm"
+								th:classappend="${!isMaster} ? ' disabled opacity-50'"
+								data-bs-toggle="tooltip"
+								th:title="${isMaster} ? 'Nova Função' : 'Apenas usuários MASTER podem criar'">
+								<i class="fa-duotone fa-plus"></i> Novo
+							</a>
+
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-12">
+									<form th:action="@{/funcao}" method="get" class="mb-3">
+										<div class="row g-2">
+
+											<div class="col-md-5 input-group-sm">
+												<label class="form-label fw-semibold">Nome da Função</label>
+												<input type="text" name="nome" th:value="${nomeBusca}"
+													class="form-control" placeholder="Digite para buscar">
+											</div>
+
+											<div class="col-md-4 input-group-sm">
+												<label class="form-label fw-semibold">Status</label> <select
+													name="status" class="form-select">
+													<option value="ativos"
+														th:selected="${statusFiltro == 'ativos'}">Ativos</option>
+													<option value="inativos"
+														th:selected="${statusFiltro == 'inativos'}">Inativos</option>
+													<option value="todos"
+														th:selected="${statusFiltro == 'todos'}">Todos</option>
+												</select>
+											</div>
+
+											<div class="col-md-2 input-group-sm">
+												<label class="form-label fw-semibold">Linhas</label> <select
+													name="tamanho" class="form-select">
+													<option value="10" th:selected="${tamanhoPagina == 10}">10</option>
+													<option value="15" th:selected="${tamanhoPagina == 15}">15</option>
+													<option value="20" th:selected="${tamanhoPagina == 20}">20</option>
+													<option value="25" th:selected="${tamanhoPagina == 25}">25</option>
+													<option value="30" th:selected="${tamanhoPagina == 30}">30</option>
+												</select>
+											</div>
+
+											<div class="col-md-1 d-flex align-items-end input-group-sm">
+												<button type="submit" class="btn btn-primary btn-sm w-100">
+													<i class="fa-duotone fa-magnifying-glass"></i> Buscar
+												</button>
+											</div>
+
+										</div>
+									</form>
+
+
+
+
+								</div>
+								<div class="col-12">
+									<table class="table table-striped table-bordered align-middle">
+										<thead class="table-dark"
+											style="--bs-table-bg: #0e2583; --bs-table-border-color: #0e2583;">
+											<tr>
+												<th style="width: 80px;">ID</th>
+												<th>Descrição</th>
+												<th class="text-center" style="width: 120px;">Status</th>
+												<th class="text-center" style="width: 140px;">Ações</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="funcao : ${funcoes}">
+												<td th:text="${funcao.id}"></td>
+												<td th:text="${funcao.descricao}"></td>
+												<td class="text-center"><span
+													th:if="${funcao.status == 1}"
+													class="badge bg-success-subtle text-success fw-semibold px-3 py-2">
+														Ativo </span> <span th:if="${funcao.status == 0}"
+													class="badge bg-danger-subtle text-danger fw-semibold px-3 py-2">
+														Inativo </span></td>
+
+												<td class="text-center text-nowrap"><a
+													th:href="@{/funcao/{id}(id=${funcao.id})}"
+													class="btn btn-outline-info btn-sm px-2"
+													data-bs-toggle="tooltip" title="Detalhes"> <i
+														class="fa-duotone fa-eye"></i>
+												</a> <a 
+												th:href="${isMaster} ? @{/funcao/editar/{id}(id=${funcao.id})} : '#'"
+												    th:classappend="${!isMaster} ? ' disabled opacity-50'"
+											
+													class="btn btn-outline-warning btn-sm px-2"
+													data-bs-toggle="tooltip" title="Editar"> <i
+														class="fa-duotone fa-pen-to-square"></i>
+												</a> <a 
+												th:href="${isMaster} ? @{/perfil/excluir/{id}(id=${funcao.id})} : '#'"
+												    th:classappend="${!isMaster} ? ' disabled opacity-50'"
+												
+													class="btn btn-outline-danger btn-sm px-2"
+													data-bs-toggle="tooltip" title="Excluir"
+													onclick="return confirm('Deseja excluir essa Função?');">
+														<i class="fa-duotone fa-trash"></i>
+												</a></td>
+											</tr>
+										</tbody>
+									</table>
+
+
+								</div>
+							</div>
+
+						</div>
+						<div class="card-footer d-flex justify-content-end">
+
+							<nav aria-label="Paginação">
+								<ul class="pagination mb-0">
+
+									<!-- Anterior -->
+									<li class="page-item"
+										th:classappend="${paginaAtual == 0} ? 'disabled'"><a
+										class="page-link"
+										th:href="@{/funcao(pagina=${paginaAtual - 1}, nome=${nomeBusca}, status=${statusFiltro}, tamanho=${tamanhoPagina})}">
+											Anterior </a></li>
+
+									<!-- Números -->
+									<li th:each="i : ${#numbers.sequence(0, totalPaginas-1)}"
+										class="page-item"
+										th:classappend="${i == paginaAtual} ? 'active'"><a
+										class="page-link"
+										th:href="@{/funcao(pagina=${i}, nome=${nomeBusca}, status=${statusFiltro}, tamanho=${tamanhoPagina})}"
+										th:text="${i + 1}"> </a></li>
+
+									<!-- Próxima -->
+									<li class="page-item"
+										th:classappend="${paginaAtual + 1 >= totalPaginas} ? 'disabled'">
+										<a class="page-link"
+										th:href="@{/funcao(pagina=${paginaAtual + 1}, nome=${nomeBusca}, status=${statusFiltro}, tamanho=${tamanhoPagina})}">
+											Próxima </a>
+									</li>
+
+								</ul>
+							</nav>
+
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+</body>
+</html>

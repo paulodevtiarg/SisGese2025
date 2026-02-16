@@ -14,49 +14,56 @@ import br.com.sysgese.models.Adolescente;
 
 @Mapper(
 	    componentModel = "spring",
-	    uses = { CicatrizMapper.class, TatuagemMapper.class }
+	    uses = { CicatrizMapper.class, TatuagemMapper.class, FotoMapper.class } // adicionamos FotoMapper
 	)
 public interface AdolescenteMapper {
-	        // ==============================
-		    // ENTITY -> DTO
-		    // ==============================
-		    AdolescenteDTO toDTO(Adolescente entity);
+	// ==============================
+    // ENTITY -> DTO
+    // ==============================
+    AdolescenteDTO toDTO(Adolescente entity);
 
-		    List<AdolescenteDTO> toDTOList(List<Adolescente> entities);
+    List<AdolescenteDTO> toDTOList(List<Adolescente> entities);
 
-		    // ==============================
-		    // DTO -> ENTITY
-		    // ==============================
-		    @Mapping(target = "dataCad", ignore = true) // normalmente backend controla
-		    @Mapping(target = "dataAlt", ignore = true)
-		    @Mapping(target = "id", ignore = true)
-		    Adolescente toEntity(AdolescenteDTO dto);
+    // ==============================
+    // DTO -> ENTITY
+    // ==============================
+    @Mapping(target = "dataCad", ignore = true) // backend controla
+    @Mapping(target = "dataAlt", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    Adolescente toEntity(AdolescenteDTO dto);
 
-		    // ==============================
-		    // UPDATE parcial
-		    // ==============================
-		    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-		    @Mapping(target = "id", ignore = true)
-		    void updateEntityFromDTO(AdolescenteDTO dto, @MappingTarget Adolescente entity);
+    // ==============================
+    // UPDATE parcial
+    // ==============================
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDTO(AdolescenteDTO dto, @MappingTarget Adolescente entity);
 
-		    // ==============================
-		    // Ajuste de relacionamento bidirecional
-		    // ==============================
+    // ==============================
+    // Ajuste de relacionamento bidirecional
+    // ==============================
+    @AfterMapping
+    default void linkCicatrizes(@MappingTarget Adolescente adolescente) {
+        if (adolescente.getCicatrizes() != null) {
+            adolescente.getCicatrizes()
+                .forEach(c -> c.setAdolescente(adolescente));
+        }
+    }
 
-		    @AfterMapping
-		    default void linkCicatrizes(@MappingTarget Adolescente adolescente) {
-		        if (adolescente.getCicatrizes() != null) {
-		            adolescente.getCicatrizes()
-		                .forEach(c -> c.setAdolescente(adolescente));
-		        }
-		    }
+    @AfterMapping
+    default void linkTatuagens(@MappingTarget Adolescente adolescente) {
+        if (adolescente.getTatuagens() != null) {
+            adolescente.getTatuagens()
+                .forEach(t -> t.setAdolescente(adolescente));
+        }
+    }
 
-		    @AfterMapping
-		    default void linkTatuagens(@MappingTarget Adolescente adolescente) {
-		        if (adolescente.getTatuagens() != null) {
-		            adolescente.getTatuagens()
-		                .forEach(t -> t.setAdolescente(adolescente));
-		        }
-		    }
+    @AfterMapping
+    default void linkFotos(@MappingTarget Adolescente adolescente) {
+        if (adolescente.getFotos() != null) {
+            adolescente.getFotos()
+                .forEach(f -> f.setAdolescente(adolescente));
+        }
+    }
 
 }

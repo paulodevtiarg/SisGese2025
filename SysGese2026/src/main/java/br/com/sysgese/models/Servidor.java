@@ -81,9 +81,7 @@ public class Servidor {
     @JoinColumn(name = "ID_PERFIL", nullable = false)
     private Perfil perfil;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_FUNCAO", nullable = false)
-    private Funcao funcao;
+    
 
     @Column(name = "STATUS", nullable = false)
     private Integer status;
@@ -240,13 +238,7 @@ public class Servidor {
 		this.perfil = perfil;
 	}
 
-	public Funcao getFuncao() {
-		return funcao;
-	}
-
-	public void setFuncao(Funcao funcao) {
-		this.funcao = funcao;
-	}
+	
 
 	public Integer getStatus() {
 		return status;

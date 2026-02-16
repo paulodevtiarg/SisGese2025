@@ -141,6 +141,60 @@ public class Adolescente {
                fetch = FetchType.LAZY)
     private List<Tatuagem> tatuagens = new ArrayList<>();
     
+    
+    @OneToMany(mappedBy = "adolescente", 
+            cascade = CascadeType.ALL, 
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+ private List<Foto> fotos = new ArrayList<>();
+    
+    
+    @OneToMany(mappedBy = "adolescente",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+ private List<Internacao> internacoes = new ArrayList<>();
+    
+    public List<Internacao> getInternacoes() {
+        return internacoes;
+    }
+
+    public void setInternacoes(List<Internacao> internacoes) {
+        this.internacoes = internacoes;
+    }
+    
+    public void adicionarInternacao(Internacao internacao) {
+        internacoes.add(internacao);
+        internacao.setAdolescente(this);
+    }
+
+    public void removerInternacao(Internacao internacao) {
+        internacoes.remove(internacao);
+        internacao.setAdolescente(null);
+    }
+     
+
+ // Adiciona métodos auxiliares
+ public void adicionarFoto(Foto foto) {
+     fotos.add(foto);
+     foto.setAdolescente(this);
+ }
+
+ public void removerFoto(Foto foto) {
+     fotos.remove(foto);
+     foto.setAdolescente(null);
+ }
+
+ public List<Foto> getFotos() {
+     return fotos;
+ }
+
+ public void setFotos(List<Foto> fotos) {
+     this.fotos = fotos;
+ }
+    
+    
+    
     // Construtores
     public Adolescente() {
         this.dataCad = LocalDate.now();

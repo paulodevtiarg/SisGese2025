@@ -46,7 +46,7 @@
 			<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" 	data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					
-					<a class="collapse-item" href="buttons.html">Adolescentes</a> 
+					<a class="collapse-item" th:href="@{/adolescente}">Adolescentes</a> 
 					<a
 						class="collapse-item" href="cards.html">Internações</a>
 						
@@ -63,9 +63,9 @@
 				aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					
-					<a class="collapse-item" href="utilities-color.html">Servidores</a> <a
-						class="collapse-item" href="utilities-border.html">Lotação</a> <a
-						class="collapse-item" href="utilities-animation.html">Funções</a>
+					<a class="collapse-item" href="utilities-color.html">Servidores</a> 
+					<a class="collapse-item" th:href="@{/cargo}" >Cargos</a> 
+					<a class="collapse-item" th:href="@{/funcao}">Funções</a>
 					<a class="collapse-item" th:href="@{/perfil}">Perfis</a>
 				</div>
 			</div></li>
@@ -87,8 +87,8 @@
 				<div class="bg-white py-2 collapse-inner rounded">
 					
 					<a class="collapse-item" href="login.html">Coordenação</a> <a
-						class="collapse-item" href="register.html">Lotações</a> <a
-						class="collapse-item" href="forgot-password.html">Acessos
+						class="collapse-item" th:href="@{/lotacao}">Lotações</a> <a
+						class="collapse-item" th:href="@{/unidade}">Unidades
 						</a>
 					
 					

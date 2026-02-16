@@ -140,6 +140,30 @@ public class AdolescenteDTO {
 	    
 	    private List<CicatrizDTO> cicatrizes;
 	    private List<TatuagemDTO> tatuagens;
+	    
+	    private List<FotoDTO> fotos;
+	    private byte[] fotoPrincipal; // primeira foto do adolescente
+
+	 // Getters e Setters
+	    
+	 public List<FotoDTO> getFotos() {
+	     return fotos;
+	 }
+
+	 public byte[] getFotoPrincipal() {
+		return fotoPrincipal;
+	}
+
+	 public void setFotoPrincipal(byte[] fotoPrincipal) {
+		 this.fotoPrincipal = fotoPrincipal;
+	 }
+
+	 public void setFotos(List<FotoDTO> fotos) {
+	     this.fotos = fotos;
+	 }
+	    
+	    
+	    
 		public Long getId() {
 			return id;
 		}

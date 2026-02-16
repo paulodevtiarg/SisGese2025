@@ -68,8 +68,7 @@ public class ServidorDTO {
     @NotNull(message = "Perfil é obrigatório")
     private Long perfilId;
 
-    @NotNull(message = "Função é obrigatória")
-    private Long funcaoId;
+  
 
     @NotNull(message = "Status é obrigatório")
     private Integer status;
@@ -172,12 +171,7 @@ public class ServidorDTO {
 	public void setPerfilId(Long perfilId) {
 		this.perfilId = perfilId;
 	}
-	public Long getFuncaoId() {
-		return funcaoId;
-	}
-	public void setFuncaoId(Long funcaoId) {
-		this.funcaoId = funcaoId;
-	}
+	
 	public Integer getStatus() {
 		return status;
 	}
