@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-	th:replace="~{layout/base :: layout(${pageTitle}, ~{::content})}">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
 
 <head>
-<title>Adolescente</title>
-<!-- Este será substituído -->
+<title>Adolescentes</title>
 </head>
 
 <body>
-	<div th:fragment="content">
+	<div layout:fragment="content">
 
 
 		<div class="container-fluid p-2">
@@ -27,20 +27,38 @@
 						</ol>
 					</nav>
 				</div>
-				<div class="col-12">
+			<div class="col-12">
 					<!-- Mensagens de erro e de ok -->
+					<div th:if="${msgOk}"
+						class="alert alert-success alert-dismissible fade show auto-close"
+						role="alert" id="successAlert">
+						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
+							th:text="${msgOk}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+
+					<!-- Mensagem de Erro -->
+					<div th:if="${msgErro}"
+						class="alert alert-danger alert-dismissible fade show auto-close"
+						role="alert" id="errorAlert">
+						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
+							th:text="${msgErro}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
 				</div>
 				<div class="col-12">
 					<div class="card">
 						<div
 							class="card-header d-flex justify-content-between align-items-center fs-5 fw-semibold text-uppercase">
 
-							<span>Adolescente</span> <a
-								th:href="${isMaster} ? @{/adolescente/novo} : '#'"
-								class="btn btn-primary btn-sm"
+							<h5 class="mb-0 text-secondary">Adolescentes</h5>
+							<a th:href="${isMaster} ? @{/adolescente/novo} : '#'"
+								class="btn btn-outline-sistema"
 								th:classappend="${!isMaster} ? ' disabled opacity-50'"
 								data-bs-toggle="tooltip"
-								th:title="${isMaster} ? 'Novo Adolescente' : 'Apenas usuários MASTER podem criar'">
+								th:title="${isMaster} ? 'Novo Adolescente' : 'Sem Permissão para incluir novo Adolescente'">
 								<i class="fa-duotone fa-plus"></i> Novo
 							</a>
 
@@ -48,9 +66,10 @@
 						<div class="card-body">
 							<div class="row">
 								<div class="col-12">
-									<form th:action="@{/cargo}" method="get" class="mb-3">
+									<form th:action="@{/adolescentes}" method="get" class="mb-3">
+										<input type="hidden" name="unidadeId" th:value="${unidadeId}">
 										<div class="row g-2">
-											<div class="col-md-4 input-group-sm">
+											<div class="col-md-6 input-group-sm">
 												<label class="form-label fw-semibold">Nome do
 													Adolescente</label> <input type="text" name="nome"
 													th:value="${nomeBusca}" class="form-control"
@@ -64,7 +83,7 @@
 													placeholder="Digite para buscar">
 											</div>
 
-											<div class="col-md-4 input-group-sm">
+											<div class="col-md-2 input-group-sm">
 												<label class="form-label fw-semibold">Cidade do
 													Adolescente</label> <input type="text" name="cidade"
 													th:value="${cidadeBusca}" class="form-control"
@@ -75,30 +94,28 @@
 										</div>
 
 										<div class="row g-2 mt-1">
-											<div class="col-md-3 input-group-sm">
-												<label class="form-label fw-semibold">CPF do Adolescente</label> 
-												<input type="text" name="cpf"
+											<div class="col-md-2 input-group-sm">
+												<label class="form-label fw-semibold">CPF do
+													Adolescente</label> <input type="text" name="cpf"
 													th:value="${cpfBusca}" class="form-control"
 													placeholder="Digite para buscar">
 											</div>
-											
+
 											<div class="col-md-2 input-group-sm">
-												<label class="form-label fw-semibold">Idade Mínima</label> 
-												<input type="number" name="idadeMin"
-													th:value="${idadeMin}" class="form-control"
-													placeholder="Digite para buscar">
+												<label class="form-label fw-semibold">Idade Mínima</label> <input
+													type="number" name="idadeMin" th:value="${idadeMin}"
+													class="form-control" placeholder="Digite para buscar">
 											</div>
-											
+
 											<div class="col-md-2 input-group-sm">
-												<label class="form-label fw-semibold">Idade Máxima</label> 
-												<input type="number" name="idadeMax"
-													th:value="${idadeMax}" class="form-control"
-													placeholder="Digite para buscar">
+												<label class="form-label fw-semibold">Idade Máxima</label> <input
+													type="number" name="idadeMax" th:value="${idadeMax}"
+													class="form-control" placeholder="Digite para buscar">
 											</div>
-											
-											
-											
-											<div class="col-md-3 input-group-sm">
+
+
+
+											<div class="col-md-1 input-group-sm">
 												<label class="form-label fw-semibold">Status</label> <select
 													name="status" class="form-select">
 													<option value="ativos"
@@ -120,9 +137,25 @@
 													<option value="30" th:selected="${tamanhoPagina == 30}">30</option>
 												</select>
 											</div>
+											<div class="col-md-3 input-group-sm" th:if="${isMaster}">
+												<label class="form-label fw-semibold">Unidade</label> <select
+													name="unidadeId" class="form-select">
+													<option value="">Todas</option>
+
+													<option th:each="u : ${unidades}" th:value="${u.id}"
+														th:text="${u.nome}" th:selected="${u.id == unidadeId}">
+													</option>
+												</select>
+											</div>
+											<div class="col-md-3 input-group-sm" th:if="${!isMaster}">
+												<label class="form-label fw-semibold">Unidade</label> <input
+													type="text" class="form-control"
+													th:value="${lotacaoUsuarioLogado.unidade.nome}" disabled>
+											</div>
 
 											<div class="col-md-1 d-flex align-items-end input-group-sm">
-												<button type="submit" class="btn btn-primary btn-sm w-100">
+												<button type="submit" class="btn btn-outline-sistema w-100"
+													data-bs-toggle="tooltip" title="Aplicar Filtros">
 													<i class="fa-solid fa-magnifying-glass"></i> Buscar
 												</button>
 											</div>
@@ -137,53 +170,71 @@
 								<div class="col-12">
 									<table class="table table-striped table-bordered align-middle">
 										<thead class="table-dark"
-											style="--bs-table-bg: #0e2583; --bs-table-border-color: #0e2583;">
+											style="--bs-table-bg: #0c174a; --bs-table-border-color: #0e2583;">
 											<tr>
-											    <th>Foto</th>
-												<th style="width: 80px;">ID</th>
-												<th>Nome</th>
-												<th>Cidade</th>
-												<th>Bairro</th>
-												<th>UF</th>
-												<th>Mãe</th>
+												<th>Foto</th>
+												<th>Dados</th>
+												<th>Cidade <small>(residência)</small></th>
+												<th>Bairro <small>(residência)</small></th>
+												<th>UF <small>(residência)</small></th>
+												<th>Unidade Cadastro</th>
 												<th class="text-center" style="width: 120px;">Status</th>
 												<th class="text-center" style="width: 140px;">Ações</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr th:each="adolescente : ${adolescentes}">
-											<td th:text="${adolescente..fotoPrincipal}"></td>
-												<td th:text="${cargo.id}"></td>
-												<td th:text="${adolescente.nome}"></td>
-												<td th:text="${adolescente.cidade}"></td>
-										    	<td th:text="${adolescente.bairro}"></td>
-												<td th:text="${adolescente.ufEndereco}"></td>
-												<td th:text="${adolescente.mae}"></td>
-												
-												
-												
+
+												<td><img th:if="${adolescente.fotoRegistro != null}"
+													th:src="${adolescente.fotoRegistro}" class="foto-tabela">
+													<img th:if="${adolescente.fotoRegistro == null}"
+													src="/img/sem-foto.png" class="foto-tabela"></td>
+
+
+
+
+												<td>
+													<div class="fw-semibold" th:text="${adolescente.nome}"></div>
+
+													<small class="text-muted d-block"> Natural: <span
+														th:text="${adolescente.cidadeNascimento}"></span> / <span
+														th:text="${adolescente.ufNascimento}"></span> • <span
+														th:text="${adolescente.idade}"></span> anos
+												</small> <small class="text-muted d-block"> Mãe: <span
+														th:text="${adolescente.mae}"></span>
+												</small>
+												</td>
+											
+												<td th:text="${adolescente.enderecoAtual?.cidade}"></td>
+												<td th:text="${adolescente.enderecoAtual?.bairro}"></td>
+												<td th:text="${adolescente.enderecoAtual?.uf}"></td>
+											
+												<td th:text="${adolescente.nomeUnidadeCadastro}"></td>
+
+
+
 												<td class="text-center"><span
 													th:if="${adolescente.status == 1}"
 													class="badge bg-success-subtle text-success fw-semibold px-3 py-2">
-														Ativo </span> <span th:if="${cargo.status == 0}"
+														Ativo </span> <span th:if="${adolescente.status == 0}"
 													class="badge bg-danger-subtle text-danger fw-semibold px-3 py-2">
 														Inativo </span></td>
 
 												<td class="text-center text-nowrap"><a
 													th:href="@{/adolescente/{id}(id=${adolescente.id})}"
-													class="btn btn-outline-info btn-sm px-2"
+													class="btn btn-outline-sistema btn-sm px-2"
 													data-bs-toggle="tooltip" title="Detalhes"> <i
 														class="fa-duotone fa-eye"></i>
 												</a> <a
 													th:href="${isMaster} ? @{/adolescente/editar/{id}(id=${adolescente.id})} : '#'"
 													th:classappend="${!isMaster} ? ' disabled opacity-50'"
-													class="btn btn-outline-warning btn-sm px-2"
+													class="btn btn-outline-sistema btn-sm px-2"
 													data-bs-toggle="tooltip" title="Editar"> <i
 														class="fa-duotone fa-pen-to-square"></i>
 												</a> <a
 													th:href="${isMaster} ? @{/adolescente/excluir/{id}(id=${adolescente.id})} : '#'"
 													th:classappend="${!isMaster} ? ' disabled opacity-50'"
-													class="btn btn-outline-danger btn-sm px-2"
+													class="btn btn-outline-sistema btn-sm px-2"
 													data-bs-toggle="tooltip" title="Excluir"
 													onclick="return confirm('Deseja excluir essa Função?');">
 														<i class="fa-duotone fa-trash"></i>

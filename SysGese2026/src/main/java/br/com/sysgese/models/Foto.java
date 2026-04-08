@@ -25,9 +25,9 @@ public class Foto {
     @Column(name = "DESCRICAO_DETALHE", length = 355)
     private String descricaoDetalhe;
 
-    @Lob
+    
     @Column(name = "FOTO")
-    private byte[] foto;
+    private String foto;
 
     // Getters e Setters
     public Long getId() {
@@ -54,11 +54,11 @@ public class Foto {
         this.descricaoDetalhe = descricaoDetalhe;
     }
 
-    public byte[] getFoto() {
+    public String  getFoto() {
         return foto;
     }
 
-    public void setFoto(byte[] foto) {
+    public void setFoto(String foto) {
         this.foto = foto;
     }
     }

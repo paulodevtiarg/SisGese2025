@@ -47,8 +47,8 @@ private Long id;
 	public void setAdolescenteId(Long adolescenteId) {
 		this.adolescenteId = adolescenteId;
 	}
-
-	private String fotoBase64;
+	  @NotBlank(message = "Foto da tatuagem é obrigatória")
+	private String foto;
 
 	public Long getId() {
 		return id;
@@ -63,7 +63,7 @@ private Long id;
 	}
 
 	public void setLocal(String local) {
-		this.local = local;
+		this.local = local != null ? local.toUpperCase() : null;
 	}
 
 	public String getForma() {
@@ -71,7 +71,7 @@ private Long id;
 	}
 
 	public void setForma(String forma) {
-		this.forma = forma;
+		this.forma = forma != null ? forma.toUpperCase() : null;
 	}
 
 	public String getDescricao() {
@@ -79,7 +79,7 @@ private Long id;
 	}
 
 	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+		this.descricao = descricao != null ? descricao.toUpperCase() : null;
 	}
 
 	public Boolean getTemSignificado() {
@@ -95,7 +95,7 @@ private Long id;
 	}
 
 	public void setQualSignificado(String qualSignificado) {
-		this.qualSignificado = qualSignificado;
+		this.qualSignificado = qualSignificado  != null ? qualSignificado.toUpperCase() : null;
 	}
 
 	public Integer getAnoRealizacao() {
@@ -122,13 +122,15 @@ private Long id;
 		this.interesseRemover = interesseRemover;
 	}
 
-	public String getFotoBase64() {
-		return fotoBase64;
+	public String getFoto() {
+		return foto;
 	}
 
-	public void setFotoBase64(String fotoBase64) {
-		this.fotoBase64 = fotoBase64;
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
+
+
 
     
 }

@@ -1,6 +1,11 @@
 package br.com.sysgese.services;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,5 +47,20 @@ public class UnidadeService {
 
     public void excluir(Long id) {
         repository.deleteById(id);
+    }
+    public Map<Long, String> buscarNomesPorIds(Set<Long> ids) {
+
+        return repository.findAllById(ids).stream()
+                .collect(Collectors.toMap(
+                        Unidade::getId,
+                        Unidade::getNome
+                ));
+    }
+    public List<Unidade> listarTodas() {
+        return repository.findAll(Sort.by("nome"));
+    }
+    
+    public List<Unidade> listarTodasAtivas() {
+        return repository.findByStatus(1, Sort.by("nome"));
     }
 }

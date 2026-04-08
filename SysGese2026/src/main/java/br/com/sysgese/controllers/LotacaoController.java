@@ -51,6 +51,7 @@ public class LotacaoController {
 	            pageable
 	    );
 		model.addAttribute("pageTitle", "Lotacao");	
+        model.addAttribute("activeMenu", "administrativo");
 		model.addAttribute("lotacoes",  lotacaoMapper.toDTOList(page.getContent()));
 	    model.addAttribute("paginaAtual", page.getNumber());
 	    model.addAttribute("totalPaginas", page.getTotalPages());

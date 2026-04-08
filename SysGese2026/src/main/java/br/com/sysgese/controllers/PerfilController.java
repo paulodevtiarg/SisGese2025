@@ -44,6 +44,7 @@ public class PerfilController {
 
         // Converter para DTOs
         model.addAttribute("pageTitle", "Perfil");
+        model.addAttribute("activeMenu", "administrativo");
         model.addAttribute("perfis", perfilMapper.toDTOList(page.getContent()));
         model.addAttribute("paginaAtual", page.getNumber());
         model.addAttribute("totalPaginas", page.getTotalPages());

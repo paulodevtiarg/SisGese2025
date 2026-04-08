@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body>
 
+<th:block th:fragment="sidebar">
 
-	<ul
-		class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+	<ul		class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
 		id="accordionSidebar" th:fragment="sidebar">
 
 		<!-- Sidebar - Brand -->
@@ -39,7 +38,7 @@
 		<div class="sidebar-heading"> ADMINISTRAÇÃO</div>
 
 		<!-- Nav Item - Pages Collapse Menu -->
-		<li class="nav-item"><a class="nav-link collapsed" href="#"
+		<li class="nav-item" th:classappend="${activeMenu == 'gestao'} ? 'active' : ''"><a class="nav-link collapsed" href="#"
 			data-toggle="collapse" data-target="#collapseTwo"
 			aria-expanded="true" aria-controls="collapseTwo"> <i class="fa-duotone fa-solid fa-family-dress"></i> <span>Gestão Socioeducativa</span>
 		</a>
@@ -116,14 +115,16 @@
 		<!-- Sidebar Message -->
 		<div class="sidebar-card d-none d-lg-flex">
 			<img class="sidebar-card-illustration mb-2"
-				src="sd-admin/img/undraw_rocket.svg" alt="...">
+				th:src="@{/sd-admin/img/undraw_rocket.svg}" alt="...">
 			<p class="text-center mb-2">
 				<strong>SysGese - Versão: 01.AAA2026</strong>, Sistema de Gestão Socioeducativa, 2026. Todos os Direitos Rservados <br/>
-			<a class="btn btn-success btn-sm"
+			<a class="btn btn-success btn-sm mt-2"
 				href="https://startbootstrap.com/theme/sb-admin-pro">Saiba Mais</a>
 		</div>
 
 	</ul>
 
-</body>
+</th:block>
+
+
 </html>

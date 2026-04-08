@@ -14,23 +14,15 @@ import br.com.sysgese.models.Foto;
 @Mapper(componentModel = "spring")
 public interface FotoMapper {
 
-    // ==============================
-    // ENTITY -> DTO
-    // ==============================
+    @Mapping(target = "adolescenteId", source = "adolescente.id")
     FotoDTO toDTO(Foto entity);
 
     List<FotoDTO> toDTOList(List<Foto> entities);
 
-    // ==============================
-    // DTO -> ENTITY
-    // ==============================
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "adolescente", ignore = true) // será setado no AfterMapping do AdolescenteMapper
+    @Mapping(target = "adolescente", ignore = true)
     Foto toEntity(FotoDTO dto);
 
-    // ==============================
-    // UPDATE parcial
-    // ==============================
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "adolescente", ignore = true)

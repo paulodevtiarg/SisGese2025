@@ -49,9 +49,9 @@ public class Tatuagem {
 	    @Column(name = "INTERESSE_REMOVER", nullable = false)
 	    private Boolean interesseRemover = false;
 	    
-	    @Lob
+	    
 	    @Column(name = "FOTO")
-	    private byte[] foto;
+	    private String foto;
 
 		public Long getId() {
 			return id;
@@ -133,11 +133,11 @@ public class Tatuagem {
 			this.interesseRemover = interesseRemover;
 		}
 
-		public byte[] getFoto() {
+		public String getFoto() {
 			return foto;
 		}
 
-		public void setFoto(byte[] foto) {
+		public void setFoto(String foto) {
 			this.foto = foto;
 		}
 	    

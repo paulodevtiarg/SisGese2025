@@ -41,6 +41,7 @@ public class FuncaoController {
 		
 		//Converter para DTO
 		model.addAttribute("pageTitle", "Função");
+        model.addAttribute("activeMenu", "administrativo");
 		model.addAttribute("funcoes", funcaoMapper.toDTOList(page.getContent()));
 		model.addAttribute("paginaAtual", page.getNumber());
         model.addAttribute("totalPaginas", page.getTotalPages());

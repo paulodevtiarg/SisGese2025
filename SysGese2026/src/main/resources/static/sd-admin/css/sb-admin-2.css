@@ -4561,7 +4561,7 @@ input[type="button"].btn-block {
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
-  background-color: #f8f9fc;
+  background-color: #173b8112;
   border-bottom: 1px solid #e3e6f0;
 }
 
@@ -4571,7 +4571,7 @@ input[type="button"].btn-block {
 
 .card-footer {
   padding: 0.75rem 1.25rem;
-  background-color: #f8f9fc;
+  background-color: #173b8112;
   border-top: 1px solid #e3e6f0;
 }
 
@@ -9821,8 +9821,8 @@ a:focus {
 .container-md,
 .container-lg,
 .container-xl {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 0.40rem;
+  padding-right: 0.40rem;
 }
 
 .scroll-to-top {
@@ -9912,8 +9912,8 @@ a:focus {
   background-color: #1E2A5A;
   background-image: linear-gradient(
     180deg,
-    #2F3B73 0%,
-    #1E2A5A 100%
+    #1c2860 0%,
+    #000000 100%
   );
   background-size: cover;
 }

@@ -68,7 +68,7 @@ public class ServidorDTO {
     @NotNull(message = "Perfil é obrigatório")
     private Long perfilId;
 
-  
+    private String foto;
 
     @NotNull(message = "Status é obrigatório")
     private Integer status;
@@ -190,6 +190,19 @@ public class ServidorDTO {
 	public void setDataAlt(LocalDate dataAlt) {
 		this.dataAlt = dataAlt;
 	}
+	public String getCpf() {
+		return cpf;
+	}
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
 
    
 }

@@ -1,11 +1,33 @@
 package br.com.sysgese.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class FotoDTO {
     private Long id;
+    @NotBlank(message = "Descrição  é obrigatório")
     private String descricaoDetalhe;
-    private byte[] foto;
+    
+    @NotBlank(message = "Foto  é obrigatório")
+    private String foto;
 
-    // Getters e Setters
+    
+    
+    
+    @NotNull(message = "Adolescente é obrigatório")
+    private Long adolescenteId;
+    
+    
+    
+    public Long getAdolescenteId() {
+		return adolescenteId;
+	}
+
+	public void setAdolescenteId(Long adolescenteId) {
+		this.adolescenteId = adolescenteId;
+	}
+
+	// Getters e Setters
     public Long getId() {
         return id;
     }
@@ -19,14 +41,14 @@ public class FotoDTO {
     }
 
     public void setDescricaoDetalhe(String descricaoDetalhe) {
-        this.descricaoDetalhe = descricaoDetalhe;
+        this.descricaoDetalhe = descricaoDetalhe  != null ? descricaoDetalhe.toUpperCase() : null;
     }
 
-    public byte[] getFoto() {
+    public String getFoto() {
         return foto;
     }
 
-    public void setFoto(byte[] foto) {
+    public void setFoto(String foto) {
         this.foto = foto;
     }
 }

@@ -41,6 +41,7 @@ public class UnidadeController {
         Page<Unidade> page = unidadeService.buscar(nome, cidade, status, pageable);
 
         model.addAttribute("pageTitle", "Unidade");
+        model.addAttribute("activeMenu", "administrativo");
         model.addAttribute("unidades", unidadeMapper.toDTOList(page.getContent()));
         model.addAttribute("paginaAtual", page.getNumber());
         model.addAttribute("totalPaginas", page.getTotalPages());

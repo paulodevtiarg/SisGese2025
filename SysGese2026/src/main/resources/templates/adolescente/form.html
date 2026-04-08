@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+<title>Adolescente</title>
+<!-- Este será substituído -->
+
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+
+		<div class="container-fluid p-2">
+			<div class="row">
+				<div class="col-12">
+					<nav aria-label="breadcrumb card"
+						style="margin-top: -25px; font-size: 0.8rem;">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a th:href="@{/home}"> <i
+									class="fa-duotone fa-solid fa-house fs-7"></i> Home
+							</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/adolescente}">
+									<i class="fa-solid fa-child"></i> Adolescente
+							</a></li>
+							<li class="breadcrumb-item"><span class="text-muted"><i
+									class="fa-duotone fa-user-plus"></i> Novo Registro </span></li>
+
+
+						</ol>
+					</nav>
+				</div>
+				<div class="col-12">
+					<!-- Mensagens de erro e de ok -->
+					<div th:if="${msgOk}"
+						class="alert alert-success alert-dismissible fade show"
+						role="alert" id="successAlert">
+						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
+							th:text="${msgOk}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+
+					<!-- Mensagem de Erro -->
+					<div th:if="${msgErro}"
+						class="alert alert-danger alert-dismissible fade show"
+						role="alert" id="errorAlert">
+						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
+							th:text="${msgErro}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+				</div>
+				<div class="col-12">
+
+					<form th:action="@{/adolescente/salvar}" th:object="${adolescente}"
+						method="post" enctype="multipart/form-data">
+						<input type="hidden" th:field="*{fotoRegistro}">
+						<div class="card">
+
+							<div
+								class="card-header card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text  fw-semibold text-uppercase">
+								<h5 class="mb-0 text-secondary">Novo Registro</h5>
+								<a th:href="@{/adolescente}" class="btn btn-outline-danger">
+									<i class="fa-duotone fa-solid fa-ban"></i> Cancelar
+								</a>
+							</div>
+
+
+
+							<div class="card-body">
+								<div class="row">
+									<div class="col-12">
+
+										<ul class="nav nav-tabs" id="adolescenteTabs" role="tablist">
+
+											<li class="nav-item">
+												<button class="nav-link active" data-bs-toggle="tab"
+													data-bs-target="#dados" type="button">Dados
+													Básicos</button>
+											</li>
+
+											<li class="nav-item">
+												<button class="nav-link" data-bs-toggle="tab"
+													data-bs-target="#endereco" type="button">Endereço
+												</button>
+											</li>
+
+											<li class="nav-item">
+												<button class="nav-link" data-bs-toggle="tab"
+													data-bs-target="#parentesco" type="button">
+													Parentesco</button>
+											</li>
+
+											<!-- Caracteristicas -->
+											<li class="nav-item">
+												<button class="nav-link" data-bs-toggle="tab"
+													data-bs-target="#caracteristicas" type="button">
+													Características</button>
+											</li>
+
+
+											<li class="nav-item">
+												<button class="nav-link" data-bs-toggle="tab"
+													data-bs-target="#fotos" type="button">Fotos</button>
+											</li>
+
+										</ul>
+										<div class="tab-content mt-3">
+
+											<!-- 🔹 DADOS BÁSICOS -->
+											<div class="tab-pane fade show active" id="dados">
+
+												<div class="row">
+													<div class="col-md-2">
+														<!-- foto -->
+														<div class="foto-3x4-container"
+															th:classappend="${#fields.hasErrors('fotoRegistro')} ? 'border border-danger' : ''">
+															<label class="form-label fw-bold text-center d-block">Foto
+																3x4</label>
+
+															<!-- Preview da foto ou placeholder -->
+															<div id="fotoPreviewArea">
+																<div
+																	th:if="${!#strings.isEmpty(adolescente.fotoRegistro)}"
+																	id="fotoExistente">
+																	<img th:src="${adolescente.fotoRegistro}"
+																		class="foto-3x4" alt="Foto do adolescente">
+																	<div class="nome-foto"
+																		th:text="${adolescente.fotoRegistro}"></div>
+																</div>
+
+																<div
+																	th:if="${#strings.isEmpty(adolescente.fotoRegistro)}"
+																	id="fotoPlaceholder" class="foto-placeholder">
+																	<i class="fa-duotone fa-solid fa-user"></i><span>Sem
+																		foto</span>
+																</div>
+
+																<div id="fotoPreview" style="display: none;">
+																	<img id="fotoPreviewImg" class="foto-3x4" alt="Preview">
+																	<div id="fotoPreviewNome" class="nome-foto"></div>
+																</div>
+															</div>
+
+															<!-- Botão para upload -->
+															<label for="foto"
+																class="btn btn-outline-primary btn-foto"> <i
+																class="fa-duotone fa-solid fa-camera"></i> Escolher foto
+															</label> <input type="file" class="d-none" name="arquivoFoto"
+																id="foto" accept="image/jpeg,image/png,image/gif"
+																onchange="previewFoto3x4(this)"> <small
+																class="text-muted d-block text-center mt-1">
+																JPG, PNG até 5MB </small>
+															<div class="text-center mt-2 pr-textdanger"
+																th:if="${#fields.hasErrors('fotoRegistro')}"
+																th:errors="*{fotoRegistro}"></div>
+														</div>
+													</div>
+													<div class="col-md-10">
+														<!-- col dos imputs -->
+														<div class="row mb-2">
+															<div class="col-md-6">
+																<label for="nome"
+																	class="form-label fw-semibold text-secondary">Nome
+																	Completo *</label> <input type="text" class="form-control"
+																	th:field="*{nome}" id="nome"
+																	placeholder="Digite o nome completo"
+																	th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid' : ''">
+																<div class="invalid-feedback"
+																	th:if="${#fields.hasErrors('nome')}"
+																	th:errors="*{nome}"></div>
+															</div>
+
+															<div class="col-md-3">
+																<label class="form-label fw-semibold text-secondary">Apelido</label>
+																<input placeholder="Digite o Apelido" type="text"
+																	th:field="*{apelido}" class="form-control">
+
+															</div>
+
+
+
+															<div class="col-md-3">
+
+																<label class="form-label text-muted fw-medium">
+																	Nascimento </label>
+
+																<div class="d-flex align-items-center gap-2">
+
+																	<div class="input-group input-group-sm shadow-sm">
+																		<span class="input-group-text bg-white"> <i
+																			class="fa-duotone fa-calendar-days text-secondary"></i>
+																		</span> <input type="date" th:field="*{dataNascimento}"
+																			class="form-control"
+																			th:classappend="${#fields.hasErrors('dataNascimento')} ? 'is-invalid' : ''">
+																		<div class="invalid-feedback"
+																			th:if="${#fields.hasErrors('dataNascimento')}"
+																			th:errors="*{dataNascimento}"></div>
+																	</div>
+
+
+																	<div class="form-check ms-2">
+																		<input class="form-check-input" type="checkbox"
+																			th:field="*{dataEstimada}" id="dataEstimadaCheck">
+
+																		<label
+																			class="form-check-label small text-body-secondary"
+																			for="dataEstimadaCheck" data-bs-toggle="tooltip"
+																			data-bs-placement="top" title="DATA ESTIMADA">
+																			Est. </label>
+																	</div>
+
+																</div>
+
+															</div>
+
+														</div>
+														<div class="row mt-3">
+															<!-- CIDADE -->
+															<div class="col-md-4">
+																<label class="form-label fw-semibold text-secondary">
+																	Cidade <small> Nascimento</small> *
+																</label> <input type="text" th:field="*{cidadeNascimento}"
+																	placeholder="Cidade de Nascimento" class="form-control">
+															</div>
+
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">
+																	UF <small> Nascimento</small> *
+																</label> <select th:field="*{ufNascimento}" class="form-select"
+																	th:classappend="${#fields.hasErrors('ufNascimento')} ? 'is-invalid' : ''">
+
+																	<option value="">Selecione</option>
+
+																	<option th:each="estado : ${estados}"
+																		th:value="${estado.codigo}" th:text="${estado.nome}">
+																	</option>
+
+																</select>
+																<div class="invalid-feedback"
+																	th:if="${#fields.hasErrors('ufNascimento')}"
+																	th:errors="*{ufNascimento}"></div>
+															</div>
+
+
+
+															<div class="col-md-3">
+																<label for="genero"
+																	class="form-label fw-semibold text-secondary">
+																	Gênero * </label> <select class="form-select"
+																	th:field="*{genero}" id="genero"
+																	th:classappend="${#fields.hasErrors('genero')} ? 'is-invalid' : ''">
+
+																	<option value="">Selecione</option>
+
+																	<option th:each="g : ${generos}" th:value="${g}"
+																		th:text="${g.descricao}"></option>
+
+																</select>
+
+																<div class="invalid-feedback d-block"
+																	style="min-height: 20px;"
+																	th:if="${#fields.hasErrors('genero')}"
+																	th:errors="*{genero}"></div>
+															</div>
+															<div class="col-md-3">
+																<label for="genero"
+																	class="form-label fw-semibold text-secondary">
+																	Raça/Cor * </label> <select class="form-select"
+																	th:field="*{racaCor}" id="racaCor"
+																	th:classappend="${#fields.hasErrors('racaCor')} ? 'is-invalid' : ''">
+
+																	<option value="">Selecione</option>
+
+																	<option th:each="g : ${racas}" th:value="${g}"
+																		th:text="${g.descricao}"></option>
+
+																</select>
+
+																<div class="invalid-feedback d-block"
+																	style="min-height: 20px;"
+																	th:if="${#fields.hasErrors('genero')}"
+																	th:errors="*{genero}"></div>
+															</div>
+
+
+														</div>
+
+
+														<div class="row mt-3">
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">
+																	CPF </label> <input type="text" th:field="*{cpf}" id="cpf"
+																	oninput="mascaraCPF(this)" placeholder="000.000.000-00"
+																	class="form-control">
+																<div class="invalid-feedback">CPF inválido</div>
+															</div>
+
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">
+																	Identidade <small>(RG)</small>)
+																</label> <input type="text" th:field="*{identidade}"
+																	id="identidade" placeholder="Dados do RG"
+																	class="form-control">
+
+															</div>
+
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">
+																	Registro Civil <small>(Cert; Nasc.)</small>)
+																</label> <input type="text" th:field="*{registroCivil}"
+																	id="identidade" placeholder="Dados do Registro Civil"
+																	class="form-control">
+
+															</div>
+															<div class="col-md-6">
+																<label class="form-label fw-semibold text-secondary">
+																	Cartório<small>(do Reg. de Nasc.)</small>)
+																</label> <input type="text" th:field="*{cartorio}" id="cartorio"
+																	placeholder="Dados do Cartório" class="form-control">
+
+															</div>
+
+
+														</div>
+
+														<div class="row mt-3">
+
+															<div class="col-md-4">
+																<label class="form-label fw-semibold text-secondary">Reservista</label>
+																<input type="text" th:field="*{reservista}"
+																	id="reservista" class="form-control"
+																	placeholder="Dados da Reservista">
+
+															</div>
+
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">Título</label>
+																<input type="text" th:field="*{tituloEleitor}"
+																	id="tituloEleitor" class="form-control"
+																	placeholder="Inscrição do Título Eleitoral">
+
+															</div>
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">Zona
+																	<small>Eleitoral</small>
+																</label> <input type="text" th:field="*{zonaEleitoral}"
+																	id="zonaEleitoral" class="form-control"
+																	placeholder="Nº Inscrição">
+
+															</div>
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">Seção
+																	<small>Eleitoral</small>
+																</label> <input type="text" th:field="*{secaoEleitoral}"
+																	id="secaoEleitoral" class="form-control"
+																	placeholder="Seção">
+
+															</div>
+															<div class="col-md-2">
+																<label class="form-label fw-semibold text-secondary">
+																	UF <small> Eleitoral</small> *
+																</label> <select th:field="*{ufEleitoral}" class="form-select">
+
+																	<option value="">Selecione</option>
+
+																	<option th:each="estado : ${estados}"
+																		th:value="${estado.codigo}" th:text="${estado.nome}">
+																	</option>
+
+																</select>
+
+															</div>
+
+
+
+														</div>
+														<div class="row mt-3">
+
+
+															<div class="col-md-6">
+																<label class="form-label fw-semibold text-secondary">Município
+																	<small>Eleitoral</small>
+																</label> <input type="text" th:field="*{municipioEleitoral}"
+																	id="municipioEleitoral" class="form-control"
+																	placeholder="Munícipio do Título Eleitoral">
+
+															</div>
+
+
+															<div class="col-md-3">
+																<label for="nivelEscolaridade"
+																	class="form-label fw-semibold text-secondary">
+																	Nível Escolaridade </label> <select class="form-select"
+																	th:field="*{nivelEscolaridade}">
+																	<option value="">Selecione</option>
+																	<option th:each="niv : ${nivelEscolaridade}"
+																		th:value="${niv}" th:text="${niv.descricao}"></option>
+																</select>
+															</div>
+															<div class="col-md-3">
+																<label for="nivelEscolaridade"
+																	class="form-label fw-semibold text-secondary">
+																	Ano Escolaridade </label> <select class="form-select"
+																	th:field="*{anoEscolaridade}">
+																	<option value="">Selecione</option>
+																	<option th:each="anoEsc : ${anoEscolaridade}"
+																		th:value="${anoEsc}" th:text="${anoEsc.descricao}"></option>
+																</select>
+															</div>
+
+
+														</div>
+
+
+
+
+
+													</div>
+													<!-- fim col da row -->
+												</div>
+												<!-- fim row dados basicos -->
+
+
+
+											</div>
+
+											<!-- 🔹 ENDEREÇO -->
+											<div class="tab-pane fade" id="endereco">
+												<div class="row mt-3 mb-2">
+
+													<div class="col-md-2">
+														<label for="cep"
+															class="form-label fw-semibold text-secondary">
+															CEP <small>(Residência)</small>
+														</label> <input type="text" class="form-control mask-cep"
+															name="cep" th:value="${endereco.cep}" id="cep"
+															placeholder="00.000-000" maxlength="10"
+															oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+															onblur="buscarCep(this.value)">
+													</div>
+
+													<div class="col-md-4">
+														<label class="form-label fw-semibold text-secondary">
+															Logradouro <small>(Residência)</small>
+														</label> <input type="text" name="logradouro"
+															th:value="${endereco.logradouro}" id="logradouro"
+															class="form-control"
+															placeholder="Rua, Avenida, Viela...."
+															th:classappend="${errosEndereco != null and errosEndereco['logradouro'] != null} ? 'is-invalid' : ''">
+
+														<div class="invalid-feedback"
+															th:if="${errosEndereco != null and errosEndereco['logradouro'] != null}"
+															th:text="${errosEndereco['logradouro']}"></div>
+													</div>
+
+													<div class="col-md-2">
+														<label class="form-label fw-semibold text-secondary">
+															Número <small>(Residência)</small>
+														</label> <input type="text" name="numero"
+															th:value="${endereco.numero}" id="numero"
+															class="form-control" placeholder="00 ou S/N">
+													</div>
+
+													<div class="col-md-4">
+														<label class="form-label fw-semibold text-secondary">
+															Bairro <small>(Residência)</small>
+														</label> <input type="text" name="bairro"
+															th:value="${endereco.bairro}" id="bairro"
+															class="form-control" placeholder="Digite o Bairro"
+															th:classappend="${errosEndereco != null and errosEndereco['bairro'] != null} ? 'is-invalid' : ''">
+
+														<div class="invalid-feedback"
+															th:if="${errosEndereco != null and errosEndereco['bairro'] != null}"
+															th:text="${errosEndereco['bairro']}"></div>
+													</div>
+
+												</div>
+
+												<div class="row mt-3">
+
+													<div class="col-md-4">
+														<label class="form-label fw-semibold text-secondary">
+															Cidade <small>(Residência)</small>
+														</label> <input type="text" name="cidade"
+															th:value="${endereco.cidade}" id="cidade"
+															class="form-control" placeholder="Digite a Cidade"
+															th:classappend="${errosEndereco != null and errosEndereco['cidade'] != null} ? 'is-invalid' : ''">
+
+														<div class="invalid-feedback"
+															th:if="${errosEndereco != null and errosEndereco['cidade'] != null}"
+															th:text="${errosEndereco['cidade']}"></div>
+													</div>
+
+													<div class="col-md-2">
+														<label for="uf"
+															class="form-label fw-semibold text-secondary"> UF
+															<small>(Residência)</small>
+														</label><select name="uf" class="form-select" id="uf"
+															th:classappend="${errosEndereco != null and errosEndereco['uf'] != null} ? 'is-invalid' : ''">
+
+															<option value="">Selecione</option>
+															<option th:each="uf : ${estados}" th:value="${uf.codigo}"
+																th:text="${uf.nome}"
+																th:selected="${uf.codigo.toString() == endereco.uf}">
+															</option>
+														</select>
+
+														<div class="invalid-feedback d-block"
+															style="min-height: 20px;"
+															th:if="${errosEndereco != null and errosEndereco['uf'] != null}"
+															th:text="${errosEndereco['uf']}"></div>
+													</div>
+
+													<div class="col-md-6">
+														<label class="form-label fw-semibold text-secondary">
+															Referência <small>(do Endereço)</small>
+														</label> <input type="text" name="referencia"
+															th:value="${endereco.referencia}" id="referencia"
+															class="form-control" placeholder="Ponto de referência">
+													</div>
+
+												</div>
+
+												<div class="row mt-3">
+													<div class="col-md-2">
+														<label for="telefone1"
+															class="form-label text-muted fw-medium">Telefone
+															Principal </label> <input type="text" class="form-control"
+															th:field="*{telefone1}" id="telefone1"
+															placeholder="(00) 00000-0000"
+															oninput="mascaraTelefone(this)">
+													</div>
+
+													<div class="col-md-2">
+														<label for="telefone2"
+															class="form-label text-muted fw-medium">Telefone
+															Alternativo </label> <input type="text" class="form-control"
+															th:field="*{telefone2}" id="telefone2"
+															placeholder="(00) 00000-0000"
+															oninput="mascaraTelefone(this)">
+													</div>
+													<div class="col-md-2">
+														<label for="telefoneRecado"
+															class="form-label text-muted fw-medium">Telefone
+															Recado</label> <input type="text" class="form-control"
+															th:field="*{telefoneRecado}" id="telefoneRecado"
+															placeholder="(00) 00000-0000"
+															oninput="mascaraTelefone(this)">
+													</div>
+													<div class="col-md-6">
+														<label for="nomeContatoRecado"
+															class="form-label fw-semibold text-secondary">Nome
+															Contato <small>(Para Recado)</small>
+														</label> <input type="text" class="form-control"
+															th:field="*{nomeContatoRecado}" id="nomeContatoRecado"
+															placeholder="Digite o nome do contato">
+
+													</div>
+
+
+
+												</div>
+
+
+											</div>
+
+											<!-- 🔹 PARENTESCO -->
+											<div class="tab-pane fade" id="parentesco">
+
+												<div class="row">
+													<div class="col-md-6">
+														<div class="row">
+															<div class="col-md-12">
+																<label for="pai" class="form-label text-muted fw-medium">Pai</label>
+																<input type="text" th:field="*{pai}"
+																	class="form-control" placeholder="Digite o nome do Pai">
+
+															</div>
+
+
+														</div>
+														<div class="row mt-3">
+															<div class="col-md-12">
+																<label for="mae" class="form-label text-muted fw-medium">Mãe</label>
+																<input type="text" th:field="*{mae}"
+																	class="form-control" placeholder="Digite o nome da mãe">
+
+															</div>
+														</div>
+
+													</div>
+													<div class="col-md-6">
+														<div class="row">
+															<div class="col-md-12">
+																<label for="telefoneRecado"
+																	class="form-label text-muted fw-medium">Responsavel</label>
+																<input type="text" th:field="*{responsavel}"
+																	class="form-control"
+																	placeholder="Digite o nome do responsável">
+
+															</div>
+
+
+														</div>
+														<div class="row mt-3">
+															<div class="col-md-12">
+																<label for="parentescoResponsavel"
+																	class="form-label text-muted fw-medium">Parentesco
+																	do Responsável</label> <input type="text"
+																	th:field="*{parentescoResponsavel}"
+																	class="form-control"
+																	placeholder="Tio, Tia, Avós, Irmãos....">
+
+															</div>
+														</div>
+
+
+
+													</div>
+
+												</div>
+
+
+
+											</div>
+											<!-- CARACTERISTICAS -->
+
+											<div class="tab-pane fade" id="caracteristicas">
+
+												<div class="row">
+
+													<div class="col-md-2">
+														<label for="estatura"
+															class="form-label fw-semibold text-secondary">
+															Estatura </label> <select class="form-select"
+															th:field="*{estatura}">
+															<option value="">Selecione</option>
+															<option th:each="est : ${estaturas}" th:value="${est}"
+																th:text="${est.descricao}"></option>
+														</select>
+													</div>
+													<div class="col-md-2">
+														<label for="sobrancelha"
+															class="form-label fw-semibold text-secondary">
+															Sobrancelhas </label> <select class="form-select"
+															th:field="*{sobrancelha}">
+															<option value="">Selecione</option>
+															<option th:each="sob : ${sobrancelhas}" th:value="${sob}"
+																th:text="${sob.descricao}"></option>
+														</select>
+													</div>
+
+													<div class="col-md-2">
+														<label for="nariz"
+															class="form-label fw-semibold text-secondary">
+															Nariz </label> <select class="form-select" th:field="*{nariz}">
+															<option value="">Selecione</option>
+															<option th:each="nar : ${nariz}" th:value="${nar}"
+																th:text="${nar.descricao}"></option>
+														</select>
+													</div>
+
+													<div class="col-md-2">
+														<label for="orelha"
+															class="form-label fw-semibold text-secondary">
+															Orelha </label> <select class="form-select" th:field="*{orelha}">
+															<option value="">Selecione</option>
+															<option th:each="ore : ${orelhas}" th:value="${ore}"
+																th:text="${ore.descricao}"></option>
+														</select>
+													</div>
+
+													<div class="col-md-2">
+														<label for="pescoco"
+															class="form-label fw-semibold text-secondary">
+															Pescoço </label> <select class="form-select"
+															th:field="*{pescoco}">
+															<option value="">Selecione</option>
+															<option th:each="pes : ${pescoco}" th:value="${pes}"
+																th:text="${pes.descricao}"></option>
+														</select>
+													</div>
+
+													<div class="col-md-2">
+														<label for="rosto"
+															class="form-label fw-semibold text-secondary">
+															Rosto </label> <select class="form-select" th:field="*{rosto}">
+															<option value="">Selecione</option>
+															<option th:each="ros : ${rosto}" th:value="${ros}"
+																th:text="${ros.descricao}"></option>
+														</select>
+													</div>
+
+												</div>
+
+												<div class="row mt-3">
+													<div class="col-md-2">
+														<label for="olhos"
+															class="form-label fw-semibold text-secondary">
+															Olhos </label> <select class="form-select" th:field="*{olhos}">
+															<option value="">Selecione</option>
+															<option th:each="olh : ${olhos}" th:value="${olh}"
+																th:text="${olh.descricao}"></option>
+														</select>
+													</div>
+
+													<div class="col-md-2">
+														<label for="corOlhos"
+															class="form-label fw-semibold text-secondary">
+															Cor dos Olhos </label> <select class="form-select"
+															th:field="*{corOlhos}">
+															<option value="">Selecione</option>
+															<option th:each="corOlh : ${corOlhos}"
+																th:value="${corOlh}" th:text="${corOlh.descricao}"></option>
+														</select>
+													</div>
+
+													<div class="col-md-2">
+														<label for="cabelo"
+															class="form-label fw-semibold text-secondary">
+															Cabelos </label> <select class="form-select" th:field="*{cabelo}">
+															<option value="">Selecione</option>
+															<option th:each="cab : ${cabelo}" th:value="${cab}"
+																th:text="${cab.descricao}"></option>
+														</select>
+													</div>
+													
+													<div class="col-md-2">
+														<label for="biofisico"
+															class="form-label fw-semibold text-secondary">
+															Biofisico </label> <select class="form-select" th:field="*{biofisico}">
+															<option value="">Selecione</option>
+															<option th:each="bio : ${bioFisico}" th:value="${bio}"
+																th:text="${bio.descricao}"></option>
+														</select>
+													</div>
+													
+													
+													
+													<div class="col-md-4">
+														<label class="form-label fw-semibold text-secondary">Condição
+															Dentição <small>(Observados)</small>
+														</label> <input type="text" th:field="*{dentesObs}" id="dentesObs"
+															class="form-control"
+															placeholder="Escreva, brevemente, condição dos dentes">
+
+													</div>
+
+
+												</div>
+												<div class="row mt-3">
+
+
+													<div class="col-md-4">
+														<label class="form-label fw-semibold text-secondary">Condição
+															de Saúde <small>(Declarada)</small>
+														</label> <input type="text" th:field="*{condSaude}" id="condSaude"
+															class="form-control"
+															placeholder="Escreva, brevemente, condição de saúde declarada">
+
+													</div>
+
+													<div class="col-md-2">
+														<label for="religiao"
+															class="form-label fw-semibold text-secondary">
+															Religião </label> <select class="form-select"
+															th:field="*{religiao}">
+															<option value="">Selecione</option>
+															<option th:each="rel : ${religiao}" th:value="${rel}"
+																th:text="${rel.descricao}"></option>
+														</select>
+													</div>
+
+													<!-- FILHOS? -->
+													<div class="col-md-2">
+														<label
+															class="form-label fw-semibold text-secondary d-block">
+															Filhos? </label>
+														<div class="radio-box">
+															<div class="form-check form-check-inline">
+																<input class="form-check-input" type="radio"
+																	th:field="*{filhos}" value="true" id="filhosSim"
+																	onchange="toggleQtdFilhos()"> <label
+																	class="form-check-label" for="filhosSim">Sim</label>
+															</div>
+															<div class="form-check form-check-inline">
+																<input class="form-check-input" type="radio"
+																	th:field="*{filhos}" value="false" id="filhosNao"
+																	onchange="toggleQtdFilhos()"> <label
+																	class="form-check-label" for="filhosNao">Não</label>
+															</div>
+														</div>
+													</div>
+
+													<!-- QUANTIDADE -->
+													<div class="col-md-2">
+														<label class="form-label fw-semibold text-secondary">
+															Quantidade </label> <input type="number" min="0"
+															class="form-control" th:field="*{qtdFilhos}"
+															id="qtdFilhos" placeholder="Qtd" disabled>
+													</div>
+
+
+
+													<div class="col-md-2">
+														<label
+															class="form-label fw-semibold text-secondary d-block">
+															Caracterisca Aparente? </label>
+														<div class="radio-box">
+															<div class="form-check form-check-inline">
+																<input class="form-check-input" type="radio"
+																	th:field="*{caracMarcante}" value="true" id="caracSim"
+																	onchange="toggleCaract()"> <label
+																	class="form-check-label" for="caracSim">Sim</label>
+															</div>
+															<div class="form-check form-check-inline">
+																<input class="form-check-input" type="radio"
+																	th:field="*{caracMarcante}" value="false" id="caracNao"
+																	onchange="toggleCaract()"> <label
+																	class="form-check-label" for="caracNao">Não</label>
+															</div>
+														</div>
+													</div>
+
+
+												</div>
+												
+												<div class="row mt-3">
+													<div class="col-md-12">
+														<label class="form-label fw-semibold text-secondary">
+															Descrição da Característica </label> <input type="text"
+															class="form-control" th:field="*{descricaoCarac}"
+															id="carcDesc" placeholder="Alguma Característica marcante que é observada no adolescente ex:  Estrabismo, falta algum membro , etc.." disabled>
+													</div>
+												
+												
+												
+												</div>
+
+
+											</div>
+
+
+
+											<!-- 🔹 FOTOS -->
+											<div class="tab-pane fade" id="fotos">
+												<div class="row">
+
+													<!-- 📸 FOTOS -->
+													<div class="col-md-4 pr-fotos">
+														<div class="card shadow mb-4">
+															<div class="card-header d-flex justify-content-between">
+																<h6 class="m-0 font-weight-bold">Fotos</h6>
+																<button type="button"
+																	class="btn btn-outline-sistema btn-sm"
+																	onclick="addFoto()">+ Adicionar</button>
+															</div>
+
+															<div class="card-body" id="fotosContainer"></div>
+															<!-- GALERIA FOTOS -->
+															<div id="previewFotos"
+																class="d-flex flex-wrap gap-2 mt-2 p-2"></div>
+														</div>
+													</div>
+
+													<!-- 🩹 CICATRIZES -->
+													<div class="col-md-4 pr-cicatriz">
+														<div class="card shadow mb-4">
+															<div class="card-header d-flex justify-content-between">
+																<h6 class="m-0 font-weight-bold">Cicatrizes</h6>
+																<button type="button"
+																	class="btn btn-outline-sistema btn-sm"
+																	onclick="addCicatriz()">+ Adicionar</button>
+															</div>
+
+															<div class="card-body" id="cicatrizesContainer"></div>
+
+															<!-- GALERIA CICATRIZES -->
+															<div id="previewCicatrizes"
+																class="d-flex flex-wrap gap-2 p-2 mt-2"></div>
+														</div>
+													</div>
+
+													<!-- 🖋️ TATUAGENS -->
+													<div class="col-md-4 pr-tatu">
+														<div class="card shadow mb-4">
+															<div class="card-header d-flex justify-content-between">
+																<h6 class="m-0 font-weight-bold">Tatuagens</h6>
+																<button type="button"
+																	class="btn btn-outline-sistema btn-sm"
+																	onclick="addTatuagem()">+ Adicionar</button>
+															</div>
+
+															<div class="card-body" id="tatuagensContainer"></div>
+															<!-- GALERIA TATUAGENS -->
+															<div id="previewTatuagens"
+																class="d-flex flex-wrap gap-2 p-2 mt-2"></div>
+														</div>
+													</div>
+
+												</div>
+
+											</div>
+
+
+
+
+										</div>
+
+									</div>
+
+								</div>
+								<!-- fim da col dentro do bdy -->
+
+
+							</div>
+
+
+
+
+
+						</div>
+						<div
+							class="card-footer d-flex justify-content-between align-items-center">
+							<button type="submit" class="btn btn-outline-sistema">
+								<i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
+							</button>
+
+						</div>
+					</form>
+				</div>
+				<!-- fim do card -->
+
+
+
+
+			</div>
+
+		</div>
+		<!-- FIM DO CARD -->
+
+		<template id="fotoTemplate">
+			<div class="card mb-2 p-2 foto-item">
+
+				<input type="hidden" name="fotos[INDEX].id" /> <input type="text"
+					name="fotos[INDEX].descricaoDetalhe" class="form-control mb-2"
+					placeholder="Descrição" /> <img class="img-preview mb-2"
+					style="max-height: 120px; display: none" /> <input type="file"
+					name="fotosFiles" class="form-control mb-2"
+					onchange="previewFoto(this)" />
+
+				<button type="button" class="btn btn-danger btn-sm"
+					onclick="removerFoto(this)">Remover</button>
+
+			</div>
+		</template>
+		<template id="cicatrizTemplate">
+			<div class="card mb-2 p-2 cicatriz-item">
+
+				<input type="text" name="cicatrizes[INDEX].local"
+					class="form-control mb-1" placeholder="Local" /> <input
+					type="text" name="cicatrizes[INDEX].forma"
+					class="form-control mb-1" placeholder="Forma" />
+
+				<textarea name="cicatrizes[INDEX].descricaoDetalhe"
+					class="form-control mb-2" placeholder="Descrição"></textarea>
+
+				<input type="number" step="0.01" name="cicatrizes[INDEX].tamanhoCm"
+					class="form-control mb-2" placeholder="Tamanho (cm)" /> <input
+					type="date" name="cicatrizes[INDEX].dataOcorrido"
+					class="form-control mb-2" /> <select name="cicatrizes[INDEX].tipo"
+					class="form-control mb-2">
+					<option value="">Tipo</option>
+					<option value="CIRURGICA">Cirúrgica</option>
+					<option value="ACIDENTE">Acidente</option>
+					<option value="AUTOINFLIGIDA">Autoinfligida</option>
+					<option value="OUTRO">Outro</option>
+				</select> <img class="img-preview mb-2"
+					style="max-height: 120px; display: none" /> <input type="file"
+					name="cicatrizFiles" class="form-control mb-2"
+					onchange="previewCicatriz(this)" />
+
+				<button type="button" class="btn btn-danger btn-sm"
+					onclick="removerCicatriz(this)">Remover</button>
+
+			</div>
+		</template>
+		<template id="tatuagemTemplate">
+			<div class="card mb-2 p-2 tatuagem-item">
+
+				<input type="text" name="tatuagens[INDEX].local"
+					class="form-control mb-1" placeholder="Local" /> <input
+					type="text" name="tatuagens[INDEX].forma" class="form-control mb-1"
+					placeholder="Forma" />
+
+				<textarea name="tatuagens[INDEX].descricao"
+					class="form-control mb-2" placeholder="Descrição"></textarea>
+
+				<!-- BOOLEANOS -->
+				<select name="tatuagens[INDEX].temSignificado"
+					class="form-control mb-1">
+					<option value="">Tem significado?</option>
+					<option value="true">Sim</option>
+					<option value="false">Não</option>
+				</select> <input type="text" name="tatuagens[INDEX].qualSignificado"
+					class="form-control mb-2" placeholder="Qual significado?" /> <input
+					type="number" name="tatuagens[INDEX].anoRealizacao"
+					class="form-control mb-2" placeholder="Ano" /> <select
+					name="tatuagens[INDEX].profissional" class="form-control mb-1">
+					<option value="">Feita por profissional?</option>
+					<option value="true">Sim</option>
+					<option value="false">Não</option>
+				</select> <select name="tatuagens[INDEX].interesseRemover"
+					class="form-control mb-2">
+					<option value="">Deseja remover?</option>
+					<option value="true">Sim</option>
+					<option value="false">Não</option>
+				</select> <img class="img-preview mb-2"
+					style="max-height: 120px; display: none" /> <input type="file"
+					name="tatuagemFiles" class="form-control mb-2"
+					onchange="previewTatuagem(this)" />
+
+				<button type="button" class="btn btn-danger btn-sm"
+					onclick="removerTatuagem(this)">Remover</button>
+
+			</div>
+		</template>
+		<div id="modalImagem" class="modal-img">
+			<span class="fechar" onclick="fecharModal()">&times;</span> <img
+				id="imgModalConteudo">
+		</div>
+	</div>
+</body>
+</html>
