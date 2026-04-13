@@ -21,54 +21,127 @@
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="/landing/css/styles.css" rel="stylesheet" />
-
 <style>
-.container-azul {
-	background: #0a1329 !important;
-	padding: 40px;
+body {
+    padding-top: 70px; /* reduz espaço */
 }
 
+header {
+    padding-top: 40px !important; /* 🔥 tira o espaço gigante */
+    padding-bottom: 40px !important;
+}
+
+/* FUNDO */
+.container-azul {
+    background: #0a1329 !important;
+    padding: 40px;
+}
+
+/* ===== NAVBAR AJUSTADA ===== */
+
+.navbar {
+    padding: 10px 20px !important; /* altura equilibrada */
+    min-height: 70px !important;
+}
+
+/* alinhamento vertical perfeito */
+.navbar .container {
+    display: flex;
+    align-items: center;
+}
+
+/* remove espaços extras */
+.navbar-brand {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* LOGO TAMANHO IDEAL */
+.logo-sistema,
+.navbar-brand img {
+    height: 120px !important;   /* 🔥 tamanho ideal */
+    width: auto !important;
+    object-fit: contain;
+}
+
+/* ===== HEADER ===== */
+
+
+/* ===== IMAGEM (CORREÇÃO DO ESTICADO) ===== */
+
+.profile-img {
+    width: 100%;
+    max-width: 550px;   /* 🔥 maior */
+    height: auto;
+    object-fit: contain;
+}
+
+/* sobe a imagem no layout */
+.profile {
+    margin-top: -40px;  /* 🔥 sobe */
+}
+
+/* ===== SOBRE SISTEMA ===== */
+
 #sobre-sistema {
-	position: relative;
-	overflow: hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 #sobre-sistema::before {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 600px;
-	height: 600px;
-
-	background: url('/img/logo_sistema.png') no-repeat center;
-	background-size: contain;
-
-	opacity: 0.15; /* controla transparência (marca d'água) */
-	z-index: 0;
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: url('/img/logo_sistema.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.15;
+    z-index: 0;
 }
 
-/* Garante que o conteúdo fique acima da imagem */
 #sobre-sistema .container {
-	position: relative;
-	z-index: 1;
+    position: relative;
+    z-index: 1;
 }
 
+/* ===== BADGE ===== */
 
+.badge-sysgese {
+    display: inline-block;
+    background: linear-gradient(135deg, #0b1f4b, #163d8f);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
+}
 
-/*responsividade*/
-/* 🔥 RESPONSIVIDADE */
+/* ===== MOBILE ===== */
+
 @media (max-width: 768px) {
 
-    /* NAVBAR */
-    .navbar-brand img {
-        height: 80px !important;
+    body {
+        padding-top: 70px;
     }
 
-    /* HEADER */
+    .navbar {
+        padding: 8px 15px !important;
+        min-height: 60px !important;
+    }
+
+    .logo-sistema,
+    .navbar-brand img {
+        height: 45px !important;
+    }
+
     header {
-        padding-top: 100px !important;
+        padding-top: 90px !important;
         padding-bottom: 20px !important;
         text-align: center;
     }
@@ -81,7 +154,6 @@
         font-size: 16px !important;
     }
 
-    /* BOTÕES */
     .btn-lg {
         width: 100%;
         margin-bottom: 10px;
@@ -91,28 +163,76 @@
         flex-direction: column !important;
     }
 
-    /* IMAGEM */
     .profile-img {
-        width: 100%;
         max-width: 280px;
+        height: auto !important;
+    }
+
+    #sobre-sistema::before {
+        width: 250px;
+        height: 250px;
+    }
+
+    .container-azul {
+        padding: 30px;
+    }
+
+    .badge-sysgese {
+        font-size: 12px;
+        text-align: center;
+    }
+}
+
+@media (min-width: 992px) {
+    .profile-img {
+        max-width: 600px; /* 🔥 mais destaque */
+    }
+
+    .profile {
+        margin-top: -60px; /* 🔥 sobe mais ainda */
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    /* REMOVE faixa branca */
+    body {
+        padding-top: 60px;
+    }
+
+    header {
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
+    }
+
+    /* NAVBAR proporcional */
+    .navbar {
+        min-height: 60px !important;
+        padding: 8px 15px !important;
+    }
+
+    /* LOGO ok no mobile */
+    .logo-sistema,
+    .navbar-brand img {
+        height: 102px !important;
+    }
+
+    /* 🔥 IMAGEM GRANDE NO MOBILE */
+    .profile-img {
+        min-width: 190% !important;  /* ocupa quase toda largura */
+        width: 100%;
         height: auto;
     }
 
-    /* SOBRE SISTEMA */
-    #sobre-sistema::before {
-        width: 300px;
-        height: 300px;
+    /* 🔥 SOBE A IMAGEM */
+    .profile {
+        margin-top: -20px;
     }
 
-    /* FORM */
-    .form-control {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    /* ESPAÇAMENTO */
+    /* evita esmagar layout */
     .container-azul {
-        padding: 30px;
+        padding: 20px;
     }
 }
 
@@ -125,7 +245,7 @@
 			class="navbar navbar-expand-lg navbar-light py-1 container-azul fixed-top">
 			<div class="container px-5">
 				<a class="navbar-brand" href="index.html">
-				 <img  style="height: 200px; max-height: 200px; object-fit: contain; margin-right: 12px;" src="/landing/assets/logo-sse.png"
+				<img class="logo-sistema" src="/landing/assets/logo-sse.png"
          alt="SYSGESE">
 				
 				</a>
@@ -153,11 +273,9 @@
 						<!-- Header text content-->
 						<div class="text-center text-xxl-start">
 
-							<div class="badge text-white mb-4"
-								style="background: linear-gradient(135deg, #0b1f4b, #163d8f);">
-								<div class="text-uppercase">SYSGESE &middot; Sistema de Gestão
-									Socioeducativo - TO</div>
-							</div>
+							<div class="badge-sysgese mb-4">
+    SYSGESE &middot; Sistema de Gestão Socioeducativo - TO
+</div>
 
 							<div class="fs-3 fw-light mb-2" style="color: #9fb3e0;">
 								Sistema em fase de desenvolvimento</div>
