@@ -68,8 +68,7 @@ public class ServidorDTO {
     @NotNull(message = "Perfil é obrigatório")
     private Long perfilId;
 
-    @NotNull(message = "Função é obrigatória")
-    private Long funcaoId;
+    private String foto;
 
     @NotNull(message = "Status é obrigatório")
     private Integer status;
@@ -172,12 +171,7 @@ public class ServidorDTO {
 	public void setPerfilId(Long perfilId) {
 		this.perfilId = perfilId;
 	}
-	public Long getFuncaoId() {
-		return funcaoId;
-	}
-	public void setFuncaoId(Long funcaoId) {
-		this.funcaoId = funcaoId;
-	}
+	
 	public Integer getStatus() {
 		return status;
 	}
@@ -196,6 +190,19 @@ public class ServidorDTO {
 	public void setDataAlt(LocalDate dataAlt) {
 		this.dataAlt = dataAlt;
 	}
+	public String getCpf() {
+		return cpf;
+	}
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
 
    
 }

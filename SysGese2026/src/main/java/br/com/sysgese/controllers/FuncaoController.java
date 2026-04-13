@@ -1,0 +1,58 @@
+package br.com.sysgese.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import br.com.sysgese.mappers.FuncaoMapper;
+import br.com.sysgese.models.Funcao;
+import br.com.sysgese.services.FuncaoService;
+import br.com.sysgese.utils.AuthUtil;
+import br.com.sysgese.utils.StatusUtil;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class FuncaoController {
+	
+	@Autowired
+	private FuncaoService funcaoService;
+	
+	@Autowired
+	private FuncaoMapper funcaoMapper;
+	
+	@GetMapping("/funcao")
+	public String index(
+			HttpSession session,
+			Model model,
+			 @RequestParam(value = "nome", required = false, defaultValue = "") String nome,
+	            @RequestParam(value = "status", required = false, defaultValue = "1") String statusFiltro,
+	            @RequestParam(value = "pagina", required = false, defaultValue = "0") int pagina,
+	            @RequestParam(value = "tamanho", required = false, defaultValue = "10") int tamanho
+	){
+		Integer[] status = StatusUtil.parseStatusFiltro(statusFiltro);
+
+		Pageable pageable = PageRequest.of(pagina, tamanho);
+		Page<Funcao> page =  funcaoService.buscar(nome, status, pageable);
+		
+		//Converter para DTO
+		model.addAttribute("pageTitle", "Função");
+        model.addAttribute("activeMenu", "administrativo");
+		model.addAttribute("funcoes", funcaoMapper.toDTOList(page.getContent()));
+		model.addAttribute("paginaAtual", page.getNumber());
+        model.addAttribute("totalPaginas", page.getTotalPages());
+        model.addAttribute("tamanhoPagina", tamanho);
+        model.addAttribute("nomeBusca", nome);
+        model.addAttribute("statusFiltro", statusFiltro);
+        model.addAttribute("isMaster", AuthUtil.isMaster(session));
+        
+        return "funcao/index";
+		
+		
+	};
+
+}

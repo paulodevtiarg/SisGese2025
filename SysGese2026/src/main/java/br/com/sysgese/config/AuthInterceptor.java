@@ -14,6 +14,20 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
+    	
+    	 String uri = request.getRequestURI();
+
+    	// LIBERA TUDO QUE É PÚBLICO
+    	 if (uri.equals("/") || // 🔥 ESSA LINHA QUE FALTA
+    	     uri.startsWith("/login") ||
+    	     uri.startsWith("/landing") ||
+    	     uri.startsWith("/css") ||
+    	     uri.startsWith("/js") ||
+    	     uri.startsWith("/images") ||
+    	     uri.startsWith("/img") ||
+    	     uri.startsWith("/uploads")) {
+    	     return true;
+    	 }
 
         HttpSession session = request.getSession(false);
 

@@ -48,9 +48,9 @@ public class Cicatriz {
     @Column(name = "TIPO", columnDefinition = "ENUM('CIRURGICA','ACIDENTE','AUTOINFLIGIDA','OUTRO')")
     private TipoCicatrizEnum tipo;
     
-    @Lob
+   
     @Column(name = "FOTO")
-    private byte[] foto;
+    private String foto;
 
 	public Long getId() {
 		return id;
@@ -116,11 +116,11 @@ public class Cicatriz {
 		this.tipo = tipo;
 	}
 
-	public byte[] getFoto() {
+	public String getFoto() {
 		return foto;
 	}
 
-	public void setFoto(byte[] foto) {
+	public void setFoto(String foto) {
 		this.foto = foto;
 	}
     

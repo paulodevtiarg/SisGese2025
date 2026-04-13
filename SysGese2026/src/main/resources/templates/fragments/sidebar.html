@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body>
 
+<th:block th:fragment="sidebar">
 
-	<ul
-		class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+	<ul		class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
 		id="accordionSidebar" th:fragment="sidebar">
 
 		<!-- Sidebar - Brand -->
@@ -18,7 +17,7 @@
 			</div>
 			<div class="sidebar-brand-text mx-3">
 				<!-- NOME DA UNIDADE -->
-				<span class="fs-6"> CSE-Norte </span>
+				<span class="fs-6"  th:text="${session.nomeUnidade != null ? session.nomeUnidade : 'Visitante'}"> CSE-Norte </span>
 			</div>
 		</a>
 
@@ -39,16 +38,20 @@
 		<div class="sidebar-heading"> ADMINISTRAÇÃO</div>
 
 		<!-- Nav Item - Pages Collapse Menu -->
-		<li class="nav-item"><a class="nav-link collapsed" href="#"
+		<li class="nav-item" th:classappend="${activeMenu == 'gestao'} ? 'active' : ''"><a class="nav-link collapsed" href="#"
 			data-toggle="collapse" data-target="#collapseTwo"
 			aria-expanded="true" aria-controls="collapseTwo"> <i class="fa-duotone fa-solid fa-family-dress"></i> <span>Gestão Socioeducativa</span>
 		</a>
 			<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" 	data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					
-					<a class="collapse-item" href="buttons.html">Adolescentes</a> 
+					<a class="collapse-item" th:href="@{/adolescentes}">Adolescentes</a> 
+			
+					
+					
+					
 					<a
-						class="collapse-item" href="cards.html">Internações</a>
+						class="collapse-item" th:href="@{/home}">Internações</a>
 						
 				</div>
 			</div></li>
@@ -63,10 +66,10 @@
 				aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					
-					<a class="collapse-item" href="utilities-color.html">Servidores</a> <a
-						class="collapse-item" href="utilities-border.html">Lotação</a> <a
-						class="collapse-item" href="utilities-animation.html">Funções</a>
-					<a class="collapse-item" th:href="@{/perfil}">Perfis</a>
+					<a class="collapse-item" th:href="@{/home}">Servidores</a> 
+					<a class="collapse-item" th:href="@{/cargo}" >Cargos</a> 
+					<a class="collapse-item" th:href="@{/funcao}">Funções</a>
+					<a class="collapse-item" th:href="@{/home}">Perfis</a>
 				</div>
 			</div></li>
 
@@ -86,9 +89,9 @@
 				aria-labelledby="headingPages" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					
-					<a class="collapse-item" href="login.html">Coordenação</a> <a
-						class="collapse-item" href="register.html">Lotações</a> <a
-						class="collapse-item" href="forgot-password.html">Acessos
+					<a class="collapse-item" th:href="@{/home}">Coordenação</a> <a
+						class="collapse-item" th:href="@{/home}">Lotações</a> <a
+						class="collapse-item" th:href="@{/home}">Unidades
 						</a>
 					
 					
@@ -96,12 +99,12 @@
 			</div></li>
 
 		<!-- Nav Item - Charts -->
-		<li class="nav-item"><a class="nav-link" href="charts.html">
+		<li class="nav-item"><a class="nav-link" th:href="@{/home}">
 				<i class="fa-duotone fa-light fa-calendar-circle-user"></i> <span>Escalas</span>
 		</a></li>
 
 		<!-- Nav Item - Tables -->
-		<li class="nav-item"><a class="nav-link" href="tables.html">
+		<li class="nav-item"><a class="nav-link" th:href="@{/home}">
 				<i class="fa-duotone fa-solid fa-siren-on"></i> <span>AVisos</span>
 		</a></li>
 
@@ -116,14 +119,16 @@
 		<!-- Sidebar Message -->
 		<div class="sidebar-card d-none d-lg-flex">
 			<img class="sidebar-card-illustration mb-2"
-				src="sd-admin/img/undraw_rocket.svg" alt="...">
+				th:src="@{/landing/assets/logo-sse.png}" alt="...">
 			<p class="text-center mb-2">
 				<strong>SysGese - Versão: 01.AAA2026</strong>, Sistema de Gestão Socioeducativa, 2026. Todos os Direitos Rservados <br/>
-			<a class="btn btn-success btn-sm"
-				href="https://startbootstrap.com/theme/sb-admin-pro">Saiba Mais</a>
+			<a class="btn btn-success btn-sm mt-2"
+				th:href="@{/logout-landing}">Saiba Mais</a>
 		</div>
 
 	</ul>
 
-</body>
+</th:block>
+
+
 </html>

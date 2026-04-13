@@ -23,6 +23,10 @@
 	
 }
 
+
+
+
+
 body, html {
 	height: 100%;
 	margin: 0;
@@ -31,6 +35,17 @@ body, html {
 
 }
 
+body {
+     display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: url('/img/bg-login-2.png') no-repeat center center fixed;
+    background-size: cover;
+
+    overflow: hidden;
+}
+/*
 body {
     display: flex;
     align-items: center;
@@ -42,6 +57,43 @@ body {
         #1E2A5A 100%
     );
     overflow: hidden;
+}
+*/
+
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    font-size: 18px;
+}
+
+.spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+
+    width: 50px;
+    height: 50px;
+
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .login-wrapper {
@@ -56,13 +108,18 @@ body {
    
     padding: 0.5rem 0.9rem;
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-     transition: transform 0.25s ease, box-shadow 0.25s ease;
+   background: rgba(255, 255, 255, 0.82);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.35);
+   /* box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);*/
+     transition: box-shadow 0.25s ease;
+   /*  transition: transform 0.25s ease, box-shadow 0.25s ease;*/
 }
 
 .login-card:hover {
-	transform: translate3d(0,-4px,0);
+	/*transform: translate3d(0,-4px,0);*/
+	box-shadow: 0 30px 70px rgba(0,0,0,0.45);
 }
 
 /* Header do card com logo */
@@ -72,9 +129,11 @@ body {
 }
 
 .logo {
+
 	max-width: 150px; /* metade de 280 */
 	height: auto;
-	margin-top: 5rem;
+	 margin-top: 10px;
+    margin-bottom: 8px;
 	filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.1));
 }
 
@@ -563,7 +622,7 @@ to {
 			</div>
 
 			<!-- Formulário -->
-			<form th:action="@{/login}" method="post">
+			<form th:action="@{/login}" method="post" onsubmit="mostrarLoading()">
 			
               
 			
@@ -616,6 +675,11 @@ to {
 
 		</div>
 	</div>
+	
+	<div id="loadingOverlay" style="display:none;">
+    <div class="spinner-border text-light"></div>
+    <p>Entrando no sistema...</p>
+</div>
 
 	<script>
         $(document).ready(function(){
@@ -786,6 +850,16 @@ to {
         }
 
     }, 10000); // 10 segundos
+</script>
+
+<script>
+function mostrarLoading() {
+    document.getElementById("loadingOverlay").style.display = "flex";
+}
+
+function bloquearBotao(botao) {
+    botao.disabled = true;
+}
 </script>
 </body>
 </html>

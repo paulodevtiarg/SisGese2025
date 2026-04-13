@@ -2,9 +2,12 @@ package br.com.sysgese.dtos;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class FuncaoDTO {
 
     private Long id;
+    @NotBlank(message = "Descrição da Função é obrigatório")
     private String descricao;
     private Integer status;
     private LocalDateTime dataCad;

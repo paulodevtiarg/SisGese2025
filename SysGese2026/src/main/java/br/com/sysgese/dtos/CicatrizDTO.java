@@ -39,8 +39,8 @@ public class CicatrizDTO {
 
 	    private TipoCicatrizEnum tipo;
 
-	    // Foto em Base64
-	    private String fotoBase64;
+	    @NotBlank(message = "Foto da cicatriz é obrigatória")
+	    private String foto;
 
 	public Long getAdolescenteId() {
 			return adolescenteId;
@@ -63,7 +63,7 @@ public class CicatrizDTO {
 	}
 
 	public void setLocal(String local) {
-		this.local = local;
+		this.local = local != null ? local.toUpperCase() : null;
 	}
 
 	public String getForma() {
@@ -71,7 +71,7 @@ public class CicatrizDTO {
 	}
 
 	public void setForma(String forma) {
-		this.forma = forma;
+		this.forma = forma != null ? forma.toUpperCase() : null;
 	}
 
 	public String getDescricaoDetalhe() {
@@ -79,7 +79,7 @@ public class CicatrizDTO {
 	}
 
 	public void setDescricaoDetalhe(String descricaoDetalhe) {
-		this.descricaoDetalhe = descricaoDetalhe;
+		this.descricaoDetalhe = descricaoDetalhe != null ? descricaoDetalhe.toUpperCase() : null;
 	}
 
 	public BigDecimal getTamanhoCm() {
@@ -106,13 +106,15 @@ public class CicatrizDTO {
 		this.tipo = tipo;
 	}
 
-	public String getFotoBase64() {
-		return fotoBase64;
+	public String getFoto() {
+		return foto;
 	}
 
-	public void setFotoBase64(String fotoBase64) {
-		this.fotoBase64 = fotoBase64;
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
+
+
     
     
     

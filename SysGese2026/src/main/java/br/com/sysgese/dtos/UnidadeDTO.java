@@ -53,10 +53,28 @@ public class UnidadeDTO {
     private LocalDateTime dataCad;
 
     private LocalDateTime dataAlt;
+    
+    private String logoTimbrado;
+    
 
     @Email(message = "Email inválido")
     @Size(max = 255)
     private String email;
+    
+    
+    
+    
+    
+    
+    
+
+	public String getLogoTimbrado() {
+		return logoTimbrado;
+	}
+
+	public void setLogoTimbrado(String logoTimbrado) {
+		this.logoTimbrado = logoTimbrado;
+	}
 
 	public Long getId() {
 		return id;

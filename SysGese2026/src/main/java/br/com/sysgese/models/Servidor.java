@@ -52,6 +52,9 @@ public class Servidor {
 
     @Column(name = "CEP", length = 10)
     private String cep;
+    
+    @Column(name = "FOTO")
+    private String foto;
 
     
     @Column(name = "CPF", length = 14)
@@ -81,9 +84,7 @@ public class Servidor {
     @JoinColumn(name = "ID_PERFIL", nullable = false)
     private Perfil perfil;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_FUNCAO", nullable = false)
-    private Funcao funcao;
+    
 
     @Column(name = "STATUS", nullable = false)
     private Integer status;
@@ -240,13 +241,7 @@ public class Servidor {
 		this.perfil = perfil;
 	}
 
-	public Funcao getFuncao() {
-		return funcao;
-	}
-
-	public void setFuncao(Funcao funcao) {
-		this.funcao = funcao;
-	}
+	
 
 	public Integer getStatus() {
 		return status;
@@ -270,6 +265,22 @@ public class Servidor {
 
 	public void setDataAlt(LocalDate dataAlt) {
 		this.dataAlt = dataAlt;
+	}
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
     

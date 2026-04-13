@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.sysgese.mappers.PerfilMapper;
 import br.com.sysgese.models.Perfil;
-import br.com.sysgese.repository.PerfilRepository;
+import br.com.sysgese.services.PerfilService;
 import br.com.sysgese.utils.AuthUtil;
+import br.com.sysgese.utils.StatusUtil;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PerfilController {
-	@Autowired
-    private PerfilRepository perfilRepository;
+   	    @Autowired
+	    private PerfilService perfilService;
 
     @Autowired
     private PerfilMapper perfilMapper;
@@ -35,20 +36,15 @@ public class PerfilController {
        
 
     	// Transformar statusFiltro em array de inteiros
-        Integer[] status;
-        if ("ativos".equalsIgnoreCase(statusFiltro) || "1".equals(statusFiltro)) {
-            status = new Integer[]{1};  // Só ativos
-        } else if ("inativos".equalsIgnoreCase(statusFiltro) || "0".equals(statusFiltro)) {
-            status = new Integer[]{0};  // Só inativos
-        } else {
-            status = new Integer[]{0, 1};  // Todos
-        }
+    	Integer[] status = StatusUtil.parseStatusFiltro(statusFiltro);
+
 
         Pageable pageable = PageRequest.of(pagina, tamanho);
-        Page<Perfil> page = perfilRepository.findByDescricaoContainingIgnoreCaseAndStatusIn(nome, status, pageable);
+        Page<Perfil> page = perfilService.buscar(nome, status, pageable);
 
         // Converter para DTOs
         model.addAttribute("pageTitle", "Perfil");
+        model.addAttribute("activeMenu", "administrativo");
         model.addAttribute("perfis", perfilMapper.toDTOList(page.getContent()));
         model.addAttribute("paginaAtual", page.getNumber());
         model.addAttribute("totalPaginas", page.getTotalPages());

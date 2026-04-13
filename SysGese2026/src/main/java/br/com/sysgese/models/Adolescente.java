@@ -4,8 +4,21 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.sysgese.enumerators.AnoEscolaridadeEnum;
+import br.com.sysgese.enumerators.BiofisicoEnum;
+import br.com.sysgese.enumerators.CabeloEnum;
+import br.com.sysgese.enumerators.CorOlhosEnum;
+import br.com.sysgese.enumerators.EstaturaEnum;
 import br.com.sysgese.enumerators.GeneroEnum;
+import br.com.sysgese.enumerators.NarizEnum;
+import br.com.sysgese.enumerators.NivelEscolaridadeEnum;
+import br.com.sysgese.enumerators.OlhosEnum;
+import br.com.sysgese.enumerators.OrelhaEnum;
+import br.com.sysgese.enumerators.PescocoEnum;
 import br.com.sysgese.enumerators.RacaCorEnum;
+import br.com.sysgese.enumerators.ReligiaoEnum;
+import br.com.sysgese.enumerators.RostoEnum;
+import br.com.sysgese.enumerators.SobrancelhaEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,26 +78,84 @@ public class Adolescente {
     @Column(name = "PARENTESCO_RESPONSAVEL", length = 255)
     private String parentescoResponsavel;
     
-    @Column(name = "LOGRADOURO", length = 255)
-    private String logradouro;
+    /*ADICIONAR AO DTO*/
+    @Enumerated(EnumType.STRING)
+    @Column(name="ESTATURA")
+    private EstaturaEnum estatura;
     
-    @Column(name = "BAIRRO", length = 255)
-    private String bairro;
+    @Enumerated(EnumType.STRING)
+    @Column(name="BIOFISICO")
+    private BiofisicoEnum biofisico;
     
-    @Column(name = "CIDADE", length = 255)
-    private String cidade;
+    @Enumerated(EnumType.STRING)
+    @Column(name="NIVELESCOLARIDADE")
+    private NivelEscolaridadeEnum nivelEscolaridade;
     
-    @Column(name = "UF_ENDERECO", length = 2)
-    private String ufEndereco;
+    @Enumerated(EnumType.STRING)
+    @Column(name="ANOESCOLARIDADE")
+    private AnoEscolaridadeEnum anoEscolaridade;
     
-    @Column(name = "CEP", length = 10)
-    private String cep;
+    @Enumerated(EnumType.STRING)
+    @Column(name="SOBRANCELHA")
+    private SobrancelhaEnum sobrancelha;
     
-    @Column(name = "NUMERO", length = 255)
-    private String numero;
+    @Enumerated(EnumType.STRING)
+    @Column(name="NARIZ")
+    private NarizEnum nariz;
     
-    @Column(name = "REFERENCIA_ENDERECO", length = 355)
-    private String referenciaEndereco;
+    @Column(name="OBS_NARIZ")
+    private String obsNariz;
+    
+    @Column(name="COND_SAUDE")
+    private String condSaude;
+    
+    
+    @Column(name="CARAC_MARCANTE")
+    private boolean caracMarcante;
+    
+    @Column(name="DESCRICAO_CARAC")
+    private String descricaoCarac;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="ORELHA")
+    private OrelhaEnum orelha;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="PESCOCO")
+    private PescocoEnum pescoco;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="ROSTO")
+    private RostoEnum rosto;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="OLHOS")
+    private OlhosEnum olhos;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="COR_OLHOS")
+    private CorOlhosEnum corOlhos;
+    
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="CABELO")
+    private CabeloEnum cabelo;
+    
+
+    @Column(name="DENTES_OBS")
+    private String dentesObs;
+    
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="RELIGIAO")
+    private ReligiaoEnum religiao;
+    
+    @Column(name="FILHOS")
+    private boolean filhos;
+    
+    @Column(name="QTD_FILHOS")
+    private Integer qtdFilhos;
+    
     
     @Column(name = "TELEFONE1", length = 13)
     private String telefone1;
@@ -92,9 +163,7 @@ public class Adolescente {
     @Column(name = "TELEFONE2", length = 13)
     private String telefone2;
     
-    @Column(name = "TELEFONE3", length = 13)
-    private String telefone3;
-    
+     
     @Column(name = "TELEFONE_RECADO", length = 13)
     private String telefoneRecado;
     
@@ -126,9 +195,102 @@ public class Adolescente {
     private LocalDate dataAlt;
     
     @Column(name = "STATUS", nullable = false)
-    private Integer status;
+    private Boolean status;
     
-    // Relacionamentos
+    @Column(name = "FOTO_REGISTRO")
+    private String fotoRegistro;
+    
+    @Column(name = "ZONA_ELEITORAL")
+    private String zonaEleitoral;
+    
+    @Column(name = "SECAO_ELEITORAL")
+    private String secaoEleitoral;
+    
+    @Column(name = "MUNICIPIO_ELEITORAL")
+    private String municipioEleitoral;
+
+    @Column(name = "UF_ELEITORAL")
+    private String ufEleitoral;
+    
+    
+    @OneToMany(mappedBy = "adolescente", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<Endereco> enderecos;
+    
+    
+    
+    
+    
+    public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public String getCondSaude() {
+		return condSaude;
+	}
+
+	public void setCondSaude(String condSaude) {
+		this.condSaude = condSaude;
+	}
+
+	public String getZonaEleitoral() {
+		return zonaEleitoral;
+	}
+
+	public void setZonaEleitoral(String zonaEleitoral) {
+		this.zonaEleitoral = zonaEleitoral;
+	}
+
+	public String getSecaoEleitoral() {
+		return secaoEleitoral;
+	}
+
+	public void setSecaoEleitoral(String secaoEleitoral) {
+		this.secaoEleitoral = secaoEleitoral;
+	}
+
+	public String getMunicipioEleitoral() {
+		return municipioEleitoral;
+	}
+
+	public void setMunicipioEleitoral(String municipioEleitoral) {
+		this.municipioEleitoral = municipioEleitoral;
+	}
+
+	public String getUfEleitoral() {
+		return ufEleitoral;
+	}
+
+	public void setUfEleitoral(String ufEleitoral) {
+		this.ufEleitoral = ufEleitoral;
+	}
+
+	public List<Endereco> getEnderecos() {
+		return enderecos;
+	}
+
+	public void setEnderecos(List<Endereco> enderecos) {
+		this.enderecos = enderecos;
+	}
+
+	//Histórico: VAMOS SABER QUAL UNIDADE O CADASTROU
+    @Column(name = "ID_UNIDADE_CADASTRO")
+    private Long idUnidadeCadastro;
+    
+    
+    
+    public Long getIdUnidadeCadastro() {
+		return idUnidadeCadastro;
+	}
+
+	public void setIdUnidadeCadastro(Long idUnidadeCadastro) {
+		this.idUnidadeCadastro = idUnidadeCadastro;
+	}
+
+	// Relacionamentos
     @OneToMany(mappedBy = "adolescente", 
                cascade = CascadeType.ALL, 
                orphanRemoval = true,
@@ -141,11 +303,65 @@ public class Adolescente {
                fetch = FetchType.LAZY)
     private List<Tatuagem> tatuagens = new ArrayList<>();
     
+    
+    @OneToMany(mappedBy = "adolescente", 
+            cascade = CascadeType.ALL, 
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+ private List<Foto> fotos = new ArrayList<>();
+    
+    
+    @OneToMany(mappedBy = "adolescente",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+ private List<Internacao> internacoes = new ArrayList<>();
+    
+    public List<Internacao> getInternacoes() {
+        return internacoes;
+    }
+
+    public void setInternacoes(List<Internacao> internacoes) {
+        this.internacoes = internacoes;
+    }
+    
+    public void adicionarInternacao(Internacao internacao) {
+        internacoes.add(internacao);
+        internacao.setAdolescente(this);
+    }
+
+    public void removerInternacao(Internacao internacao) {
+        internacoes.remove(internacao);
+        internacao.setAdolescente(null);
+    }
+     
+
+ // Adiciona métodos auxiliares
+ public void adicionarFoto(Foto foto) {
+     fotos.add(foto);
+     foto.setAdolescente(this);
+ }
+
+ public void removerFoto(Foto foto) {
+     fotos.remove(foto);
+     foto.setAdolescente(null);
+ }
+
+ public List<Foto> getFotos() {
+     return fotos;
+ }
+
+ public void setFotos(List<Foto> fotos) {
+     this.fotos = fotos;
+ }
+    
+    
+    
     // Construtores
     public Adolescente() {
         this.dataCad = LocalDate.now();
         this.dataAlt = LocalDate.now();
-        this.status = 1; // Ativo por padrão
+        this.status = true; // Ativo por padrão
     }
     
     // Métodos auxiliares para manter consistência nas relações
@@ -280,61 +496,7 @@ public class Adolescente {
         this.parentescoResponsavel = parentescoResponsavel;
     }
     
-    public String getLogradouro() {
-        return logradouro;
-    }
     
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-    
-    public String getBairro() {
-        return bairro;
-    }
-    
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-    
-    public String getCidade() {
-        return cidade;
-    }
-    
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-    
-    public String getUfEndereco() {
-        return ufEndereco;
-    }
-    
-    public void setUfEndereco(String ufEndereco) {
-        this.ufEndereco = ufEndereco;
-    }
-    
-    public String getCep() {
-        return cep;
-    }
-    
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-    
-    public String getNumero() {
-        return numero;
-    }
-    
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-    
-    public String getReferenciaEndereco() {
-        return referenciaEndereco;
-    }
-    
-    public void setReferenciaEndereco(String referenciaEndereco) {
-        this.referenciaEndereco = referenciaEndereco;
-    }
     
     public String getTelefone1() {
         return telefone1;
@@ -351,14 +513,7 @@ public class Adolescente {
     public void setTelefone2(String telefone2) {
         this.telefone2 = telefone2;
     }
-    
-    public String getTelefone3() {
-        return telefone3;
-    }
-    
-    public void setTelefone3(String telefone3) {
-        this.telefone3 = telefone3;
-    }
+
     
     public String getTelefoneRecado() {
         return telefoneRecado;
@@ -440,13 +595,7 @@ public class Adolescente {
         this.dataAlt = dataAlt;
     }
     
-    public Integer getStatus() {
-        return status;
-    }
-    
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+
     
     public List<Cicatriz> getCicatrizes() {
         return cicatrizes;
@@ -464,7 +613,176 @@ public class Adolescente {
         this.tatuagens = tatuagens;
     }
     
-    @Override
+    
+    
+    public String getFotoRegistro() {
+		return fotoRegistro;
+	}
+
+	public void setFotoRegistro(String fotoRegistro) {
+		this.fotoRegistro = fotoRegistro;
+	}
+	
+	
+
+	
+
+	public EstaturaEnum getEstatura() {
+		return estatura;
+	}
+
+	public void setEstatura(EstaturaEnum estatura) {
+		this.estatura = estatura;
+	}
+
+	public BiofisicoEnum getBiofisico() {
+		return biofisico;
+	}
+
+	public void setBiofisico(BiofisicoEnum biofisico) {
+		this.biofisico = biofisico;
+	}
+
+	public NivelEscolaridadeEnum getNivelEscolaridade() {
+		return nivelEscolaridade;
+	}
+
+	public void setNivelEscolaridade(NivelEscolaridadeEnum nivelEscolaridade) {
+		this.nivelEscolaridade = nivelEscolaridade;
+	}
+
+	public AnoEscolaridadeEnum getAnoEscolaridade() {
+		return anoEscolaridade;
+	}
+
+	public void setAnoEscolaridade(AnoEscolaridadeEnum anoEscolaridade) {
+		this.anoEscolaridade = anoEscolaridade;
+	}
+
+	public SobrancelhaEnum getSobrancelha() {
+		return sobrancelha;
+	}
+
+	public void setSobrancelha(SobrancelhaEnum sobrancelha) {
+		this.sobrancelha = sobrancelha;
+	}
+
+	public NarizEnum getNariz() {
+		return nariz;
+	}
+
+	public void setNariz(NarizEnum nariz) {
+		this.nariz = nariz;
+	}
+
+	public String getObsNariz() {
+		return obsNariz;
+	}
+
+	public void setObsNariz(String obsNariz) {
+		this.obsNariz = obsNariz;
+	}
+
+	public boolean isCaracMarcante() {
+		return caracMarcante;
+	}
+
+	public void setCaracMarcante(boolean caracMarcante) {
+		this.caracMarcante = caracMarcante;
+	}
+
+	public String getDescricaoCarac() {
+		return descricaoCarac;
+	}
+
+	public void setDescricaoCarac(String descricaoCarac) {
+		this.descricaoCarac = descricaoCarac;
+	}
+
+	public OrelhaEnum getOrelha() {
+		return orelha;
+	}
+
+	public void setOrelha(OrelhaEnum orelha) {
+		this.orelha = orelha;
+	}
+
+	public PescocoEnum getPescoco() {
+		return pescoco;
+	}
+
+	public void setPescoco(PescocoEnum pescoco) {
+		this.pescoco = pescoco;
+	}
+
+	public RostoEnum getRosto() {
+		return rosto;
+	}
+
+	public void setRosto(RostoEnum rosto) {
+		this.rosto = rosto;
+	}
+
+	public OlhosEnum getOlhos() {
+		return olhos;
+	}
+
+	public void setOlhos(OlhosEnum olhos) {
+		this.olhos = olhos;
+	}
+
+	public CabeloEnum getCabelo() {
+		return cabelo;
+	}
+
+	public void setCabelo(CabeloEnum cabelo) {
+		this.cabelo = cabelo;
+	}
+
+	public String getDentesObs() {
+		return dentesObs;
+	}
+
+	public void setDentesObs(String dentesObs) {
+		this.dentesObs = dentesObs;
+	}
+
+	public ReligiaoEnum getReligiao() {
+		return religiao;
+	}
+
+	public void setReligiao(ReligiaoEnum religiao) {
+		this.religiao = religiao;
+	}
+
+	public boolean isFilhos() {
+		return filhos;
+	}
+
+	public void setFilhos(boolean filhos) {
+		this.filhos = filhos;
+	}
+
+	public Integer getQtdFilhos() {
+		return qtdFilhos;
+	}
+
+	public void setQtdFilhos(Integer qtdFilhos) {
+		this.qtdFilhos = qtdFilhos;
+	}
+	
+	
+	
+
+	public CorOlhosEnum getCorOlhos() {
+		return corOlhos;
+	}
+
+	public void setCorOlhos(CorOlhosEnum corOlhos) {
+		this.corOlhos = corOlhos;
+	}
+
+	@Override
     public String toString() {
         return "Adolescente{" +
                 "id=" + id +
@@ -472,5 +790,7 @@ public class Adolescente {
                 ", apelido='" + apelido + '\'' +
                 '}';
     }
+	
+	
 
 }
