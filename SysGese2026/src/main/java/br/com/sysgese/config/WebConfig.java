@@ -18,6 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/login",
+                        "/landing/**",
                         "/css/**",
                         "/js/**",
                         "/images/**",
@@ -26,12 +27,5 @@ public class WebConfig implements WebMvcConfigurer {
                 );
     }
     
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
-        String caminho = System.getProperty("user.dir") + "/uploads/";
-
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + caminho);
-    }
+ 
 }

@@ -3481,10 +3481,10 @@ input[type="button"].btn-block {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #6e707e;
+  color: #081631bd;
   text-align: center;
   white-space: nowrap;
-  background-color: #eaecf4;
+  background-color: #cdcdcd;
   border: 1px solid #d1d3e2;
   border-radius: 0.35rem;
 }
@@ -10507,7 +10507,7 @@ a:focus {
 }
 
 .sidebar .sidebar-card .sidebar-card-illustration {
-  height: 3rem;
+  height: 10rem;
   display: block;
 }
 

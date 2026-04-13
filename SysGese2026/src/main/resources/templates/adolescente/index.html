@@ -21,13 +21,13 @@
 									class="fa-duotone fa-solid fa-house fs-7"></i> Home
 							</a></li>
 							<li class="breadcrumb-item"><span class="text-muted">
-									<i class="fa-solid fa-child"></i> Adolescente
+									<i class="fa-duotone fa-solid fa-child"></i> Adolescente
 							</span></li>
 
 						</ol>
 					</nav>
 				</div>
-			<div class="col-12">
+				<div class="col-12">
 					<!-- Mensagens de erro e de ok -->
 					<div th:if="${msgOk}"
 						class="alert alert-success alert-dismissible fade show auto-close"
@@ -48,19 +48,35 @@
 							aria-label="Close"></button>
 					</div>
 				</div>
-				<div class="col-12">
+				<div class="col-12" style="margin-top: -15px;">
 					<div class="card">
 						<div
-							class="card-header d-flex justify-content-between align-items-center fs-5 fw-semibold text-uppercase">
+							class="card-header d-flex justify-content-between align-items-center fs-6 fw-semibold text-uppercase">
 
-							<h5 class="mb-0 text-secondary">Adolescentes</h5>
-							<a th:href="${isMaster} ? @{/adolescente/novo} : '#'"
+							<h6 class="mb-0 text-secondary">Adolescentes</h6>
+
+
+							<a
+								th:if="${isMaster and queryParams != null and queryParams != ''}"
+								th:href="@{'/adolescentes/novo?' + ${queryParams}}"
 								class="btn btn-outline-sistema"
 								th:classappend="${!isMaster} ? ' disabled opacity-50'"
 								data-bs-toggle="tooltip"
 								th:title="${isMaster} ? 'Novo Adolescente' : 'Sem Permissão para incluir novo Adolescente'">
 								<i class="fa-duotone fa-plus"></i> Novo
+							</a> <a
+								th:if="${isMaster and (queryParams == null or queryParams == '')}"
+								th:href="@{/adolescentes/novo}" class="btn btn-outline-sistema">
+								th:classappend="${!isMaster} ? ' disabled opacity-50'"
+								data-bs-toggle="tooltip" th:title="${isMaster} ? 'Novo
+								Adolescente' : 'Sem Permissão para incluir novo Adolescente'"> <i
+								class="fa-duotone fa-plus"></i> Novo
+							</a> <a th:if="${!isMaster}" href="#"
+								class="btn btn-outline-sistema disabled"> <i
+								class="fa-duotone fa-plus"></i> Novo
 							</a>
+
+
 
 						</div>
 						<div class="card-body">
@@ -71,22 +87,22 @@
 										<div class="row g-2">
 											<div class="col-md-6 input-group-sm">
 												<label class="form-label fw-semibold">Nome do
-													Adolescente</label> <input type="text" name="nome"
-													th:value="${nomeBusca}" class="form-control"
+													Adolescente</label> <input type="text" name="filtroNome"
+													th:value="${filtro.filtroNome}" class="form-control"
 													placeholder="Digite para buscar">
 											</div>
 
 											<div class="col-md-4 input-group-sm">
 												<label class="form-label fw-semibold">Apelido do
-													Adolescente</label> <input type="text" name="apelido"
-													th:value="${abelidoBusca}" class="form-control"
+													Adolescente</label> <input type="text" name="filtroApelido"
+													th:value="${filtro.filtroApelido}" class="form-control"
 													placeholder="Digite para buscar">
 											</div>
 
 											<div class="col-md-2 input-group-sm">
 												<label class="form-label fw-semibold">Cidade do
-													Adolescente</label> <input type="text" name="cidade"
-													th:value="${cidadeBusca}" class="form-control"
+													Adolescente</label> <input type="text" name="filtroCidade"
+													th:value="${filtro.filtroCidade}" class="form-control"
 													placeholder="Digite para buscar">
 											</div>
 
@@ -96,20 +112,20 @@
 										<div class="row g-2 mt-1">
 											<div class="col-md-2 input-group-sm">
 												<label class="form-label fw-semibold">CPF do
-													Adolescente</label> <input type="text" name="cpf"
-													th:value="${cpfBusca}" class="form-control"
+													Adolescente</label> <input type="text" name="filtroCpf"
+													th:value="${filtro.filtroCpf}" class="form-control"
 													placeholder="Digite para buscar">
 											</div>
 
 											<div class="col-md-2 input-group-sm">
 												<label class="form-label fw-semibold">Idade Mínima</label> <input
-													type="number" name="idadeMin" th:value="${idadeMin}"
+													type="number" name="idadeMin" th:value="${filtro.idadeMin}"
 													class="form-control" placeholder="Digite para buscar">
 											</div>
 
 											<div class="col-md-2 input-group-sm">
 												<label class="form-label fw-semibold">Idade Máxima</label> <input
-													type="number" name="idadeMax" th:value="${idadeMax}"
+													type="number" name="idadeMax" th:value="${filtro.idadeMax}"
 													class="form-control" placeholder="Digite para buscar">
 											</div>
 
@@ -117,33 +133,34 @@
 
 											<div class="col-md-1 input-group-sm">
 												<label class="form-label fw-semibold">Status</label> <select
-													name="status" class="form-select">
-													<option value="ativos"
-														th:selected="${statusFiltro == 'ativos'}">Ativos</option>
-													<option value="inativos"
-														th:selected="${statusFiltro == 'inativos'}">Inativos</option>
-													<option value="todos"
-														th:selected="${statusFiltro == 'todos'}">Todos</option>
+													name="filtroStatus" class="form-select">
+													<option value="ATIVO"
+														th:selected="${filtro.filtroStatus == 'ATIVO'}">Ativos</option>
+													<option value="INATIVO"
+														th:selected="${filtro.filtroStatus == 'INATIVO'}">Inativos</option>
+													<option value="TODOS"
+														th:selected="${filtro.filtroStatus == 'TODOS'}">Todos</option>
 												</select>
 											</div>
 
 											<div class="col-md-1 input-group-sm">
 												<label class="form-label fw-semibold">Linhas</label> <select
-													name="tamanho" class="form-select">
-													<option value="10" th:selected="${tamanhoPagina == 10}">10</option>
-													<option value="15" th:selected="${tamanhoPagina == 15}">15</option>
-													<option value="20" th:selected="${tamanhoPagina == 20}">20</option>
-													<option value="25" th:selected="${tamanhoPagina == 25}">25</option>
-													<option value="30" th:selected="${tamanhoPagina == 30}">30</option>
+													name="size" class="form-select">
+													<option value="10" th:selected="${filtro.size == 10}">10</option>
+													<option value="15" th:selected="${filtro.size == 15}">15</option>
+													<option value="20" th:selected="${filtro.size == 20}">20</option>
+													<option value="25" th:selected="${filtro.size == 25}">25</option>
+													<option value="30" th:selected="${filtro.size == 30}">30</option>
 												</select>
 											</div>
 											<div class="col-md-3 input-group-sm" th:if="${isMaster}">
 												<label class="form-label fw-semibold">Unidade</label> <select
-													name="unidadeId" class="form-select">
+													name="filtroUnidadeId" class="form-select">
 													<option value="">Todas</option>
 
 													<option th:each="u : ${unidades}" th:value="${u.id}"
-														th:text="${u.nome}" th:selected="${u.id == unidadeId}">
+														th:text="${u.nome}"
+														th:selected="${u.id == filtro.filtroUnidadeId}">
 													</option>
 												</select>
 											</div>
@@ -154,10 +171,8 @@
 											</div>
 
 											<div class="col-md-1 d-flex align-items-end input-group-sm">
-												<button type="submit" class="btn btn-outline-sistema w-100"
-													data-bs-toggle="tooltip" title="Aplicar Filtros">
-													<i class="fa-solid fa-magnifying-glass"></i> Buscar
-												</button>
+												<div
+													th:replace="fragments/botoesBusca :: btnBuscar('Aplicar Filtros')"></div>
 											</div>
 
 										</div>
@@ -168,82 +183,160 @@
 
 								</div>
 								<div class="col-12">
-									<table class="table table-striped table-bordered align-middle">
-										<thead class="table-dark"
-											style="--bs-table-bg: #0c174a; --bs-table-border-color: #0e2583;">
-											<tr>
-												<th>Foto</th>
-												<th>Dados</th>
-												<th>Cidade <small>(residência)</small></th>
-												<th>Bairro <small>(residência)</small></th>
-												<th>UF <small>(residência)</small></th>
-												<th>Unidade Cadastro</th>
-												<th class="text-center" style="width: 120px;">Status</th>
-												<th class="text-center" style="width: 140px;">Ações</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="adolescente : ${adolescentes}">
+									<div class="d-none d-md-block">
+										<table class="table table-striped table-bordered align-middle">
+											<thead class="table-dark"
+												style="--bs-table-bg: #0c174a; --bs-table-border-color: #0e2583;">
+												<tr>
+													<th style="width: 10%;" class="text-center">Foto</th>
+													<th>Dados</th>
+													<th>Cidade <small>(residência)</small></th>
+													<th>Bairro <small>(residência)</small></th>
+													<th>UF <small>(residência)</small></th>
+													<th>Unidade Cadastro</th>
+													<th class="text-center" style="width: 120px;">Status</th>
+													<th class="text-center" style="width: 140px;">Ações</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="adolescente : ${adolescentes}">
 
-												<td><img th:if="${adolescente.fotoRegistro != null}"
-													th:src="${adolescente.fotoRegistro}" class="foto-tabela">
-													<img th:if="${adolescente.fotoRegistro == null}"
-													src="/img/sem-foto.png" class="foto-tabela"></td>
-
-
-
-
-												<td>
-													<div class="fw-semibold" th:text="${adolescente.nome}"></div>
-
-													<small class="text-muted d-block"> Natural: <span
-														th:text="${adolescente.cidadeNascimento}"></span> / <span
-														th:text="${adolescente.ufNascimento}"></span> • <span
-														th:text="${adolescente.idade}"></span> anos
-												</small> <small class="text-muted d-block"> Mãe: <span
-														th:text="${adolescente.mae}"></span>
-												</small>
-												</td>
-											
-												<td th:text="${adolescente.enderecoAtual?.cidade}"></td>
-												<td th:text="${adolescente.enderecoAtual?.bairro}"></td>
-												<td th:text="${adolescente.enderecoAtual?.uf}"></td>
-											
-												<td th:text="${adolescente.nomeUnidadeCadastro}"></td>
+													<td style="width: 10%;" class="text-center"><img
+														th:if="${adolescente.fotoRegistro != null}"
+														th:src="${adolescente.fotoRegistro}" class="foto-tabela">
+														<img th:if="${adolescente.fotoRegistro == null}"
+														src="/img/sem-foto.png" class="foto-tabela"></td>
 
 
 
-												<td class="text-center"><span
-													th:if="${adolescente.status == 1}"
-													class="badge bg-success-subtle text-success fw-semibold px-3 py-2">
-														Ativo </span> <span th:if="${adolescente.status == 0}"
-													class="badge bg-danger-subtle text-danger fw-semibold px-3 py-2">
-														Inativo </span></td>
 
-												<td class="text-center text-nowrap"><a
-													th:href="@{/adolescente/{id}(id=${adolescente.id})}"
-													class="btn btn-outline-sistema btn-sm px-2"
-													data-bs-toggle="tooltip" title="Detalhes"> <i
+													<td>
+														<div class="fw-semibold" th:text="${adolescente.nome}"></div>
+
+														<small class="text-muted d-block"> Natural: <span
+															th:text="${adolescente.cidadeNascimento}"></span> / <span
+															th:text="${adolescente.ufNascimento}"></span> • <span
+															th:text="${adolescente.idade}"></span> anos
+													</small> <small class="text-muted d-block"> Mãe: <span
+															th:text="${adolescente.mae}"></span>
+													</small>
+													</td>
+
+													<td th:text="${adolescente.enderecoAtual?.cidade}"></td>
+													<td th:text="${adolescente.enderecoAtual?.bairro}"></td>
+													<td th:text="${adolescente.enderecoAtual?.uf}"></td>
+
+													<td th:text="${adolescente.nomeUnidadeCadastro}"></td>
+
+
+
+													<td class="text-center"><span
+														th:if="${adolescente.status}"
+														class="badge bg-success-subtle text-success fw-semibold px-3 py-2">
+															Ativo </span> <span th:if="${!adolescente.status}"
+														class="badge bg-danger-subtle text-danger fw-semibold px-3 py-2">
+															Inativo </span></td>
+
+													<td class="text-center text-nowrap"><a
+														th:href="@{'/adolescentes/detalhes/' + ${adolescente.id} + '?'+ ${queryParams}}"
+														class="btn btn-outline-sistema btn-sm px-2"
+														data-bs-toggle="tooltip" title="Detalhes"> <i
+															class="fa-duotone fa-eye"></i>
+													</a> <a
+														th:href="${isMaster} ? @{/adolescentes/editar/+ ${adolescente.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm px-2"
+														data-bs-toggle="tooltip" title="Editar"> <i
+															class="fa-duotone fa-pen-to-square"></i>
+													</a> <a
+														th:href="${isMaster} ? @{/adolescentes/excluir/+ ${adolescente.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm px-2"
+														data-bs-toggle="tooltip" title="Excluir"
+														onclick="return confirm('Deseja excluir essa Função?');">
+															<i class="fa-duotone fa-trash"></i>
+													</a></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div class="d-block d-md-none">
+
+										<div class="card mb-3 shadow-sm"
+											th:each="adolescente : ${adolescentes}">
+
+											<div class="card-body">
+
+												<div class="d-flex gap-3">
+
+													<!-- FOTO -->
+													<img th:if="${adolescente.fotoRegistro != null}"
+														th:src="${adolescente.fotoRegistro}"
+														class="foto-card-mobile"> <img
+														th:if="${adolescente.fotoRegistro == null}"
+														src="/img/sem-foto.png" class="foto-card-mobile">
+
+													<!-- DADOS -->
+													<div class="flex-grow-1">
+
+														<div class="fw-bold">
+															<span th:text="${adolescente.nome}"></span>
+														</div>
+
+														<small class="text-muted d-block"> <span
+															th:text="${adolescente.idade}"></span> anos • <span
+															th:text="${adolescente.cidadeNascimento}"></span> / <span
+															th:text="${adolescente.ufNascimento}"></span>
+														</small> <small class="text-muted d-block"> Mãe: <span
+															th:text="${adolescente.mae}"></span>
+														</small> <small class="text-muted d-block"> <span
+															th:text="${adolescente.enderecoAtual?.cidade}"></span> -
+															<span th:text="${adolescente.enderecoAtual?.uf}"></span>
+														</small>
+
+														<!-- STATUS -->
+														<div class="mt-2">
+															<span th:if="${adolescente.status}"
+																class="badge bg-success-subtle text-success fw-semibold">
+																Ativo </span> <span th:if="${!adolescente.status}"
+																class="badge bg-danger-subtle text-danger fw-semibold">
+																Inativo </span>
+														</div>
+
+													</div>
+
+												</div>
+
+												<!-- AÇÕES -->
+												<div class="d-flex justify-content-end gap-2 mt-3">
+
+													<a
+														th:href="@{'/adolescentes/detalhes/' + ${adolescente.id} + '?'+ ${queryParams}}"
+														class="btn btn-outline-sistema btn-sm"
+														data-bs-toggle="tooltip" title="Detalhes"> <i
 														class="fa-duotone fa-eye"></i>
-												</a> <a
-													th:href="${isMaster} ? @{/adolescente/editar/{id}(id=${adolescente.id})} : '#'"
-													th:classappend="${!isMaster} ? ' disabled opacity-50'"
-													class="btn btn-outline-sistema btn-sm px-2"
-													data-bs-toggle="tooltip" title="Editar"> <i
+													</a> <a
+														th:href="${isMaster} ? @{/adolescentes/editar/+ ${adolescente.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm"
+														data-bs-toggle="tooltip" title="Editar"> <i
 														class="fa-duotone fa-pen-to-square"></i>
-												</a> <a
-													th:href="${isMaster} ? @{/adolescente/excluir/{id}(id=${adolescente.id})} : '#'"
-													th:classappend="${!isMaster} ? ' disabled opacity-50'"
-													class="btn btn-outline-sistema btn-sm px-2"
-													data-bs-toggle="tooltip" title="Excluir"
-													onclick="return confirm('Deseja excluir essa Função?');">
+													</a> <a
+														th:href="${isMaster} ? @{/adolescentes/excluir/+ ${adolescente.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm"
+														data-bs-toggle="tooltip" title="Excluir"
+														onclick="return confirm('Deseja excluir esse registro?');">
 														<i class="fa-duotone fa-trash"></i>
-												</a></td>
-											</tr>
-										</tbody>
-									</table>
+													</a>
 
+												</div>
 
+											</div>
+
+										</div>
+
+									</div>
 								</div>
 							</div>
 
@@ -255,26 +348,50 @@
 
 									<!-- Anterior -->
 									<li class="page-item"
-										th:classappend="${paginaAtual == 0} ? 'disabled'"><a
+										th:classappend="${adolescentes.first} ? 'disabled'"><a
 										class="page-link"
-										th:href="@{/adolescente(pagina=${paginaAtual - 1}, nome=${nomeBusca}, apelido=${apelidoBusca}, cidade=${cidadeBusca}, cpf=${cpfBusca}, idadeMin=${idadeMin}, idadeMax=${idadeMax},   status=${statusFiltro}, tamanho=${tamanhoPagina})}">
+										th:href="@{/adolescente(page=${adolescentes.number - 1}, 
+										filtroNome=${filtro.filtroNome}, 
+										filtroApelido=${filtro.filtroApelido}, 
+										filtroCidade=${filtro.filtroCidade}, 
+										filtroCpf=${filtro.filtroCpf}, 
+										idadeMin=${filtro.idadeMin}, 
+										idadeMax=${filtro.idadeMax},   
+										filtroStatus=${filtro.filtroStatus}, 
+										size=${filtro.size})}">
 											Anterior </a></li>
 
 									<!-- Números -->
-									<li th:each="i : ${#numbers.sequence(0, totalPaginas-1)}"
+									<li
+										th:each="i : ${#numbers.sequence(0, adolescentes.totalPages-1)}"
 										class="page-item"
-										th:classappend="${i == paginaAtual} ? 'active'"><a
+										th:classappend="${i == adolescentes.number} ? 'active'"><a
 										class="page-link"
-										th:href="@{/adolescente(pagina=${i}, nome=${nomeBusca}, apelido=${apelidoBusca}, cidade=${cidadeBusca}, cpf=${cpfBusca}, idadeMin=${idadeMin}, idadeMax=${idadeMax}, status=${statusFiltro}, tamanho=${tamanhoPagina})}"
+										th:href="@{/adolescente(page=${i}, 
+										filtroNome=${filtro.filtroNome}, 
+										filtroApelido=${filtro.filtroApelido}, 
+										filtroCidade=${filtro.filtroCidade}, 
+										filtroCpf=${filtro.filtroCpf}, 
+										idadeMin=${filtro.idadeMin}, 
+										idadeMax=${filtro.idadeMax},   
+										filtroStatus=${filtro.filtroStatus}, 
+										size=${filtro.size})}"
 										th:text="${i + 1}"> </a></li>
 
 									<!-- Próxima -->
 									<li class="page-item"
-										th:classappend="${paginaAtual + 1 >= totalPaginas} ? 'disabled'">
-										<a class="page-link"
-										th:href="@{/adolescente(pagina=${paginaAtual + 1}, nome=${nomeBusca}, apelido=${apelidoBusca}, cidade=${cidadeBusca}, cpf=${cpfBusca}, idadeMin=${idadeMin}, idadeMax=${idadeMax}, status=${statusFiltro}, tamanho=${tamanhoPagina})}">
-											Próxima </a>
-									</li>
+										th:classappend="${adolescentes.last} ? 'disabled'"><a
+										class="page-link"
+										th:href="@{/adolescente(page=${adolescentes.number + 1}, 
+										filtroNome=${filtro.filtroNome}, 
+										filtroApelido=${filtro.filtroApelido}, 
+										filtroCidade=${filtro.filtroCidade}, 
+										filtroCpf=${filtro.filtroCpf}, 
+										idadeMin=${filtro.idadeMin}, 
+										idadeMax=${filtro.idadeMax},   
+										filtroStatus=${filtro.filtroStatus}, 
+										size=${filtro.size})}">
+											Próxima </a></li>
 
 								</ul>
 							</nav>
@@ -289,5 +406,7 @@
 		</div>
 
 	</div>
+
+
 </body>
 </html>

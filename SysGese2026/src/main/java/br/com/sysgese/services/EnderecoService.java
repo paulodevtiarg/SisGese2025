@@ -73,4 +73,6 @@ public class EnderecoService {
                 enderecoRepository.findByAdolescenteIdOrderByDataInicioDesc(idAdolescente)
         );
     }
+   
+    
 }

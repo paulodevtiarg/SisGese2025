@@ -18,9 +18,6 @@ import br.com.sysgese.enumerators.RacaCorEnum;
 import br.com.sysgese.enumerators.ReligiaoEnum;
 import br.com.sysgese.enumerators.RostoEnum;
 import br.com.sysgese.enumerators.SobrancelhaEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -85,6 +82,9 @@ public class AdolescenteDTO {
 
 private EnderecoDTO enderecoAtual;
 
+
+private List<EnderecoDTO> enderecos;
+
 	    // ==============================
 	    // Contatos
 	    // ==============================
@@ -145,7 +145,7 @@ private EnderecoDTO enderecoAtual;
 	    private LocalDate dataAlt;
 
 	 
-	    private Integer status;
+	    private Boolean status;
 	    
 	    private Long idUnidadeCadastro;
 	    
@@ -197,8 +197,41 @@ private EnderecoDTO enderecoAtual;
 	    private Integer qtdFilhos;
 	    
 		/*idade*/
+		@SuppressWarnings("unused")
 		private Integer idade;
+		
+		
+		@SuppressWarnings("unused")
+		private String anoEscolaridadeDescricao;
+		
+	   @SuppressWarnings("unused")
+	private String nivelEscolaridadeDescricao;
 
+		/* CAMPOS DE FILTROS*/
+		private String filtroNome;
+		private String filtroApelido;
+		private String filtroCidade;
+        private String filtroCpf;
+        private Long filtroUnidadeId;
+        private Integer idadeMin;
+        private Integer idadeMax;
+        private String filtroStatus;
+        private Integer size = 10;
+		
+		
+		
+		
+
+
+
+	 // Getters e Setters
+        
+        
+        
+        
+        
+        
+		
 		public Integer getIdade() {
 		    if (this.dataNascimento == null) {
 		        return null;
@@ -206,12 +239,112 @@ private EnderecoDTO enderecoAtual;
 		    return java.time.Period.between(this.dataNascimento, java.time.LocalDate.now()).getYears();
 		}
 	
-
-	 // Getters e Setters
-		
-		
 		
 	    
+	 public List<EnderecoDTO> getEnderecos() {
+			return enderecos;
+		}
+
+
+
+		public void setEnderecos(List<EnderecoDTO> enderecos) {
+			this.enderecos = enderecos;
+		}
+
+
+
+	 public String getFiltroNome() {
+			return filtroNome;
+		}
+
+
+
+		public void setFiltroNome(String filtroNome) {
+			this.filtroNome = filtroNome;
+		}
+
+
+
+	 public String getFiltroApelido() {
+			return filtroApelido;
+		}
+
+
+		public void setFiltroApelido(String filtroApelido) {
+			this.filtroApelido = filtroApelido;
+		}
+
+
+		public String getFiltroCidade() {
+			return filtroCidade;
+		}
+
+
+		public void setFiltroCidade(String filtroCidade) {
+			this.filtroCidade = filtroCidade;
+		}
+
+
+		public String getFiltroCpf() {
+			return filtroCpf;
+		}
+
+
+		public void setFiltroCpf(String filtroCpf) {
+			this.filtroCpf = filtroCpf;
+		}
+
+
+		public Long getFiltroUnidadeId() {
+			return filtroUnidadeId;
+		}
+
+
+		public void setFiltroUnidadeId(Long filtroUnidadeId) {
+			this.filtroUnidadeId = filtroUnidadeId;
+		}
+
+
+		public Integer getIdadeMin() {
+			return idadeMin;
+		}
+
+
+		public void setIdadeMin(Integer idadeMin) {
+			this.idadeMin = idadeMin;
+		}
+
+
+		public Integer getIdadeMax() {
+			return idadeMax;
+		}
+
+
+		public void setIdadeMax(Integer idadeMax) {
+			this.idadeMax = idadeMax;
+		}
+
+
+		public String getFiltroStatus() {
+			return filtroStatus;
+		}
+
+
+		public void setFiltroStatus(String filtroStatus) {
+			this.filtroStatus = filtroStatus;
+		}
+
+
+		public Integer getSize() {
+			return size;
+		}
+
+
+		public void setSize(Integer size) {
+			this.size = size;
+		}
+
+
 	 public CorOlhosEnum getCorOlhos() {
 			return corOlhos;
 		}
@@ -392,7 +525,7 @@ private EnderecoDTO enderecoAtual;
 			return cartorio;
 		}
 		public void setCartorio(String cartorio) {
-			this.cartorio = cartorio;
+			this.cartorio = cartorio != null ? cartorio.toUpperCase() : null;
 		}
 		public String getIdentidade() {
 			return identidade;
@@ -430,12 +563,23 @@ private EnderecoDTO enderecoAtual;
 		public void setDataAlt(LocalDate dataAlt) {
 			this.dataAlt = dataAlt;
 		}
-		public Integer getStatus() {
+
+		
+		
+		
+		
+		public Boolean getStatus() {
 			return status;
 		}
-		public void setStatus(Integer status) {
+
+
+
+		public void setStatus(Boolean status) {
 			this.status = status;
 		}
+
+
+
 		public List<CicatrizDTO> getCicatrizes() {
 			return cicatrizes;
 		}
@@ -462,15 +606,15 @@ private EnderecoDTO enderecoAtual;
 		}
 
 		public void setSecaoEleitoral(String secaoEleitoral) {
-			this.secaoEleitoral = secaoEleitoral;
+			this.secaoEleitoral = secaoEleitoral ;
 		}
 
 		public String getMunicipioEleitoral() {
-			return municipioEleitoral;
+			return municipioEleitoral != null ? municipioEleitoral.toUpperCase() : null;
 		}
 
 		public void setMunicipioEleitoral(String municipioEleitoral) {
-			this.municipioEleitoral = municipioEleitoral;
+			this.municipioEleitoral = municipioEleitoral  != null ? municipioEleitoral.toUpperCase() : null;
 		}
 
 		public String getUfEleitoral() {
@@ -508,6 +652,17 @@ private EnderecoDTO enderecoAtual;
 		public AnoEscolaridadeEnum getAnoEscolaridade() {
 			return anoEscolaridade;
 		}
+		
+		public String getNivelEscolaridadeDescricao() {
+			
+			return nivelEscolaridade != null ? nivelEscolaridade.getDescricao():"";
+			
+		}
+		
+		public String getAnoEscolaridadeDescricao() {
+		    return anoEscolaridade != null ? anoEscolaridade.getDescricao() : "";
+		}
+		
 
 		public void setAnoEscolaridade(AnoEscolaridadeEnum anoEscolaridade) {
 			this.anoEscolaridade = anoEscolaridade;

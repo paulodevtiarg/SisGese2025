@@ -22,8 +22,12 @@
 							<li class="breadcrumb-item"><a th:href="@{/home}"> <i
 									class="fa-duotone fa-solid fa-house fs-7"></i> Home
 							</a></li>
-							<li class="breadcrumb-item"><a th:href="@{/adolescente}">
-									<i class="fa-solid fa-child"></i> Adolescente
+							<li class="breadcrumb-item"><a
+								th:href="@{${queryParams != null and queryParams != ''} ? 
+              '/adolescentes?' + queryParams : 
+              '/adolescentes'}">
+									<i class="fa-duotone fa-solid fa-child fs-7"></i> Adolescente
+
 							</a></li>
 							<li class="breadcrumb-item"><span class="text-muted"><i
 									class="fa-duotone fa-user-plus"></i> Novo Registro </span></li>
@@ -55,19 +59,30 @@
 				</div>
 				<div class="col-12">
 
-					<form th:action="@{/adolescente/salvar}" th:object="${adolescente}"
-						method="post" enctype="multipart/form-data">
+					<form th:action="@{/adolescentes/salvar}"
+						th:object="${adolescente}" method="post"
+						enctype="multipart/form-data">
 						<input type="hidden" th:field="*{fotoRegistro}">
 						<div class="card">
 
-							<div
-								class="card-header card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text  fw-semibold text-uppercase">
-								<h5 class="mb-0 text-secondary">Novo Registro</h5>
-								<a th:href="@{/adolescente}" class="btn btn-outline-danger">
-									<i class="fa-duotone fa-solid fa-ban"></i> Cancelar
-								</a>
-							</div>
+							<div class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
+    
+    <h5 class="mb-0 text-secondary">Novo Registro</h5>
 
+    <div class="d-flex gap-2">
+        <a th:href="@{${queryParams != null and queryParams != ''} ? 
+              '/adolescentes?' + queryParams : 
+              '/adolescentes'}"
+           class="btn btn-outline-danger">
+            <i class="fa-duotone fa-solid fa-ban"></i> Cancelar
+        </a>
+
+        <button type="submit" class="btn btn-outline-sistema">
+            <i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
+        </button>
+    </div>
+
+</div>
 
 
 							<div class="card-body">
@@ -728,19 +743,20 @@
 																th:text="${cab.descricao}"></option>
 														</select>
 													</div>
-													
+
 													<div class="col-md-2">
 														<label for="biofisico"
 															class="form-label fw-semibold text-secondary">
-															Biofisico </label> <select class="form-select" th:field="*{biofisico}">
+															Biofisico </label> <select class="form-select"
+															th:field="*{biofisico}">
 															<option value="">Selecione</option>
 															<option th:each="bio : ${bioFisico}" th:value="${bio}"
 																th:text="${bio.descricao}"></option>
 														</select>
 													</div>
-													
-													
-													
+
+
+
 													<div class="col-md-4">
 														<label class="form-label fw-semibold text-secondary">Condição
 															Dentição <small>(Observados)</small>
@@ -828,17 +844,19 @@
 
 
 												</div>
-												
+
 												<div class="row mt-3">
 													<div class="col-md-12">
 														<label class="form-label fw-semibold text-secondary">
 															Descrição da Característica </label> <input type="text"
 															class="form-control" th:field="*{descricaoCarac}"
-															id="carcDesc" placeholder="Alguma Característica marcante que é observada no adolescente ex:  Estrabismo, falta algum membro , etc.." disabled>
+															id="carcDesc"
+															placeholder="Alguma Característica marcante que é observada no adolescente ex:  Estrabismo, falta algum membro , etc.."
+															disabled>
 													</div>
-												
-												
-												
+
+
+
 												</div>
 
 
@@ -924,11 +942,10 @@
 
 
 						</div>
+
 						<div
-							class="card-footer d-flex justify-content-between align-items-center">
-							<button type="submit" class="btn btn-outline-sistema">
-								<i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
-							</button>
+							class="card-footer d-flex justify-content-end align-items-center">
+							<h6>Digite todos os campos. Campos com (*) são obrigatórios.</h6>
 
 						</div>
 					</form>

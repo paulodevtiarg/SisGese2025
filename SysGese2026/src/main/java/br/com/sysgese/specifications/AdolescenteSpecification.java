@@ -59,11 +59,22 @@ public class AdolescenteSpecification {
             return cb.between(root.get("dataNascimento"), inicio, fim);
         };
     }
-
-    public static Specification<Adolescente> statusCadastro(Integer[] status) {
+    public static Specification<Adolescente> statusCadastro(String filtroStatus) {
         return (root, query, cb) -> {
-            if (status == null || status.length == 0) return null;
-            return root.get("status").in((Object[]) status);
+
+            if (filtroStatus == null || filtroStatus.equalsIgnoreCase("TODOS")) {
+                return null; // não filtra
+            }
+
+            if (filtroStatus.equalsIgnoreCase("ATIVO")) {
+                return cb.equal(root.get("status"), true); // ou 1
+            }
+
+            if (filtroStatus.equalsIgnoreCase("INATIVO")) {
+                return cb.equal(root.get("status"), false); // ou 0
+            }
+
+            return null;
         };
     }
 }

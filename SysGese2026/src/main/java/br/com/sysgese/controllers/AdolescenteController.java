@@ -9,21 +9,20 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.sysgese.dtos.AdolescenteDTO;
 import br.com.sysgese.dtos.EnderecoDTO;
-import br.com.sysgese.dtos.LotacaoDTO;
 import br.com.sysgese.enumerators.AnoEscolaridadeEnum;
 import br.com.sysgese.enumerators.BiofisicoEnum;
 import br.com.sysgese.enumerators.BocaEnum;
@@ -59,16 +58,20 @@ import br.com.sysgese.services.LotacaoService;
 import br.com.sysgese.services.TatuagemService;
 import br.com.sysgese.services.UnidadeService;
 import br.com.sysgese.utils.AuthUtil;
-import br.com.sysgese.utils.StatusUtil;
+import br.com.sysgese.utils.UrlUtils;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 
 @Controller
+@RequestMapping("/adolescentes")
 public class AdolescenteController {
 	
 	@Autowired
     private AdolescenteService adolescenteService;
+	
+	@Autowired
+	private UrlUtils urlUtils;
 	
 	@Autowired
 	private EnderecoService enderecoService;
@@ -101,108 +104,76 @@ public class AdolescenteController {
 	 private TatuagemMapper tatuagemMapper;
 
 	 
-	@GetMapping("/adolescente")
+	@GetMapping
     public String index(
+    	    @ModelAttribute("filtro") AdolescenteDTO filtro,
+	        @RequestParam(defaultValue = "0") int page,
             HttpSession session,
-            Model model,
-            @RequestParam(value = "nome", required = false, defaultValue = "") String nome,
-            @RequestParam(value = "apelido", required = false, defaultValue = "") String apelido,
-            @RequestParam(value = "cidade", required = false, defaultValue = "") String cidade,
-            @RequestParam(value = "cpf", required = false, defaultValue = "") String cpf,
-            @RequestParam(value = "unidadeId", required = false) Long unidadeId,
-            @RequestParam(value = "idadeMin", required = false) Integer idadeMin,
-            @RequestParam(value = "idadeMax", required = false) Integer idadeMax,
-            @RequestParam(value = "status", required = false, defaultValue = "1") String statusFiltro,
-            @RequestParam(value = "pagina", required = false, defaultValue = "0") int pagina,
-            @RequestParam(value = "tamanho", required = false, defaultValue = "10") int tamanho
+            Model model            
     ) {
 		
 		// Pega a unidade do usuário logado
-		Servidor usuarioLogado = (Servidor) session.getAttribute("usuarioLogado");
+		
+		boolean isMaster = (Boolean) session.getAttribute("isMaster");         
 
-        // Converte status do filtro em Integer[]
-        Integer[] status = StatusUtil.parseStatusFiltro(statusFiltro);
-        
-        Pageable pageable = PageRequest.of(pagina, tamanho);
-        
-     // =========================
-        // Pega a unidade do usuário via lotação ativa
-        // =========================
-        Optional<Lotacao> lotacaoOpt = lotacaoService.findAtivaByServidorId(usuarioLogado.getId());
-
-        if (lotacaoOpt.isEmpty()) {
-            model.addAttribute("mensagemErro", "Usuário não possui lotação ativa.");
-            return "adolescente/index";
-        }
-
-        Lotacao lotacaoAtiva = lotacaoOpt.get();
+        Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
         
         Long unidadeFiltro;
 
-        if (AuthUtil.isMaster(session)) {
+        if (isMaster) {
             // MASTER pode escolher unidade
-            unidadeFiltro = (unidadeId != null) 
-                ? unidadeId 
+            unidadeFiltro = (filtro.getFiltroUnidadeId() != null) 
+                ? filtro.getFiltroUnidadeId() 
                 : lotacaoAtiva.getUnidade().getId(); // padrão
         } else {
             // NÃO MASTER sempre usa a própria unidade
             unidadeFiltro = lotacaoAtiva.getUnidade().getId();
         }
         
-        System.out.println("UNIDADE LOGADA: " + unidadeId);
+        System.out.println("UNIDADE LOGADA: " + lotacaoAtiva.getUnidade().getNome());
         System.out.println("IS MASTER: " + AuthUtil.isMaster(session));
-        Page<AdolescenteDTO> page =
+        Page<AdolescenteDTO> adolescenteDTO =
                 adolescenteService.buscarAdolescentesDaUnidade(
                 		unidadeFiltro,
-                        nome,
-                        apelido,
-                        cidade,
-                        cpf,
-                        idadeMin,
-                        idadeMax,
-                        status,
-                        pageable
+                        filtro, 
+                        page
                 );
         
         // Popula o model para a view
+        model.addAttribute("adolescentes", adolescenteDTO);
         model.addAttribute("pageTitle", "Adolescentes");
         model.addAttribute("activeMenu", "gestao");
-        model.addAttribute("adolescentes", page.getContent());
-        model.addAttribute("paginaAtual", page.getNumber());
-        model.addAttribute("totalPaginas", page.getTotalPages());
-        model.addAttribute("tamanhoPagina", tamanho);
-        model.addAttribute("nomeBusca", nome);
-        model.addAttribute("apelidoBusca", apelido);
-        model.addAttribute("cidadeBusca", cidade);
-        model.addAttribute("cpfBusca", cpf);
-        model.addAttribute("idadeMin", idadeMin);
-        model.addAttribute("idadeMax", idadeMax);
-        model.addAttribute("statusFiltro", statusFiltro);
-        model.addAttribute("isMaster", AuthUtil.isMaster(session));
-        if (AuthUtil.isMaster(session)) {
+
+        model.addAttribute("isMaster", isMaster);
+        if (isMaster) {
             model.addAttribute("unidades", unidadeService.listarTodas());
         }
         model.addAttribute("unidadeId", unidadeFiltro);
         model.addAttribute("lotacaoUsuarioLogado", lotacaoAtiva);
+        model.addAttribute("queryParams", urlUtils.adolescenteQuery(filtro, page));
 
         return "adolescente/index";
-		
-		
+				
 	}
 	
-	@GetMapping("/adolescente/novo")
-	public String novo(Model model) {
+	@GetMapping("/novo")
+	public String novo(
+	        @ModelAttribute("filtro") AdolescenteDTO filtro,
+	        @RequestParam(defaultValue = "0") int page,
+	        Model model
+	) {
+
 	    model.addAttribute("adolescente", new AdolescenteDTO());
 	    model.addAttribute("endereco", new EnderecoDTO());
+
 	    model.addAttribute("generos", GeneroEnum.values());
 	    model.addAttribute("racas", RacaCorEnum.values());
 	    model.addAttribute("estados", EstadosEnum.values());
-	    /*novos enums*/
+
 	    model.addAttribute("anoEscolaridade", AnoEscolaridadeEnum.values());
 	    model.addAttribute("bioFisico", BiofisicoEnum.values());
 	    model.addAttribute("boca", BocaEnum.values());
 	    model.addAttribute("cabelo", CabeloEnum.values());
-	    model.addAttribute("bioFisico", BiofisicoEnum.values());
 	    model.addAttribute("olhos", OlhosEnum.values());
 	    model.addAttribute("corOlhos", CorOlhosEnum.values());
 	    model.addAttribute("estaturas", EstaturaEnum.values());
@@ -213,13 +184,17 @@ public class AdolescenteController {
 	    model.addAttribute("rosto", RostoEnum.values());
 	    model.addAttribute("sobrancelhas", SobrancelhaEnum.values());
 	    model.addAttribute("orelhas", OrelhaEnum.values());
+
+	    model.addAttribute("pageTitle", "Adolescentes");
+	    model.addAttribute("activeMenu", "gestao");
+
+	    // 🔥 AGORA SIM
+	    model.addAttribute("queryParams", urlUtils.adolescenteQuery(filtro, page));
 	    
-	      model.addAttribute("pageTitle", "Adolescentes");
-	        model.addAttribute("activeMenu", "gestao");
 	    return "adolescente/form";
 	}
 	
-	@PostMapping("/adolescente/salvar")
+	@PostMapping("/salvar")
 	public String salvar(
 			    HttpSession session,
 			    @Valid @ModelAttribute("adolescente") AdolescenteDTO dto,
@@ -272,7 +247,7 @@ public class AdolescenteController {
 		    model.addAttribute("orelhas", OrelhaEnum.values());
 		    
 		      model.addAttribute("pageTitle", "Adolescentes");
-		       model.addAttribute("activeMenu", "administrativo");
+		      model.addAttribute("activeMenu", "gestao");
 
 		    return "adolescente/form";
 		}
@@ -408,8 +383,28 @@ public class AdolescenteController {
 
 	    
 
-	    return "redirect:/adolescente";
+	    return "redirect:/adolescentes";
 	}
+	
+    @GetMapping("/detalhes/{id}")
+    public String detalhes(
+            @PathVariable Long id,
+            @ModelAttribute("filtro") AdolescenteDTO filtro,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
+
+      AdolescenteDTO dto = adolescenteService.buscarPorId(id);
+
+        model.addAttribute("adolescente", dto);
+        model.addAttribute("pageTitle", "Detalhes do Registro");
+        model.addAttribute("activeMenu", "gestao");
+
+        String queryParams = urlUtils.adolescenteQuery(filtro, page);
+        model.addAttribute("queryParams", queryParams);
+
+        return "adolescente/detalhes";
+    }
+	
 }
 
 

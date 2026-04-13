@@ -195,7 +195,7 @@ public class Adolescente {
     private LocalDate dataAlt;
     
     @Column(name = "STATUS", nullable = false)
-    private Integer status;
+    private Boolean status;
     
     @Column(name = "FOTO_REGISTRO")
     private String fotoRegistro;
@@ -220,7 +220,15 @@ public class Adolescente {
     
     
     
-    public String getCondSaude() {
+    public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public String getCondSaude() {
 		return condSaude;
 	}
 
@@ -353,7 +361,7 @@ public class Adolescente {
     public Adolescente() {
         this.dataCad = LocalDate.now();
         this.dataAlt = LocalDate.now();
-        this.status = 1; // Ativo por padrão
+        this.status = true; // Ativo por padrão
     }
     
     // Métodos auxiliares para manter consistência nas relações
@@ -587,13 +595,7 @@ public class Adolescente {
         this.dataAlt = dataAlt;
     }
     
-    public Integer getStatus() {
-        return status;
-    }
-    
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+
     
     public List<Cicatriz> getCicatrizes() {
         return cicatrizes;

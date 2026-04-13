@@ -1,5 +1,7 @@
 package br.com.sysgese.controllers;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +17,6 @@ import br.com.sysgese.services.LotacaoService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/")
 public class LoginController {
 	@Autowired
     private ServidorRepository servidorRepository;
@@ -44,16 +45,41 @@ public class LoginController {
 	        ra.addFlashAttribute("erro", "Usuário ou senha inválidos");
 	        return "redirect:/login";
 	    }
-	 // ===== Aqui vamos carregar a lotação =====
-	    // ===== Carrega a lotação ativa do servidor =====
-       /*LotacaoDTO lotacao = lotacaoService.findAtivaDTOByServidorId(servidor.getId())
-                                          // .orElse(null); // se não tiver lotação ativa, fica null */
+	
         
         Lotacao lotacao = lotacaoService.findAtivaByServidorId(servidor.getId())
                 .orElse(null);
         
+
+
+        
+     
+        if (lotacao == null) {
+            ra.addFlashAttribute("erro", "Usuário sem lotação ativa");
+            return "redirect:/login";
+        }
+        
+        
+       
+        
+
+        // 🔥 Calcula isMaster UMA VEZ
+        boolean isMaster = Set.of(
+            "MASTER",
+            "CHEFIA DE PLANTÃO",
+            "COORDENACAO",
+            "PLANTONISTA"
+        ).contains(servidor.getPerfil().getDescricao());
+
+        
+        session.setAttribute("unidadeId", lotacao.getUnidade().getId());
         session.setAttribute("lotacaoUsuarioLogado", lotacao);
 	    session.setAttribute("usuarioLogado", servidor);
+	    session.setAttribute("nomeUnidade", lotacao.getUnidade().getNome());
+	    session.setAttribute("isMaster", isMaster);
+	    
+	    System.out.println("LOTACAO: " + lotacao);
+	    System.out.println("UNIDADE: " + lotacao.getUnidade());
 
 	    return "redirect:/home";
 	}
@@ -62,6 +88,12 @@ public class LoginController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+    
+    @GetMapping("/logout-landing")
+    public String logoutLanding(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
     }
 	
 }

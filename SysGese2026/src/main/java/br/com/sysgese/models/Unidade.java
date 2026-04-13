@@ -73,11 +73,20 @@ public class Unidade {
 
     @Column(name = "EMAIL", length = 255)
     private String email;
+    
+    @Column(name = "LOGO_TIMBRADO", length = 255)
+    private String logoTimbrado;
 
     // ==============================
     // Controle automático de datas
     // ==============================
 
+    
+    
+    
+    
+    
+    
     @PrePersist
     public void prePersist() {
         this.dataCad = LocalDateTime.now();
@@ -87,7 +96,15 @@ public class Unidade {
         }
     }
 
-    @PreUpdate
+    public String getLogoTimbrado() {
+		return logoTimbrado;
+	}
+
+	public void setLogoTimbrado(String logoTimbrado) {
+		this.logoTimbrado = logoTimbrado;
+	}
+
+	@PreUpdate
     public void preUpdate() {
         this.dataAlt = LocalDateTime.now();
     }

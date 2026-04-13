@@ -10,13 +10,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.sysgese.dtos.AdolescenteDTO;
 import br.com.sysgese.dtos.CicatrizDTO;
+import br.com.sysgese.dtos.EnderecoDTO;
 import br.com.sysgese.dtos.FotoDTO;
 import br.com.sysgese.dtos.TatuagemDTO;
 import br.com.sysgese.mappers.AdolescenteMapper;
@@ -42,12 +45,24 @@ public class AdolescenteService {
     
     @Autowired
     private UnidadeService unidadeService;
+    
+    @Autowired
+    private EnderecoService enderecoService;
 
     @Autowired
     private InternacaoRepository internacaoRepository;
 
     @Autowired
     private FotoRepository fotoRepository;
+    
+    @Autowired
+    private FotoService fotoService;
+    
+    @Autowired
+    private TatuagemService tatuagemService;
+    
+    @Autowired
+    private CicatrizService cicatrizService;
 
     @Autowired
     private TatuagemRepository tatuagemRepository;
@@ -107,34 +122,32 @@ public class AdolescenteService {
 
     public Page<AdolescenteDTO> buscarAdolescentesDaUnidade(
             Long idUnidadeServidor,
-            String nome,
-            String apelido,
-            String cidade,
-            String cpf,
-            Integer idadeMin,
-            Integer idadeMax,
-            Integer[] status,
-            Pageable pageable
+            AdolescenteDTO filtro, int page
     ) {
+    	int size = filtro.getSize() != null ? filtro.getSize() : 10;
+    	
+    	//direção
+    	Sort sort = Sort.by(Sort.Direction.DESC, "dataCad")
+                .and(Sort.by("nome"));
+    	
+    	Pageable pageable = PageRequest.of(page, size, sort);
 
         LocalDate hoje = LocalDate.now();
 
         LocalDate dataInicioNascimento = LocalDate.of(1900, 1, 1);
         LocalDate dataFimNascimento = hoje;
 
-        if (idadeMin != null) dataFimNascimento = hoje.minusYears(idadeMin);
-        if (idadeMax != null) dataInicioNascimento = hoje.minusYears(idadeMax + 1).plusDays(1);
-
-        Integer[] filtroStatus = status != null ? status : new Integer[]{1};
+        if (filtro.getIdadeMin() != null) dataFimNascimento = hoje.minusYears(filtro.getIdadeMin());
+        if (filtro.getIdadeMin()  != null) dataInicioNascimento = hoje.minusYears(filtro.getIdadeMin()  + 1).plusDays(1);
 
         Specification<Adolescente> spec =
                 Specification.where(AdolescenteSpecification.unidadeCadastro(idUnidadeServidor))
-                        .and(AdolescenteSpecification.nome(nome))
-                        .and(AdolescenteSpecification.apelido(apelido))
-                        .and(AdolescenteSpecification.cidade(cidade))
-                        .and(AdolescenteSpecification.cpf(cpf))
+                        .and(AdolescenteSpecification.nome(filtro.getFiltroNome()))
+                        .and(AdolescenteSpecification.apelido(filtro.getFiltroApelido()))
+                        .and(AdolescenteSpecification.cidade(filtro.getFiltroCidade()))
+                        .and(AdolescenteSpecification.cpf(filtro.getFiltroCpf()))
                         .and(AdolescenteSpecification.nascimentoEntre(dataInicioNascimento, dataFimNascimento))
-                        .and(AdolescenteSpecification.statusCadastro(filtroStatus));
+                        .and(AdolescenteSpecification.statusCadastro(filtro.getFiltroStatus()));
         Page<Adolescente> adolescentes = repository.findAll(spec, pageable);
 
      // 🔥 busca nomes das unidades
@@ -178,7 +191,7 @@ public class AdolescenteService {
         }
 
         entity.setDataAlt(LocalDate.now());
-        entity.setStatus(1);
+        entity.setStatus(true);
 
         // 🔥 REGRA DE ENDEREÇO (AQUI ESTÁ O PONTO)
         if (dto.getEnderecoAtual() != null) {
@@ -209,9 +222,55 @@ public class AdolescenteService {
     }
 
     public AdolescenteDTO buscarPorId(Long id) {
+
         Adolescente adol = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Adolescente não encontrado"));
-        return mapper.toDTO(adol);
+
+        AdolescenteDTO dto = mapper.toDTO(adol);
+        
+        ///lista das fotos
+        List<FotoDTO> fotos = fotoService.listarFotos(id);
+        dto.setFotos(fotos);
+        
+        //lista das tatuagens
+        List<TatuagemDTO> tatuagens = tatuagemService.listarTatuagens(id);
+        dto.setTatuagens(tatuagens);
+        
+        //Lista das Cicatrizes
+        List<CicatrizDTO> cicatrizes = cicatrizService.listarCicatrizes(id);
+        dto.setCicatrizes(cicatrizes);
+        
+        
+
+        // 🔥 usa seu método pronto
+        List<EnderecoDTO> enderecos = enderecoService.listarHistorico(id);
+
+        // 🔥 pega o ativo (ou o primeiro se quiser garantir)
+        EnderecoDTO enderecoAtual = enderecos.stream()
+                .filter(e -> Boolean.TRUE.equals(e.getAtivo()))
+                .findFirst()
+                .orElse(!enderecos.isEmpty() ? enderecos.get(0) : null);
+        
+        
+     
+
+        dto.setEnderecoAtual(enderecoAtual);
+        dto.setEnderecos(enderecos);
+        
+        
+     // 🔥 UNIDADE (AQUI 👇)
+        if (adol.getIdUnidadeCadastro() != null) {
+            Map<Long, String> mapa = unidadeService.buscarNomesPorIds(
+                    Set.of(adol.getIdUnidadeCadastro().longValue())
+            );
+
+            dto.setNomeUnidadeCadastro(
+                    mapa.get(adol.getIdUnidadeCadastro().longValue())
+            );
+        }
+        
+
+        return dto;
     }
 
     // ========================= ATUALIZAR COMPLETO =========================

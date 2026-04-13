@@ -2,33 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="scripts">
 
-   <script th:src="@{/sd-admin/vendor/jquery/jquery.min.js}"></script>
-		<script
-			th:src="@{/sd-admin/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-		<script
-			th:src="@{/sd-admin/vendor/jquery-easing/jquery.easing.min.js}"></script>
+	<script th:src="@{/sd-admin/vendor/jquery/jquery.min.js}"></script>
+	<script
+		th:src="@{/sd-admin/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/sd-admin/vendor/jquery-easing/jquery.easing.min.js}"></script>
 
-		<script th:src="@{/sd-admin/js/sb-admin-2.min.js}"></script>
+	<script th:src="@{/sd-admin/js/sb-admin-2.min.js}"></script>
 
-		<script th:src="@{/sd-admin/vendor/chart.js/Chart.min.js}"></script>
-		<script th:src="@{/sd-admin/js/demo/chart-area-demo.js}"></script>
-		<script th:src="@{/sd-admin/js/demo/chart-pie-demo.js}"></script>
-		<script
-			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-		
+	<script th:src="@{/sd-admin/vendor/chart.js/Chart.min.js}"></script>
+	<script th:src="@{/sd-admin/js/demo/chart-area-demo.js}"></script>
+	<script th:src="@{/sd-admin/js/demo/chart-pie-demo.js}"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- TOOLTIP -->
-    <script>
+
+	<!-- TOOLTIP -->
+	<script>
         document.addEventListener('DOMContentLoaded', function () {
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
             tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
         });
     </script>
 
-    <!-- =========================
+	<!-- =========================
          FOTO 3x4 (ADOLESCENTE)
     ========================== -->
-    <script>
+	<script>
         function previewFoto3x4(input) {
             const placeholder = document.getElementById('fotoPlaceholder');
             const fotoExistente = document.getElementById('fotoExistente');
@@ -54,10 +53,10 @@
         }
     </script>
 
-    <!-- =========================
+	<!-- =========================
          FOTOS (MÚLTIPLAS)
     ========================== -->
-    <script>
+	<script>
         let fotoIndex = 0;
 
         function addFoto() {
@@ -102,10 +101,10 @@
         }
     </script>
 
-    <!-- =========================
+	<!-- =========================
          CICATRIZES
     ========================== -->
-    <script>
+	<script>
         let cicatrizIndex = 0;
 
         function addCicatriz() {
@@ -150,10 +149,10 @@
         }
     </script>
 
-    <!-- =========================
+	<!-- =========================
          TATUAGENS
     ========================== -->
-    <script>
+	<script>
         let tatuagemIndex = 0;
 
         function addTatuagem() {
@@ -198,10 +197,10 @@
         }
     </script>
 
-    <!-- =========================
+	<!-- =========================
          MÁSCARAS (CEP / TELEFONE)
     ========================== -->
-    <script>
+	<script>
         document.addEventListener("input", function (e) {
 
             // CEP
@@ -232,10 +231,10 @@
         });
     </script>
 
-    <!-- =========================
+	<!-- =========================
          BUSCA CEP (UNIFICADA)
     ========================== -->
-    <script>
+	<script>
         function buscarCep() {
             const cepInput = document.getElementById('cep');
             let cep = cepInput.value.replace(/\D/g, '');
@@ -267,10 +266,10 @@
         }
     </script>
 
-    <!-- =========================
+	<!-- =========================
          CPF (MÁSCARA + VALIDAÇÃO)
     ========================== -->
-<script>
+	<script>
 function mascaraCPF(input) {
     let value = input.value.replace(/\D/g, '');
 
@@ -340,8 +339,8 @@ function validarCPF(input) {
     return true;
 }
 </script>
-    
-  <script>
+
+	<script>
 function previewFoto(input) {
     const file = input.files[0];
     if (!file) return;
@@ -472,7 +471,7 @@ function fecharModal() {
 }
 </script>
 
-<script>
+	<script>
 function toggleQtdFilhos() {
     const sim = document.getElementById('filhosSim').checked;
     const input = document.getElementById('qtdFilhos');
@@ -493,7 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
-<script>
+	<script>
 function toggleCaract() {
     const sim = document.getElementById('caracSim').checked;
     const input = document.getElementById('carcDesc');
@@ -517,7 +516,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-<script>
+	<script>
 function mascaraTelefone(input) {
     // Remove tudo que não for número
     let valor = input.value.replace(/\D/g, '');
@@ -559,7 +558,7 @@ document.querySelector('form').addEventListener('submit', function(e) {
     }
 });
 </script>
-    <script>
+	<script>
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".auto-close").forEach(alert => {
         setTimeout(() => {
@@ -569,6 +568,191 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
-    
+	<script>
+function mostrarLoading() {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) {
+        overlay.style.display = "flex";
+    }
+}
+
+// 🔥 captura clique em QUALQUER link
+document.addEventListener("click", function (e) {
+    const link = e.target.closest("a");
+
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+
+    // ignora links inválidos
+    if (!href || href === "#" || href.startsWith("javascript")) return;
+
+    mostrarLoading();
+});
+
+// 🔥 esconde quando a página carrega
+window.addEventListener("pageshow", function () {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) {
+        overlay.style.display = "none";
+    }
+});
+</script>
+	<script>
+// 🔥 mostra loading ao recarregar (F5, Ctrl+R)
+window.addEventListener("beforeunload", function () {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) {
+        overlay.style.display = "flex";
+    }
+});
+</script>
+
+	<script>
+document.addEventListener("click", function (e) {
+
+    const card = e.target.closest(".foto-card");
+    if (!card) return;
+
+    const tipo = card.dataset.tipo;
+    const img = card.dataset.img;
+
+    document.getElementById("modalImg").src = img;
+
+    let html = "";
+
+    if (tipo === "foto") {
+        html = `
+        	 <div class="row"> 
+        		 <div class="col-md-12 mb-2">
+         		   <div class="input-group">
+            		    <span class="input-group-text label-fixa">Descrição</span>
+             			   <input type="text" class="form-control" value="${card.dataset.desc || ''}" disabled>
+          			  </div>
+       			 </div>
+        
+        	</div>
+            
+        `;
+    }
+    if (tipo === "tatuagem") {
+        html = `
+            <div class="row">
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Ano</span>
+                        <input type="text" class="form-control" value="${card.dataset.ano || ''}" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Forma</span>
+                        <input type="text" class="form-control" value="${card.dataset.forma || ''}" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Descrição</span>
+                        <input type="text" class="form-control" value="${card.dataset.desc || ''}" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Local</span>
+                        <input type="text" class="form-control" value="${card.dataset.local || ''}" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Remover</span>
+                        <input type="text" class="form-control" value="${card.dataset.remover == 'true' ? 'SIM' : 'NÃO'}" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Profissional</span>
+                        <input type="text" class="form-control" value="${card.dataset.prof == 'true' ? 'SIM' : 'NÃO'}" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Tem significado</span>
+                        <input type="text" class="form-control" value="${card.dataset.sig == 'true' ? 'SIM' : 'NÃO'}" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text label-fixa">Qual significado</span>
+                        <input type="text" class="form-control" value="${card.dataset.qualsig || ''}" disabled>
+                    </div>
+                </div>
+
+            </div>
+        `;
+    }
+
+    if (tipo === "cicatriz") {
+        html = `
+        	 <div class="row"> 
+   				 <div class="col-md-12 mb-2">
+    		 		  <div class="input-group">
+       		 		   <span class="input-group-text label-fixa">Data</span>
+        			   <input type="text" class="form-control" value="${card.dataset.data|| ''}" disabled>
+     				 </div>
+  				 </div>
+  				 <div class="col-md-12 mb-2">
+		 		  <div class="input-group">
+  		 		   <span class="input-group-text label-fixa">Descrição</span>
+   			   <input type="text" class="form-control" value="${card.dataset.desc|| ''}" disabled>
+				 </div>
+				 </div>
+   
+   			</div>
+   		 <div class="row"> 
+			 <div class="col-md-12 mb-2">
+	 				  <div class="input-group">
+		 		 		  <span class="input-group-text label-fixa">Forma</span>
+			  			 <input type="text" class="form-control" value="${card.dataset.forma|| ''}" disabled>
+					 </div>
+			 </div>
+			 <div class="col-md-12 mb-2">
+ 		  			<div class="input-group">
+	 		   			<span class="input-group-text label-fixa">Local</span>
+		  				 <input type="text" class="form-control" value="${card.dataset.local|| ''}" disabled>
+					 </div>
+		 	</div>
+
+		</div>
+		 <div class="row"> 
+		 <div class="col-md-12 mb-2">
+ 				  <div class="input-group">
+	 		 		  <span class="input-group-text label-fixa">Tamanho <small>(cm)</small></span>
+		  			 <input type="text" class="form-control" value="${card.dataset.tamanho|| ''}" disabled>
+				 </div>
+		 </div>
+		 <div class="col-md-612mb-2">
+		  			<div class="input-group">
+ 		   			<span class="input-group-text label-fixa">Tipo</span>
+	  				 <input type="text" class="form-control" value="${card.dataset.tipo2|| ''}" disabled>
+				 </div>
+	 	</div>
+
+	</div>          
+           
+        `;
+    }
+
+    document.getElementById("modalInfo").innerHTML = html;
+});
+</script>
+
 
 </th:block>

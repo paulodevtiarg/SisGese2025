@@ -1,10 +1,1086 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
 
+<head>
+<title>Adolescentes</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+
+		<div class="container-fluid p-2">
+			<div class="row">
+				<div class="col-12">
+					<nav aria-label="breadcrumb card"
+						style="margin-top: -25px; font-size: 0.8rem;">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a th:href="@{/home}"> <i
+									class="fa-duotone fa-solid fa-house fs-7"></i> Home
+							</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/adolescentes}">
+									<i class="fa-duotone fa-solid fa-child fs-7"></i> Adolescentes
+							</a></li>
+							<li class="breadcrumb-item"><span class="text-muted">
+									<i class="fa-duotone fa-solid fa-memo-circle-info"></i>
+									Detalhes
+							</span></li>
+
+
+						</ol>
+					</nav>
+				</div>
+				<div class="col-12">
+					<!-- Mensagens de erro e de ok -->
+					<div th:if="${msgOk}"
+						class="alert alert-success alert-dismissible fade show auto-close"
+						role="alert" id="successAlert">
+						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
+							th:text="${msgOk}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+
+					<!-- Mensagem de Erro -->
+					<div th:if="${msgErro}"
+						class="alert alert-danger alert-dismissible fade show auto-close"
+						role="alert" id="errorAlert">
+						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
+							th:text="${msgErro}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+				</div>
+				<div class="col-12" style="margin-top: -15px;">
+					<div class="card">
+						<div
+							class="card-header d-flex justify-content-between align-items-center fs-6 fw-semibold text-uppercase">
+
+							<h6 class="mb-0 text-secondary">
+								Detalhes: ID#: <span class="fw-bolder fs-5"
+									th:text="'[ '+${adolescente.id}+' ]'"></span>
+							</h6>
+
+							<div class="d-flex gap-2">
+
+								<!-- COM FILTRO -->
+								<a th:if="${queryParams != null and queryParams != ''}"
+									th:href="@{'/adolescentes?' + ${queryParams}}"
+									class="btn btn-outline-danger"> <i
+									class="fa-duotone fa-solid fa-rotate-left"></i> Voltar
+								</a>
+
+								<!-- SEM FILTRO -->
+								<a th:if="${queryParams == null or queryParams == ''}"
+									th:href="@{/adolescentes}" class="btn btn-outline-danger">
+									<i class="fa-duotone fa-solid fa-rotate-left"></i> Voltar
+								</a> <a
+									th:href="@{'/adolescentes/editar/' + ${adolescente.id} + '?' + ${queryParams}}"
+									class="btn btn-outline-primary"> <i class="fa-solid fa-pen"></i>
+									Editar
+								</a>
+
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-2 d-flex">
+									<div class="foto-3x4-container-dt mb-2 w-100 h-100">
+
+										<div th:if="${adolescente.fotoRegistro != null}"
+											class="foto-wrapper-dt">
+											<img th:src="${adolescente.fotoRegistro}"
+												class="foto-3x4-img-dt" alt="Foto do Adolescente">
+										</div>
+
+										<div th:if="${adolescente.fotoRegistro == null}"
+											class="foto-placeholder-dt">
+											<i
+												class="fa-duotone fa-solid fa-user fa-6x mb-2 icone-foto-dt"></i>
+											<span>Sem foto</span>
+										</div>
+
+										<div class="foto-label-dt"
+											th:text="${adolescente.fotoRegistro != null ? 'IMAGEM CADASTRADA' : 'SEM IMAGEM'}">
+										</div>
+
+									</div>
+
+
+
+								</div>
+								<div class="col-md-10">
+									<div class="row">
+
+										<div class="col-md-6">
+
+											<div class="row">
+												<div class="col-md-12  mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Nome</span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.nome}" disabled>
+													</div>
+												</div>
+
+
+
+											</div>
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Apelido</span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.apelido}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Nascimento</span>
+														<input type="text" class="form-control fw-bolder fs-6"
+															th:value="${#temporals.format(adolescente.dataNascimento, 'dd/MM/yyyy') 
+                  + ' (' + adolescente.idade + ' anos)'}"
+															disabled>
+
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">
+															Escolaridade</span> <input type="text"
+															class="form-control fw-bolder fs-6"
+															th:value="${adolescente.nivelEscolaridadeDescricao}"
+															disabled>
+													</div>
+												</div>
+												<div class="col-md-6 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Ano </span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.anoEscolaridadeDescricao}"
+															disabled>
+													</div>
+												</div>
+
+											</div>
+
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa"> C.
+															Nascimento</span> <input type="text"
+															class="form-control fw-bolder fs-6"
+															th:value="${adolescente.registroCivil}" disabled>
+													</div>
+												</div>
+
+
+											</div>
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa"> Cartório
+															<small>(Reg.)</small>
+														</span><input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.cartorio}" disabled>
+													</div>
+												</div>
+
+
+											</div>
+											<div class="row">
+												<div class="col-md-7 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa"> C.
+															Gênero</span> <input type="text"
+															class="form-control fw-bolder fs-6"
+															th:value="${adolescente.genero}" disabled>
+													</div>
+												</div>
+												<div class="col-md-5 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa"> C.
+															Raça/Cor</span> <input type="text"
+															class="form-control fw-bolder fs-6"
+															th:value="${adolescente.racaCor}" disabled>
+													</div>
+												</div>
+
+
+											</div>
+											<div class="row">
+												<div class="col-md-7 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa"> Cidade <small>(Natal)</small>
+														</span><input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.cidadeNascimento}" disabled>
+													</div>
+												</div>
+
+												<div class="col-md-5 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">UF <small>(Natal)</small>
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.ufNascimento}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+												<div class="col-md-7 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">CPF </span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.cpf}" disabled>
+													</div>
+												</div>
+												<div class="col-md-5 mt-1  mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">
+															Identidade <small>(R.G.)</small>
+														</span><input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.identidade}" disabled>
+													</div>
+												</div>
+
+
+											</div>
+
+
+
+
+
+										</div>
+										<!-- coluna 2 -->
+										<div class="col-md-6">
+
+
+											<div class="row">
+												<div class="col-md-12 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Reservista
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.reservista}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Título </span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.tituloEleitor}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+												<div class="col-md-4 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Zona </span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.zonaEleitoral}" disabled>
+													</div>
+												</div>
+												<div class="col-md-4 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Seção </span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.secaoEleitoral}" disabled>
+													</div>
+												</div>
+												<div class="col-md-4 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">UF </span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.ufEleitoral}" disabled>
+													</div>
+												</div>
+
+											</div>
+
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Religião
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.religiao}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+												<div class="col-md-7 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Filhos ?
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.filhos} ? 'SIM' : 'NÃO'" disabled>
+													</div>
+												</div>
+
+												<div class="col-md-5 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Qtd <small>
+																(filhos)</small>
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.qtdFilhos != null and adolescente.qtdFilhos > 0 ? adolescente.qtdFilhos : 'SEM FILHO'}"
+															disabled>
+													</div>
+												</div>
+
+											</div>
+
+
+
+											<div class="row">
+												<div class="col-md-7 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Munic. <small>(Eleit.)</small>
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.municipioEleitoral}" disabled>
+													</div>
+												</div>
+
+												<div class="col-md-5 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">UF <small>
+																(Eleitoral)</small>
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.ufEleitoral}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa"> Unidade
+															<small>(Cad.)</small>
+														</span><input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.nomeUnidadeCadastro}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+												<div class="col-md-6 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Tel.<small>(Principal)</small>
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.telefone1}" disabled>
+													</div>
+												</div>
+												<div class="col-md-6 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Tel. <small>
+																(Recado)</small>
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.telefoneRecado}" disabled>
+													</div>
+												</div>
+
+											</div>
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Contato.<small>(recado)</small>
+														</span> <input type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.nomeContatoRecado}" disabled>
+													</div>
+												</div>
+
+											</div>
+
+
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+							<hr class="pr-hr" />
+							<!--div das abas -->
+							<div class="row mt-2">
+								<div class="col-md-12">
+									<ul class="nav nav-tabs custom-tabs" id="abasAdolescente"
+										role="tablist">
+
+										<li class="nav-item">
+											<button class="nav-link active" data-bs-toggle="tab"
+												data-bs-target="#endereco" type="button">
+												<i class="fa-duotone fa-solid fa-location-dot me-1"></i>
+												Endereço
+											</button>
+										</li>
+
+										<li class="nav-item">
+											<button class="nav-link" data-bs-toggle="tab"
+												data-bs-target="#parentesco" type="button">
+												<i class="fa-duotone fa-solid fa-users me-1"></i> Parentesco
+											</button>
+										</li>
+
+										<li class="nav-item">
+											<button class="nav-link" data-bs-toggle="tab"
+												data-bs-target="#caracteristicas" type="button">
+												<i class="fa-duotone fa-solid fa-id-card me-1"></i>
+												Características
+											</button>
+										</li>
+
+										<li class="nav-item">
+											<button class="nav-link" data-bs-toggle="tab"
+												data-bs-target="#fotos" type="button">
+												<i class="fa-duotone fa-solid fa-camera me-1"></i> Fotos
+											</button>
+										</li>
+
+									</ul>
+
+									<div class="tab-content mt-3">
+
+										<!-- ENDEREÇO -->
+										<div class="tab-pane fade show active" id="endereco">
+											<!-- SEU HTML DE ENDEREÇO AQUI -->
+
+
+											<!-- fim da row dos telefones -->
+											<!-- row do acordeaon -->
+											<div class="row mt-2">
+												<div class="col-md-12">
+													<div class="accordion" id="accordionEnderecos">
+
+														<!-- 🔥 ENDEREÇO ATIVO -->
+														<div class="accordion-item"
+															th:if="${adolescente.enderecoAtual != null}">
+															<h2 class="accordion-header">
+																<button class="accordion-button" type="button"
+																	data-bs-toggle="collapse"
+																	data-bs-target="#enderecoAtual">
+																	ENDEREÇO ATIVO &nbsp <small>(Atual)</small>
+																</button>
+															</h2>
+
+															<div id="enderecoAtual"
+																class="accordion-collapse collapse show">
+
+																<div class="accordion-body">
+																	<!-- SEU HTML ATUAL AQUI -->
+																	<div class="row">
+																		<div class="col-md-6">
+																			<div class="row">
+																				<div class="col-md-6  mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Cep.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${adolescente.enderecoAtual.cep}"
+																							disabled>
+																					</div>
+																				</div>
+																				<div class="col-md-6  mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Lograd.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${adolescente.enderecoAtual.logradouro}"
+																							disabled>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="row">
+																				<div class="col-md-6 mt-1 mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Cidade.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${adolescente.enderecoAtual.cidade}"
+																							disabled>
+																					</div>
+																				</div>
+																				<div class="col-md-6 mt-1 mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Estado.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${adolescente.enderecoAtual.uf}"
+																							disabled>
+																					</div>
+																				</div>
+
+																			</div>
+
+																		</div>
+																		<div class="col-md-6">
+																			<div class="row">
+																				<div class="col-md-6  mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Bairro.
+																							<small> (Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${adolescente.enderecoAtual.bairro}"
+																							disabled>
+																					</div>
+																				</div>
+																				<div class="col-md-6  mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Número.<small>(res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${adolescente.enderecoAtual.numero}"
+																							disabled>
+																					</div>
+																				</div>
+
+																			</div>
+																			<div class="row">
+																				<div class="col-md-12 mt-1 mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Referência.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${adolescente.enderecoAtual.referencia}"
+																							disabled>
+																					</div>
+																				</div>
+
+																			</div>
+
+
+																		</div>
+
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														<!-- 🔥 ENDEREÇOS ANTERIORES -->
+														<div class="accordion-item"
+															th:each="end, iter : ${adolescente.enderecos}"
+															th:if="${!end.ativo}">
+
+															<h2 class="accordion-header">
+																<button class="accordion-button collapsed" type="button"
+																	data-bs-toggle="collapse"
+																	th:data-bs-target="'#endereco_' + ${iter.index}">
+
+																	ENDEREÇO ANTERIOR &nbsp <small
+																		th:text="' (Até: ' + ${#temporals.format(end.dataFim, 'dd-MM-yyyy)')}"></small>
+																</button>
+															</h2>
+
+															<div class="accordion-collapse collapse"
+																th:id="'endereco_' + ${iter.index}">
+
+																<div class="accordion-body">
+																	<div class="row">
+																		<div class="col-md-6">
+																			<div class="row">
+																				<div class="col-md-6  mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Cep.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${end.cep}" disabled>
+																					</div>
+																				</div>
+																				<div class="col-md-6 mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Lograd.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${end.logradouro}" disabled>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="row">
+																				<div class="col-md-6 mt-1 mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Cidade.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${end.cidade}" disabled>
+																					</div>
+																				</div>
+																				<div class="col-md-6 mt-1 mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Estado.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${end.uf}" disabled>
+																					</div>
+																				</div>
+
+																			</div>
+
+																		</div>
+																		<div class="col-md-6">
+																			<div class="row">
+																				<div class="col-md-6  mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Bairro.
+																							<small> (Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${end.bairro}" disabled>
+																					</div>
+																				</div>
+																				<div class="col-md-6  mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Número.<small>(res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${end.numero}" disabled>
+																					</div>
+																				</div>
+
+																			</div>
+																			<div class="row">
+																				<div class="col-md-12 mt-1 mb-1">
+																					<div class="input-group">
+																						<span class="input-group-text label-fixa">Referência.<small>
+																								(Res.)</small>
+																						</span> <input type="text"
+																							class="form-control fw-bolder fs-6"
+																							th:value="${end.referencia}" disabled>
+																					</div>
+																				</div>
+
+																			</div>
+
+
+																		</div>
+
+																	</div>
+																</div>
+															</div>
+
+														</div>
+
+													</div>
+
+
+												</div>
+
+
+											</div>
+
+
+
+
+
+										</div>
+										<!-- fim aba endereco -->
+
+										<!-- PARENTESCO -->
+										<div class="tab-pane fade" id="parentesco">
+											<!-- SEU HTML DE PARENTESCO -->
+											<div class="row">
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Mãe </span> <input
+																	type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.mae}" disabled>
+															</div>
+														</div>
+
+
+													</div>
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Pai </span> <input
+																	type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.pai}" disabled>
+															</div>
+														</div>
+
+													</div>
+												</div>
+
+
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Responsável
+
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.responsavel}" disabled>
+															</div>
+														</div>
+
+
+													</div>
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Grau.
+																	Parent. </span> <input type="text"
+																	class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.parentescoResponsavel}"
+																	disabled>
+															</div>
+														</div>
+
+													</div>
+
+
+												</div>
+
+
+											</div>
+										</div>
+
+										<!-- CARACTERÍSTICAS -->
+										<div class="tab-pane fade" id="caracteristicas">
+											<!-- SEU HTML DE CARACTERÍSTICAS -->
+											<div class="row">
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Estatura.
+
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.estatura.descricao}" disabled>
+															</div>
+														</div>
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Biofisico
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.biofisico}" disabled>
+															</div>
+														</div>
+
+													</div>
+													<div class="row">
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Sobrancelha.
+
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.sobrancelha}" disabled>
+															</div>
+														</div>
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Nariz.
+
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.nariz}" disabled>
+															</div>
+														</div>
+
+													</div>
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Obs.
+																	Nariz </span> <input type="text"
+																	class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.obsNariz}" disabled>
+															</div>
+														</div>
+
+													</div>
+													<div class="row">
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Orelha.
+
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.orelha}" disabled>
+															</div>
+														</div>
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Pescoço
+
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.pescoco}" disabled>
+															</div>
+														</div>
+
+													</div>
+
+
+
+												</div>
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Olhos </span>
+																<input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.olhos}" disabled>
+															</div>
+														</div>
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Cor dos
+																	Olhos </span> <input type="text"
+																	class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.corOlhos}" disabled>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Cabelos
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.cabelo}" disabled>
+															</div>
+														</div>
+														<div class="col-md-6 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Detalhe.
+																	Evid. ? </span> <input type="text"
+																	class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.caracMarcante} ? 'SIM' : 'NÃO'"
+																	disabled>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Desc.
+																	Detalhe </span> <input type="text"
+																	class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.descricaoCarac}" disabled>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Dentes
+																</span> <input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.dentesObs}" disabled>
+															</div>
+														</div>
+													</div>
+
+
+
+
+												</div>
+
+
+											</div>
+											<div class="row">
+												<div class="col-md-12 mt-1 mb-1">
+													<div class="input-group">
+														<span class="input-group-text label-fixa">Saúde </span> <input
+															type="text" class="form-control fw-bolder fs-6"
+															th:value="${adolescente.condSaude}" disabled>
+													</div>
+												</div>
+											</div>
+
+
+
+										</div>
+
+										<!-- FOTOS -->
+										<div class="tab-pane fade" id="fotos">
+											<!-- SEU HTML DE FOTOS -->
+											<div class="row">
+												<div class="col-md-4 ">
+													<!-- FOTOS -->
+													<div class="row">
+
+
+														<!-- FOTOS GERAIS -->
+														<div class="col-md-12 mb-3">
+															<div class="card shadow-sm" style="min-height: 260px;">
+
+																<div class="card-header fw-bold">
+																	<i class="fa-duotone fa-solid fa-photo-film me-1"></i>
+																	Fotos
+																</div>
+
+																<div class="card-body d-flex flex-wrap gap-2">
+
+
+																	<div th:each="f : ${adolescente.fotos}"
+																		class="card p-1 foto-card" data-bs-toggle="modal"
+																		data-bs-target="#modalFoto"
+																		th:attr="data-tipo=foto, 
+																		data-desc=${f.descricaoDetalhe},
+                          												data-img=${f.foto}">
+
+																		<img th:src="${f.foto}" class="foto-mini"> <small
+																			th:text="${f.descricaoDetalhe}"></small>
+
+																	</div>
+
+
+																</div>
+
+															</div>
+
+
+
+
+
+														</div>
+
+													</div>
+
+												</div>
+												<div class="col-md-4 ">
+													<div class="row">
+														<div class="col-md-12 mb-3">
+															<div class="card shadow-sm border-primary"
+																style="min-height: 260px;">
+
+																<div class="card-header fw-bold text-primary">
+																	<i class="fa-duotone fa-solid fa-pen-nib me-1"></i>
+																	Tatuagens
+																</div>
+
+																<div class="card-body d-flex flex-wrap gap-2">
+																	<div th:each="t : ${adolescente.tatuagens}"
+																		class="card p-1 foto-card" data-bs-toggle="modal"
+																		data-bs-target="#modalFoto"
+																		th:attr="data-tipo=tatuagem, 
+																		data-img=${t.foto},
+																		data-ano=${t.anoRealizacao},
+																		data-desc=${t.descricao},
+																		data-forma=${t.forma},
+																		data-remover=${t.interesseRemover},
+																		data-prof=${t.profissional},
+																		data-sig=${t.temSignificado},
+																		data-qualsig=${t.qualSignificado},
+																		data-local=${t.local}">
+
+																		<img th:src="
+																		${t.foto}"
+																			class="foto-mini"> <small
+																			th:text="${t.descricao}"></small>
+
+																	</div>
+																</div>
+
+															</div>
+														</div>
+
+													</div>
+												</div>
+												<div class="col-md-4 ">
+													<div class="row">
+														<div class="col-md-12 mb-3">
+															<div class="card shadow-sm border-danger"
+																style="min-height: 260px;">
+
+																<div class="card-header fw-bold text-danger">
+																	<i class="fa-duotone fa-solid fa-bandage me-1"></i>Cicatrizes
+																</div>
+
+																<div class="card-body d-flex flex-wrap gap-2">
+																	<div th:each="c : ${adolescente.cicatrizes}"
+																		class="card p-1 foto-card" data-bs-toggle="modal"
+																		data-bs-target="#modalFoto"
+																		th:attr="data-tipo=cicatriz,
+																				data-img=${c.foto},
+																				data-data=${c.dataOcorrido},
+																				data-desc=${c.descricaoDetalhe},
+																				data-forma=${c.forma},
+																				data-local=${c.local},
+																				data-tamanho=${c.tamanhoCm},
+																				data-tipo2=${c.tipo}">
+
+																		<img th:src="
+																		${c.foto}"
+																			class="foto-mini"> <small
+																			th:text="${c.descricaoDetalhe}"></small>
+
+																	</div>
+																</div>
+
+															</div>
+														</div>
+
+													</div>
+
+												</div>
+
+
+											</div>
+										</div>
+
+										<!-- modal -->
+										<div class="modal fade" id="modalFoto">
+											<div class="modal-dialog modal-md">
+												<div class="modal-content">
+
+													<div class="modal-body text-center">
+														<img id="modalImg" class="img-fluid mb-3">
+
+														<div id="modalInfo"></div>
+													</div>
+
+												</div>
+											</div>
+										</div>
+
+
+
+
+
+									</div>
+
+								</div>
+
+
+
+
+
+
+
+							</div>
+
+						</div>
+						<div class="card-footer d-flex justify-content-end">
+							<h6>Clique no botão EDITAR, acima, para alterar esse
+								registro.</h6>
+
+
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
 </body>
 </html>
