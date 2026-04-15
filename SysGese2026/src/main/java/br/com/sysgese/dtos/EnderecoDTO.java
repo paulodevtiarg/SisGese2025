@@ -35,6 +35,8 @@ public class EnderecoDTO {
 
     // NÃO obrigatório
     private String referencia;
+    
+    private String complemento;
 
  
     private LocalDate dataInicio;
@@ -44,6 +46,20 @@ public class EnderecoDTO {
 
   
     private Boolean ativo;
+    
+    
+    
+    
+    
+    
+
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
 
 	public Long getId() {
 		return id;

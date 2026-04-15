@@ -292,20 +292,17 @@ public class Adolescente {
 
 	// Relacionamentos
     @OneToMany(mappedBy = "adolescente", 
-               cascade = CascadeType.ALL, 
                orphanRemoval = true,
                fetch = FetchType.LAZY)
     private List<Cicatriz> cicatrizes = new ArrayList<>();
     
     @OneToMany(mappedBy = "adolescente", 
-               cascade = CascadeType.ALL, 
-               orphanRemoval = true,
-               fetch = FetchType.LAZY)
-    private List<Tatuagem> tatuagens = new ArrayList<>();
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+ private List<Tatuagem> tatuagens = new ArrayList<>();
     
     
     @OneToMany(mappedBy = "adolescente", 
-            cascade = CascadeType.ALL, 
             orphanRemoval = true,
             fetch = FetchType.LAZY)
  private List<Foto> fotos = new ArrayList<>();

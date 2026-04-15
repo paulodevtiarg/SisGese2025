@@ -3,10 +3,6 @@
 
 <th:block th:fragment="topbar">
 
-
-
-
-
 	<nav
 		class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
 		th:fragment="topbar">
@@ -181,7 +177,16 @@
 						<div class="text-gray-500 small"
 							style="font-size: 0.7rem; line-height: 1.2;"
 							th:text="${usuarioLogado != null and usuarioLogado.matricula != null ? usuarioLogado.matricula : ''}">
-							33333333</div>
+							MATRICULA</div>
+							<div class="text-gray-500 small"
+							style="font-size: 0.7rem; line-height: 1.2;"
+							th:text="${session.nomeUnidade != null ? session.nomeUnidade : ''}">
+							UNIDADE
+							
+							
+							
+							
+							</div>
 					</div> <img class="img-profile rounded-circle"
      th:src="${usuarioLogado.foto != null and usuarioLogado.foto != ''} 
              ? @{${usuarioLogado.foto}} 

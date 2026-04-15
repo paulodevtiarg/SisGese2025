@@ -39,8 +39,21 @@ public class CicatrizDTO {
 
 	    private TipoCicatrizEnum tipo;
 
-	    @NotBlank(message = "Foto da cicatriz é obrigatória")
+	 
 	    private String foto;
+	    
+	    
+	    
+	    public boolean isVazio() {
+	        return (local == null || local.isBlank())
+	            && (forma == null || forma.isBlank())
+	            && (descricaoDetalhe == null || descricaoDetalhe.isBlank())
+	            && (tamanhoCm == null)
+	            && (dataOcorrido == null)
+	            && (tipo == null);
+	    }
+	    
+	    
 
 	public Long getAdolescenteId() {
 			return adolescenteId;

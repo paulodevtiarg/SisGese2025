@@ -40,15 +40,31 @@ private Long id;
     private Long adolescenteId;
     
     
-    public Long getAdolescenteId() {
-		return adolescenteId;
-	}
 
-	public void setAdolescenteId(Long adolescenteId) {
-		this.adolescenteId = adolescenteId;
-	}
-	  @NotBlank(message = "Foto da tatuagem é obrigatória")
+	
 	private String foto;
+	  
+	  public boolean isVazio() {
+		    return (local == null || local.isBlank()) &&
+		           (forma == null || forma.isBlank()) &&
+		           (descricao == null || descricao.isBlank()) &&
+		           temSignificado == null &&
+		           (qualSignificado == null || qualSignificado.isBlank()) &&
+		           anoRealizacao == null &&
+		           profissional == null &&
+		           interesseRemover == null;
+		}
+	  
+	  
+	  
+	    public Long getAdolescenteId() {
+			return adolescenteId;
+		}
+
+		public void setAdolescenteId(Long adolescenteId) {
+			this.adolescenteId = adolescenteId;
+		}
+	  
 
 	public Long getId() {
 		return id;

@@ -44,6 +44,9 @@ public class Endereco {
 
 	    @Column(name = "REFERENCIA", length = 255)
 	    private String referencia;
+	    
+	    @Column(name = "COMPLEMENTO", length = 255)
+	    private String complemento;
 
 	    @Column(name = "DATA_INICIO")
 	    private LocalDate dataInicio;
@@ -53,6 +56,21 @@ public class Endereco {
 
 	    @Column(name = "ATIVO")
 	    private Boolean ativo;
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+
+		public String getComplemento() {
+			return complemento;
+		}
+
+		public void setComplemento(String complemento) {
+			this.complemento = complemento;
+		}
 
 		public Long getId() {
 			return id;

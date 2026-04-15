@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Home</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="row" style="margin-top: -15px;">
+				<div class="col-12">
+					<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item active"><a th:href="@{/home}">
+									<i class="fa-duotone fa-solid fa-house fs-6"></i> Home
+							</a></li>
+							<li class="breadcrumb-item"><span class="text-muted"><i class="fa-duotone fa-solid fa-triangle-person-digging"></i> Em Construção</span></li>
+						</ol>
+					</nav>
+				</div>
+				
+
+				<div class="col-12" style="margin-top: -15px;">
+					<div class="card">
+						<div
+							class="card-header card-header-clinisys d-flex justify-content-between align-items-center fs-6 fw-semibold ">
+
+							<h5 class="mb-0">Em Construção</h5>
+							<a th:href="@{/home}"
+								class="btn btn-outline-sistema " data-bs-toggle="tooltip"
+								data-bs-placement="top" title="Voltar para Home"> <i class="fa-duotone fa-solid fa-backward"></i> Voltar
+							</a>
+
+						</div>
+						<div class="card-body">
+						<div class="row">
+    <div class="col-12 d-flex align-items-start justify-content-start"
+         th:style="'background-image: url(/img/construcao.png); 
+                     background-size: contain;  
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    height: 70vh;'">
+       
+   <div class="text-white p-4" style="background: rgba(0,0,0,0.5); border-radius: 8px;">
+    <h3>Sistema em construção</h3>
+    <p>Estamos trabalhando para trazer novidades em breve.</p>
+</div>
+
+    </div>
+</div>
+						</div>
+						
+					</div>
+					<!-- fim do card principal -->
+
+
+
+
+				</div>
+				<!-- fim da terceira col -->
+
+			</div>
+			<!-- fim da row dentro do container -->
+
+
+
+		</div>
+		<!-- fim do container-fluid -->
+	</div>
+	<!-- fim do content do fragmento -->
+	   
+</body>
+</html>

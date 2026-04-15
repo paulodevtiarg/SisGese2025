@@ -65,24 +65,26 @@
 						<input type="hidden" th:field="*{fotoRegistro}">
 						<div class="card">
 
-							<div class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
-    
-    <h5 class="mb-0 text-secondary">Novo Registro</h5>
+							<div
+								class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
 
-    <div class="d-flex gap-2">
-        <a th:href="@{${queryParams != null and queryParams != ''} ? 
+								<h5 class="mb-0 text-secondary">Novo Registro</h5>
+
+								<div class="d-flex gap-2">
+									<a
+										th:href="@{${queryParams != null and queryParams != ''} ? 
               '/adolescentes?' + queryParams : 
               '/adolescentes'}"
-           class="btn btn-outline-danger">
-            <i class="fa-duotone fa-solid fa-ban"></i> Cancelar
-        </a>
+										class="btn btn-outline-danger"> <i
+										class="fa-duotone fa-solid fa-ban"></i> Cancelar
+									</a>
 
-        <button type="submit" class="btn btn-outline-sistema">
-            <i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
-        </button>
-    </div>
+									<button type="submit" class="btn btn-outline-sistema">
+										<i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
+									</button>
+								</div>
 
-</div>
+							</div>
 
 
 							<div class="card-body">
@@ -450,17 +452,16 @@
 													<div class="col-md-2">
 														<label for="cep"
 															class="form-label fw-semibold text-secondary">
-															CEP <small>(Residência)</small>
+															CEP
 														</label> <input type="text" class="form-control mask-cep"
 															name="cep" th:value="${endereco.cep}" id="cep"
 															placeholder="00.000-000" maxlength="10"
-															oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-															onblur="buscarCep(this.value)">
+															oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 													</div>
 
 													<div class="col-md-4">
 														<label class="form-label fw-semibold text-secondary">
-															Logradouro <small>(Residência)</small>
+															Logradouro 
 														</label> <input type="text" name="logradouro"
 															th:value="${endereco.logradouro}" id="logradouro"
 															class="form-control"
@@ -471,18 +472,31 @@
 															th:if="${errosEndereco != null and errosEndereco['logradouro'] != null}"
 															th:text="${errosEndereco['logradouro']}"></div>
 													</div>
+													<div class="col-md-4">
+														<label class="form-label fw-semibold text-secondary">
+															Complemento </label> <input type="text" name="logradouro"
+															th:value="${endereco.complemento}" id="complemento"
+															class="form-control" placeholder="Qd, Lote...">
+
+
+													</div>
 
 													<div class="col-md-2">
 														<label class="form-label fw-semibold text-secondary">
-															Número <small>(Residência)</small>
+															Número
 														</label> <input type="text" name="numero"
 															th:value="${endereco.numero}" id="numero"
 															class="form-control" placeholder="00 ou S/N">
 													</div>
 
-													<div class="col-md-4">
+
+
+												</div>
+
+												<div class="row mt-3">
+													<div class="col-md-3">
 														<label class="form-label fw-semibold text-secondary">
-															Bairro <small>(Residência)</small>
+															Bairro
 														</label> <input type="text" name="bairro"
 															th:value="${endereco.bairro}" id="bairro"
 															class="form-control" placeholder="Digite o Bairro"
@@ -492,14 +506,9 @@
 															th:if="${errosEndereco != null and errosEndereco['bairro'] != null}"
 															th:text="${errosEndereco['bairro']}"></div>
 													</div>
-
-												</div>
-
-												<div class="row mt-3">
-
-													<div class="col-md-4">
+													<div class="col-md-3">
 														<label class="form-label fw-semibold text-secondary">
-															Cidade <small>(Residência)</small>
+															Cidade 
 														</label> <input type="text" name="cidade"
 															th:value="${endereco.cidade}" id="cidade"
 															class="form-control" placeholder="Digite a Cidade"
@@ -513,7 +522,7 @@
 													<div class="col-md-2">
 														<label for="uf"
 															class="form-label fw-semibold text-secondary"> UF
-															<small>(Residência)</small>
+															
 														</label><select name="uf" class="form-select" id="uf"
 															th:classappend="${errosEndereco != null and errosEndereco['uf'] != null} ? 'is-invalid' : ''">
 
@@ -530,7 +539,7 @@
 															th:text="${errosEndereco['uf']}"></div>
 													</div>
 
-													<div class="col-md-6">
+													<div class="col-md-4">
 														<label class="form-label fw-semibold text-secondary">
 															Referência <small>(do Endereço)</small>
 														</label> <input type="text" name="referencia"

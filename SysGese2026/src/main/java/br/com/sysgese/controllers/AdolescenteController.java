@@ -94,8 +94,6 @@ public class AdolescenteController {
 	@Autowired
 	private LotacaoService lotacaoService;
 	   
-	 @Autowired
-	 private InternacaoService internacaoService;
 	
 	 @Autowired
 	 private CicatrizMapper cicatrizMapper;
@@ -297,82 +295,117 @@ public class AdolescenteController {
 		    // =====================================================
 		    // 🩹 CICATRIZES
 		    // =====================================================
-		    if (dto.getCicatrizes() != null && !dto.getCicatrizes().isEmpty()) {
+		        if (dto.getCicatrizes() != null && !dto.getCicatrizes().isEmpty()) {
 
-		        List<Cicatriz> cicatrizes = dto.getCicatrizes()
-		                .stream()
-		                .map(cicatrizMapper::toEntity)
-		                .toList();
+		            List<Cicatriz> cicatrizesSalvas = new ArrayList<>();
 
-		        if (cicatrizFiles != null && !cicatrizFiles.isEmpty()) {
+		            for (int i = 0; i < dto.getCicatrizes().size(); i++) {
 
-		            for (int i = 0; i < cicatrizes.size(); i++) {
-		                Cicatriz cicatriz = cicatrizes.get(i);
+		                var dtoCicatriz = dto.getCicatrizes().get(i);
+
+		                MultipartFile file = (cicatrizFiles != null && i < cicatrizFiles.size())
+		                        ? cicatrizFiles.get(i)
+		                        : null;
+
+		                boolean temDados = !dtoCicatriz.isVazio();
+		                boolean temArquivo = (file != null && !file.isEmpty());
+
+		                // 🔥 REGRA DE OURO
+		                if (!temDados && !temArquivo) {
+		                    continue;
+		                }
+
+		                Cicatriz cicatriz = cicatrizMapper.toEntity(dtoCicatriz);
 		                cicatriz.setAdolescente(adolescente);
 
-		                if (i < cicatrizFiles.size() && !cicatrizFiles.get(i).isEmpty()) {
-
-		                    String url = cloudinaryService.upload(cicatrizFiles.get(i), "cicatrizes");
+		                if (temArquivo) {
+		                    String url = cloudinaryService.upload(file, "cicatrizes");
 		                    cicatriz.setFoto(url);
 		                }
+
+		                cicatrizesSalvas.add(cicatriz);
 		            }
 
-		            cicatrizService.salvarLista(cicatrizes);
+		            if (!cicatrizesSalvas.isEmpty()) {
+		                cicatrizService.salvarLista(cicatrizesSalvas);
+		            }
 		        }
 
-		     
-		    }
-
-		    // =====================================================
-		    // 🖋️ TATUAGENS
-		    // =====================================================
+		
+		    
 		    if (dto.getTatuagens() != null && !dto.getTatuagens().isEmpty()) {
 
-		        List<Tatuagem> tatuagens = dto.getTatuagens()
-		                .stream()
-		                .map(tatuagemMapper::toEntity)
-		                .toList();
+		        List<Tatuagem> tatuagensSalvas = new ArrayList<>();
 
-		        if (tatuagemFiles != null && !tatuagemFiles.isEmpty()) {
+		        for (int i = 0; i < dto.getTatuagens().size(); i++) {
 
-		            for (int i = 0; i < tatuagens.size(); i++) {
-		                Tatuagem tatuagem = tatuagens.get(i);
-		                tatuagem.setAdolescente(adolescente);
+		            var dtoTatuagem = dto.getTatuagens().get(i);
 
-		                if (i < tatuagemFiles.size() && !tatuagemFiles.get(i).isEmpty()) {
+		            MultipartFile file = (tatuagemFiles != null && i < tatuagemFiles.size())
+		                    ? tatuagemFiles.get(i)
+		                    : null;
 
-		                    String url = cloudinaryService.upload(tatuagemFiles.get(i), "tatuagens");
-		                    tatuagem.setFoto(url);
-		                }
+		            boolean temDados = !dtoTatuagem.isVazio();
+		            boolean temArquivo = (file != null && !file.isEmpty());
+
+		            // 🔥 REGRA DE OURO
+		            if (!temDados && !temArquivo) {
+		                continue; // ignora completamente
 		            }
 
-		            tatuagemService.salvarLista(tatuagens);
+		            Tatuagem tatuagem = tatuagemMapper.toEntity(dtoTatuagem);
+		            tatuagem.setAdolescente(adolescente);
+
+		            if (temArquivo) {
+		                String url = cloudinaryService.upload(file, "tatuagens");
+		                tatuagem.setFoto(url);
+		            }
+
+		            tatuagensSalvas.add(tatuagem);
 		        }
 
-		       
+		        if (!tatuagensSalvas.isEmpty()) {
+		            tatuagemService.salvarLista(tatuagensSalvas);
+		        }
 		    }
 
 		    // =====================================================
 		    // 📷 FOTOS DO ADOLESCENTE
 		    // =====================================================
-		    if (fotosFiles != null && !fotosFiles.isEmpty()) {
+		    if (dto.getFotos() != null && !dto.getFotos().isEmpty()) {
 
-		        List<Foto> listaFotos = new ArrayList<>();
+		        List<Foto> fotosSalvas = new ArrayList<>();
 
-		        for (MultipartFile file : fotosFiles) {
-		            if (!file.isEmpty()) {
+		        for (int i = 0; i < dto.getFotos().size(); i++) {
 
-		                Foto foto = new Foto();
-		                foto.setAdolescente(adolescente);
+		            var dtoFoto = dto.getFotos().get(i);
 
+		            MultipartFile file = (fotosFiles != null && i < fotosFiles.size())
+		                    ? fotosFiles.get(i)
+		                    : null;
+
+		            boolean temDados = !dtoFoto.isVazio();
+		            boolean temArquivo = (file != null && !file.isEmpty());
+
+		            if (!temDados && !temArquivo) {
+		                continue;
+		            }
+
+		            Foto foto = new Foto();
+		            foto.setAdolescente(adolescente);
+		            foto.setDescricaoDetalhe(dtoFoto.getDescricaoDetalhe());
+
+		            if (temArquivo) {
 		                String url = cloudinaryService.upload(file, "adolescentes");
 		                foto.setFoto(url);
-
-		                listaFotos.add(foto);
 		            }
+
+		            fotosSalvas.add(foto);
 		        }
 
-		        fotoService.salvarLista(listaFotos);
+		        if (!fotosSalvas.isEmpty()) {
+		            fotoService.salvarLista(fotosSalvas);
+		        }
 		    }
 		    redirectAttributes.addFlashAttribute("msgOk", "Adolescente salvo com sucesso!");
 		   
