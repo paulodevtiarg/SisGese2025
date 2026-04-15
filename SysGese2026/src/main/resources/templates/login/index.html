@@ -28,23 +28,30 @@
 
 
 body, html {
-	height: 100%;
+	min-height: 100vh;
 	margin: 0;
 	padding: 1px;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 }
 
+
+
 body {
-     display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
+
+    min-height: 90vh;
 
     background: url('/img/bg-login-2.png') no-repeat center center fixed;
     background-size: cover;
 
     overflow: hidden;
 }
+
+
+
 /*
 body {
     display: flex;
@@ -100,21 +107,22 @@ body {
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-top:auto;
 }
 
 .login-card {
     width: 100%;
-    max-width: 450px;   /* menor */
-   
-    padding: 0.5rem 0.9rem;
+    max-width: 450px;
+    padding: 1rem 0.9rem;
+    /*padding: 0.5rem 0.9rem;*/
     border-radius: 22px;
-   background: rgba(255, 255, 255, 0.82);
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-border: 1px solid rgba(255, 255, 255, 0.35);
-   /* box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);*/
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    max-height: 95vh;   /* impede de estourar a tela */
      transition: box-shadow 0.25s ease;
-   /*  transition: transform 0.25s ease, box-shadow 0.25s ease;*/
+  
 }
 
 .login-card:hover {
@@ -125,7 +133,7 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 /* Header do card com logo */
 .login-header {
 	text-align: center;
-	margin-bottom: 2.5rem;
+	margin-bottom: 0.5rem;
 }
 
 .logo {
@@ -158,7 +166,7 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 	font-size: 1.4rem;
 	font-weight: 600;
 	color: #2d3436;
-	margin-bottom: 1.5rem;
+	margin-bottom: 0.5rem;
 	position: relative;
 }
 
@@ -176,7 +184,7 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 
 /* Opções de login */
 .login-options {
-	margin-bottom: 1.5rem;
+	margin-bottom: 0.5rem;
 	padding:2px;
 }
 
@@ -328,7 +336,7 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 	cursor: pointer;
 	transition: all 0.3s;
 	margin-top: 0.5rem;
-	margin-bottom: 2rem;
+	margin-bottom: 0.5rem;
 }
 
 .login-btn:hover {
@@ -340,26 +348,7 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 	transform: translateY(0);
 }
 
-/* Divisor "or sign up using" */
-.divider {
-	display: flex;
-	align-items: center;
-	margin-bottom: 1.5rem;
-	text-align: center;
-}
 
-.divider-line {
-	flex: 1;
-	height: 1px;
-	background-color: #dee2e6;
-}
-
-.divider-text {
-	padding: 0 15px;
-	color: #6c757d;
-	font-size: 0.9rem;
-	font-weight: 500;
-}
 
 /* Botões sociais */
 .social-login {
@@ -445,14 +434,14 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 /* Responsividade */
 @media ( max-width : 768px) {
 	.login-wrapper {
-		padding: 15px;
+		padding: 10px;
 	}
 	.login-card {
 		padding: 2.5rem 2rem;
 		max-width: 90%;
 	}
 	.logo {
-		max-width: 150px;
+		max-width: 90px;
 	}
 	.brand-title {
 		font-size: 1.6rem;
@@ -464,8 +453,8 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 
 @media ( max-width : 576px) {
 	.login-card {
-		padding: 2rem 1.5rem;
-		max-width: 100%;
+		padding: 0.5rem 0.8rem;
+		max-width: 90%;
 		border-radius: 20px;
 	}
 	.logo {
@@ -479,7 +468,7 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 	}
 	.options-group {
 		flex-direction: column;
-		gap: 10px;
+		gap: 5px;
 	}
 	.option-item {
 		padding: 8px 12px;
@@ -488,7 +477,7 @@ border: 1px solid rgba(255, 255, 255, 0.35);
 		padding: 12px 14px;
 	}
 	.login-btn {
-		padding: 14px;
+		padding: 6px;
 	}
 }
 
@@ -575,6 +564,27 @@ to {
     font-weight: 400;
     letter-spacing: 0.4px;
 }
+
+@media (max-height: 700px) {
+    .login-card {
+        transform: scale(0.92);
+        transform-origin: center;
+    }
+}
+
+@media (max-height: 600px) {
+    .login-card {
+        transform: scale(0.85);
+    }
+}
+
+@media (max-height: 500px) {
+    .login-card {
+        transform: scale(0.78);
+    }
+}
+
+
 </style>
 </head>
 <body>
@@ -583,6 +593,8 @@ to {
 
 
 	<div class="login-wrapper">
+	
+
 		<div class="login-card fade-in">
 			<!-- Header com logo -->
 			<div class="login-header">
@@ -592,7 +604,7 @@ to {
 			</div>
 
 			<!-- Título do login -->
-			<div class="login-title">Login - SISGESE</div>
+			<div class="login-title">Login - SYSGESE</div>
 <div class="system-version">Sistema de Gestão Socioeducativo.
 					V.1.0.2026</div>
 			<!-- Opções de tipo de login -->
@@ -662,10 +674,7 @@ to {
 			<!-- Mensagem de erro -->
 			<div th:if="${erro}" class="error-message" th:text="${erro}"></div>
 
-			<!-- Divisor -->
-			<div class="divider">
-				<div class="divider-line"></div>
-			</div>
+		
 
 			<!-- Forgot password -->
 			<div class="forgot-password">
@@ -674,6 +683,7 @@ to {
 
 
 		</div>
+	
 	</div>
 	
 	<div id="loadingOverlay" style="display:none;">
@@ -861,5 +871,7 @@ function bloquearBotao(botao) {
     botao.disabled = true;
 }
 </script>
+
+
 </body>
 </html>

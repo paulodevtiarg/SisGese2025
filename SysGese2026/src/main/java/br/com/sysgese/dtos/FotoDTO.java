@@ -8,7 +8,7 @@ public class FotoDTO {
     @NotBlank(message = "Descrição  é obrigatório")
     private String descricaoDetalhe;
     
-    @NotBlank(message = "Foto  é obrigatório")
+  
     private String foto;
 
     
@@ -17,7 +17,9 @@ public class FotoDTO {
     @NotNull(message = "Adolescente é obrigatório")
     private Long adolescenteId;
     
-    
+    public boolean isVazio() {
+        return (descricaoDetalhe == null || descricaoDetalhe.isBlank());
+    }
     
     public Long getAdolescenteId() {
 		return adolescenteId;

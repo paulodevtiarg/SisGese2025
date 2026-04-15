@@ -477,95 +477,92 @@
 																<div class="accordion-body">
 																	<!-- SEU HTML ATUAL AQUI -->
 																	<div class="row">
-																		<div class="col-md-6">
-																			<div class="row">
-																				<div class="col-md-6  mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Cep.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${adolescente.enderecoAtual.cep}"
-																							disabled>
-																					</div>
-																				</div>
-																				<div class="col-md-6  mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Lograd.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${adolescente.enderecoAtual.logradouro}"
-																							disabled>
-																					</div>
-																				</div>
+																		<div class="col-md-2 mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Cep.<small>
+																						(Res.)</small>
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.cep}"
+																					disabled>
 																			</div>
-																			<div class="row">
-																				<div class="col-md-6 mt-1 mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Cidade.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${adolescente.enderecoAtual.cidade}"
-																							disabled>
-																					</div>
-																				</div>
-																				<div class="col-md-6 mt-1 mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Estado.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${adolescente.enderecoAtual.uf}"
-																							disabled>
-																					</div>
-																				</div>
-
-																			</div>
-
 																		</div>
-																		<div class="col-md-6">
-																			<div class="row">
-																				<div class="col-md-6  mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Bairro.
-																							<small> (Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${adolescente.enderecoAtual.bairro}"
-																							disabled>
-																					</div>
-																				</div>
-																				<div class="col-md-6  mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Número.<small>(res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${adolescente.enderecoAtual.numero}"
-																							disabled>
-																					</div>
-																				</div>
-
+																		<div class="col-md-4  mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Logradouro
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.logradouro}"
+																					disabled>
 																			</div>
-																			<div class="row">
-																				<div class="col-md-12 mt-1 mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Referência.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${adolescente.enderecoAtual.referencia}"
-																							disabled>
-																					</div>
-																				</div>
-
+																		</div>
+																		<div class="col-md-4  mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Copmlemento
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.complemento}"
+																					disabled>
 																			</div>
-
-
+																		</div>
+																		<div class="col-md-2  mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Número.<small>(res.)</small>
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.numero}"
+																					disabled>
+																			</div>
 																		</div>
 
 																	</div>
+																	<div class="row">
+																		<div class="col-md-6  mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Bairro.
+
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.bairro}"
+																					disabled>
+																			</div>
+																		</div>
+																		<div class="col-md-6 mt-1 mb-1">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Cidade.
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.cidade}"
+																					disabled>
+																			</div>
+																		</div>
+
+
+
+
+																	</div>
+
+																	<div class="row">
+																		<div class="col-md-6 mb-1">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Estado.
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.uf}" disabled>
+																			</div>
+																		</div>
+																		<div class="col-md-6 mt-1 mb-1">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Referência
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${adolescente.enderecoAtual.referencia}"
+																					disabled>
+																			</div>
+																		</div>
+
+																	</div>
+																	<!-- fm da rowzona -->
 																</div>
 															</div>
 														</div>
@@ -590,88 +587,90 @@
 
 																<div class="accordion-body">
 																	<div class="row">
-																		<div class="col-md-6">
-																			<div class="row">
-																				<div class="col-md-6  mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Cep.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${end.cep}" disabled>
-																					</div>
-																				</div>
-																				<div class="col-md-6 mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Lograd.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${end.logradouro}" disabled>
-																					</div>
-																				</div>
-																			</div>
-																			<div class="row">
-																				<div class="col-md-6 mt-1 mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Cidade.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${end.cidade}" disabled>
-																					</div>
-																				</div>
-																				<div class="col-md-6 mt-1 mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Estado.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${end.uf}" disabled>
-																					</div>
-																				</div>
-
+																		<div class="col-md-2 mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Cep.<small>
+																						(Res.)</small>
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.cep}" disabled>
 																			</div>
 
 																		</div>
-																		<div class="col-md-6">
-																			<div class="row">
-																				<div class="col-md-6  mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Bairro.
-																							<small> (Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${end.bairro}" disabled>
-																					</div>
-																				</div>
-																				<div class="col-md-6  mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Número.<small>(res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${end.numero}" disabled>
-																					</div>
-																				</div>
-
+																		<div class="col-md-4 mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Logradouro
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.logradouro}" disabled>
 																			</div>
-																			<div class="row">
-																				<div class="col-md-12 mt-1 mb-1">
-																					<div class="input-group">
-																						<span class="input-group-text label-fixa">Referência.<small>
-																								(Res.)</small>
-																						</span> <input type="text"
-																							class="form-control fw-bolder fs-6"
-																							th:value="${end.referencia}" disabled>
-																					</div>
-																				</div>
-
-																			</div>
-
-
 																		</div>
+																		<div class="col-md-4 mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Complemento
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.complemento}" disabled>
+																			</div>
+																		</div>
+																		<div class="col-md-2  mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Número
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.numero}" disabled>
+																			</div>
+																		</div>
+
 
 																	</div>
+																	<div class="row">
+																		<div class="col-md-6  mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Bairro.
+
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.bairro}" disabled>
+																			</div>
+																		</div>
+																		<div class="col-md-6 mt-1 mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Cidade.<small>
+																						(Res.)</small>
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.cidade}" disabled>
+																			</div>
+																		</div>
+
+
+																	</div>
+																	<div class="row">
+																		<div class="col-md-6 mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Estado
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.uf}" disabled>
+																			</div>
+																		</div>
+																		<div class="col-md-6 mb-2">
+																			<div class="input-group">
+																				<span class="input-group-text label-fixa">Referência.<small>
+																						(Res.)</small>
+																				</span> <input type="text"
+																					class="form-control fw-bolder fs-6"
+																					th:value="${end.referencia}" disabled>
+																			</div>
+																		</div>
+
+
+																	</div>
+
+
+
+
 																</div>
 															</div>
 
@@ -796,17 +795,7 @@
 														</div>
 
 													</div>
-													<div class="row">
-														<div class="col-md-12 mt-1 mb-1">
-															<div class="input-group">
-																<span class="input-group-text label-fixa">Obs.
-																	Nariz </span> <input type="text"
-																	class="form-control fw-bolder fs-6"
-																	th:value="${adolescente.obsNariz}" disabled>
-															</div>
-														</div>
 
-													</div>
 													<div class="row">
 														<div class="col-md-6 mt-1 mb-1">
 															<div class="input-group">
@@ -825,6 +814,16 @@
 															</div>
 														</div>
 
+													</div>
+													<div class="row">
+														<div class="col-md-12 mt-1 mb-1">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Saúde </span>
+																<input type="text" class="form-control fw-bolder fs-6"
+																	th:value="${adolescente.condSaude}" disabled>
+															</div>
+														</div>
+													
 													</div>
 
 
@@ -877,6 +876,7 @@
 														</div>
 													</div>
 													<div class="row">
+													
 														<div class="col-md-12 mt-1 mb-1">
 															<div class="input-group">
 																<span class="input-group-text label-fixa">Dentes
@@ -893,15 +893,7 @@
 
 
 											</div>
-											<div class="row">
-												<div class="col-md-12 mt-1 mb-1">
-													<div class="input-group">
-														<span class="input-group-text label-fixa">Saúde </span> <input
-															type="text" class="form-control fw-bolder fs-6"
-															th:value="${adolescente.condSaude}" disabled>
-													</div>
-												</div>
-											</div>
+
 
 
 
