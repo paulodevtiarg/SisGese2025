@@ -755,4 +755,56 @@ document.addEventListener("click", function (e) {
 </script>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const cpfInput = document.getElementById("cpf");
+
+    if (!cpfInput) {
+        console.log("Campo CPF não encontrado");
+        return;
+    }
+
+    cpfInput.addEventListener("blur", function () {
+
+        console.log("DISPAROU"); // 🔥 teste
+
+        let cpf = this.value;
+
+        if (cpf.length < 14) return;
+
+        fetch(`/adolescentes/verificar-cpf?cpf=${cpf}`)
+            .then(res => res.json())
+            .then(data => {
+
+                console.log(data); // 🔥 debug
+
+                if (!data.existe) return;
+
+                if (data.internacaoAtiva) {
+                    alert(`⚠️ Adolescente já cadastrado (ID: ${data.id})
+Está INTERNADO atualmente.
+Você NÃO pode alterar ou internar novamente.`);
+                    return;
+                }
+
+                let editar = confirm(
+                    `⚠️ Adolescente já existe!\n\n` +
+                    `Nome: ${data.nome}\n` +
+                    `ID: ${data.id}\n\n` +
+                    `Deseja editar o cadastro?`
+                );
+
+                if (editar) {
+                    window.location.href = `/adolescentes/editar/${data.id}`;
+                }
+
+            })
+            .catch(err => console.error("Erro:", err));
+
+    });
+
+});
+</script>
+
 </th:block>

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -53,7 +55,6 @@ import br.com.sysgese.services.CicatrizService;
 import br.com.sysgese.services.CloudinaryService;
 import br.com.sysgese.services.EnderecoService;
 import br.com.sysgese.services.FotoService;
-import br.com.sysgese.services.InternacaoService;
 import br.com.sysgese.services.LotacaoService;
 import br.com.sysgese.services.TatuagemService;
 import br.com.sysgese.services.UnidadeService;
@@ -437,6 +438,17 @@ public class AdolescenteController {
 
         return "adolescente/detalhes";
     }
+    
+    @GetMapping("/verificar-cpf")
+    @ResponseBody
+    public ResponseEntity<?> verificarCpf(@RequestParam String cpf) {
+
+        Map<String, Object> response = adolescenteService.verificarCpf(cpf);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    
 	
 }
 
