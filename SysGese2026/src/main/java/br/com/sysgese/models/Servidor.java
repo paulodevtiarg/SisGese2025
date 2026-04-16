@@ -1,6 +1,7 @@
 package br.com.sysgese.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import br.com.sysgese.enumerators.EstadosEnum;
 import jakarta.persistence.Column;
@@ -94,7 +95,20 @@ public class Servidor {
 
     @Column(name = "DATA_ALT")
     private LocalDate dataAlt;
+    
+    
+    
+    @Column(name="PRIMEIRO_ACESSO")
+    private Boolean primeiroAcesso;
 
+    @Column(name="CODIGO_SEGURANCA")
+    private String codigoSeguranca;
+    
+    
+    @Column(name="CODIGO_EXPIRACAO")
+    private LocalDateTime dataExpiracao;
+    
+    
     // =============================
     // CONTROLE AUTOMÁTICO
     // =============================
@@ -112,6 +126,37 @@ public class Servidor {
     public void preUpdate() {
         this.dataAlt = LocalDate.now();
     }
+    
+    
+    
+    
+    
+    
+    
+
+	public Boolean getPrimeiroAcesso() {
+		return primeiroAcesso;
+	}
+
+	public void setPrimeiroAcesso(Boolean primeiroAcesso) {
+		this.primeiroAcesso = primeiroAcesso;
+	}
+
+	public String getCodigoSeguranca() {
+		return codigoSeguranca;
+	}
+
+	public void setCodigoSeguranca(String codigoSeguranca) {
+		this.codigoSeguranca = codigoSeguranca;
+	}
+
+	public LocalDateTime getDataExpiracao() {
+		return dataExpiracao;
+	}
+
+	public void setDataExpiracao(LocalDateTime dataExpiracao) {
+		this.dataExpiracao = dataExpiracao;
+	}
 
 	public Long getId() {
 		return id;

@@ -1,8 +1,10 @@
 package br.com.sysgese.dtos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import br.com.sysgese.enumerators.EstadosEnum;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -70,11 +72,25 @@ public class ServidorDTO {
 
     private String foto;
 
-    @NotNull(message = "Status é obrigatório")
     private Integer status;
+    
+   
+    private Boolean primeiroAcesso;
+
+   
+    private String codigoSeguranca;
+    
+    
+ 
+    private LocalDateTime dataExpiracao;
+    
+    
+    
 
     private LocalDate dataCad;
     private LocalDate dataAlt;
+    
+    
 	public Long getId() {
 		return id;
 	}
@@ -202,6 +218,26 @@ public class ServidorDTO {
 	public void setFoto(String foto) {
 		this.foto = foto;
 	}
+	public Boolean getPrimeiroAcesso() {
+		return primeiroAcesso;
+	}
+	public void setPrimeiroAcesso(Boolean primeiroAcesso) {
+		this.primeiroAcesso = primeiroAcesso;
+	}
+	public String getCodigoSeguranca() {
+		return codigoSeguranca;
+	}
+	public void setCodigoSeguranca(String codigoSeguranca) {
+		this.codigoSeguranca = codigoSeguranca;
+	}
+	public LocalDateTime getDataExpiracao() {
+		return dataExpiracao;
+	}
+	public void setDataExpiracao(LocalDateTime dataExpiracao) {
+		this.dataExpiracao = dataExpiracao;
+	}
+	
+	
 
 
    
