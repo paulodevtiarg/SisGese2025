@@ -46,7 +46,14 @@ public class ForgotPasswordController {
 
 	        servidorRepository.save(servidor);
 
-	        emailService.enviarCodigo(servidor.getEmail(), codigo);
+	        emailService.enviarCodigo(
+	        	    servidor.getEmail(),
+	        	    codigo,
+	        	    servidor.getPrimeiroAcesso()
+	        	);
+	        
+	        // 🔥 AQUI:
+	        ra.addFlashAttribute("primeiroAcesso", servidor.getPrimeiroAcesso());
 
 	        return "redirect:/login?modo=reset&login=" + login;
 	    }
@@ -104,6 +111,8 @@ public class ForgotPasswordController {
 	        }
 
 	        servidor.setSenha(senha);
+	        // 🔥 AQUI
+	        servidor.setPrimeiroAcesso(false);
 	        servidor.setCodigoSeguranca(null);
 	        servidor.setDataExpiracao(null);
 
