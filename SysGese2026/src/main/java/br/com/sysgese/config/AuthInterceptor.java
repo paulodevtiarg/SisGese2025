@@ -25,7 +25,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     	     uri.startsWith("/js") ||
     	     uri.startsWith("/images") ||
     	     uri.startsWith("/img") ||
-    	     uri.startsWith("/uploads")) {
+    	     uri.startsWith("/uploads") ||
+    		 uri.startsWith("/esqueci-senha") ||
+    		 uri.startsWith("/reset-senha")||
+    		 uri.startsWith("/validar-reset-senha")){
     	     return true;
     	 }
 

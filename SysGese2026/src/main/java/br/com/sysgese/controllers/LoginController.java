@@ -4,9 +4,9 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,11 +23,22 @@ public class LoginController {
 	
 	@Autowired
 	private LotacaoService lotacaoService;
-	
+	/*
 	@GetMapping("/login")
     public String loginPage() {
         return "login/index";
-    }
+    } */
+	
+	@GetMapping("/login")
+	public String loginPage(@RequestParam(required = false) String modo,
+	                        @RequestParam(required = false) String login,
+	                        Model model) {
+
+	    model.addAttribute("modo", modo == null ? "login" : modo);
+	    model.addAttribute("login", login);
+
+	    return "login/index";
+	}
 	
 	@PostMapping("/login")
 	public String login(
@@ -45,6 +56,12 @@ public class LoginController {
 	        ra.addFlashAttribute("erro", "Usuário ou senha inválidos");
 	        return "redirect:/login";
 	    }
+	    
+	     // 🔥 NOVO: bloqueia primeiro acesso
+	    if (servidor.getPrimeiroAcesso() != null && servidor.getPrimeiroAcesso()) {
+	        session.setAttribute("usuarioTemp", servidor);
+	        return "redirect:/validar-codigo";
+	    }
 	
         
         Lotacao lotacao = lotacaoService.findAtivaByServidorId(servidor.getId())
@@ -58,10 +75,7 @@ public class LoginController {
             ra.addFlashAttribute("erro", "Usuário sem lotação ativa");
             return "redirect:/login";
         }
-        
-        
-       
-        
+              
 
         // 🔥 Calcula isMaster UMA VEZ
         boolean isMaster = Set.of(
