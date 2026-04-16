@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import br.com.sysgese.dtos.CicatrizDTO;
 import br.com.sysgese.dtos.EnderecoDTO;
 import br.com.sysgese.dtos.FotoDTO;
 import br.com.sysgese.dtos.TatuagemDTO;
+import br.com.sysgese.enumerators.StatusInternacaoEnum;
 import br.com.sysgese.mappers.AdolescenteMapper;
 import br.com.sysgese.models.Adolescente;
 import br.com.sysgese.models.Cicatriz;
@@ -415,4 +417,32 @@ public class AdolescenteService {
     public void excluir(Long id) {
         repository.deleteById(id);
     }
+    
+    
+    public Map<String, Object> verificarCpf(String cpf) {
+
+        Optional<Adolescente> opt = repository.findByCpf(cpf);
+
+        if (opt.isEmpty()) {
+            return Map.of("existe", false);
+        }
+
+        Adolescente adolescente = opt.get();
+
+        boolean temInternacaoAtiva = internacaoRepository
+                .existsByAdolescenteIdAndStatus(
+                        adolescente.getId(),
+                        StatusInternacaoEnum.ATIVA
+                );
+
+        return Map.of(
+                "existe", true,
+                "id", adolescente.getId(),
+                "nome", adolescente.getNome(),
+                "internacaoAtiva", temInternacaoAtiva
+        );
+    }
+    
+    
+    
 }
