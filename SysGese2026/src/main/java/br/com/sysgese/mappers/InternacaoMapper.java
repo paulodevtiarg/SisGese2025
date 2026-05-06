@@ -1,4 +1,4 @@
-package br.com.sysgese.mappers;
+ package br.com.sysgese.mappers;
 
 import java.util.List;
 
@@ -17,8 +17,20 @@ public interface InternacaoMapper {
     // ==============================
     // ENTITY -> DTO
     // ==============================
+
+	
     @Mapping(source = "adolescente.id", target = "idAdolescente")
     @Mapping(source = "unidade.id", target = "idUnidade")
+    @Mapping(source = "unidade.nome", target = "nomeUnidade")
+    @Mapping(source = "adolescente.nome", target = "nomeAdolescente")
+    @Mapping(source = "adolescente.cidadeNascimento", target = "cidadeAdolescente")
+   
+    @Mapping(source = "adolescente.ufNascimento", target = "ufAdolescente")
+    @Mapping(source = "adolescente.fotoRegistro", target = "fotoAdolescente")
+    @Mapping(source = "unidade.nome", target = "nomeUnidadeInternacao")
+    @Mapping(source = "adolescente.unidadeCadastro.nome", target = "nomeUnidadeCadastro")
+    @Mapping(source = "adolescente.idade", target = "idadeAdolescente")
+    @Mapping(source = "adolescente.mae", target = "maeDoAdolescente")
     InternacaoDTO toDTO(Internacao entity);
 
     List<InternacaoDTO> toDTOList(List<Internacao> entities);

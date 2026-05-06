@@ -383,4 +383,7 @@
     border-radius: 10px;
 }
 
-
+.chart-area {
+    position: relative !important;
+    height: 320px !important;
+}

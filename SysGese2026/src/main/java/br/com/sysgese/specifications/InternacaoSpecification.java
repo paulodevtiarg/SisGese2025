@@ -73,4 +73,46 @@ public class InternacaoSpecification {
     private static Specification<Internacao> alwaysTrue() {
         return (root, query, cb) -> cb.conjunction();
     }
+    
+    public static Specification<Internacao> unidade(Long unidadeId) {
+        return (root, query, cb) -> {
+            if (unidadeId == null) return null;
+            return cb.equal(root.get("unidade").get("id"), unidadeId);
+        };
+    }
+
+    public static Specification<Internacao> nomeAdolescente(String nome) {
+        return (root, query, cb) -> {
+            if (nome == null || nome.isBlank()) return null;
+            return cb.like(
+                cb.upper(root.get("adolescente").get("nome")),
+                "%" + nome.toUpperCase() + "%"
+            );
+        };
+    }
+
+    public static Specification<Internacao> cidadeAdolescente(String cidade) {
+        return (root, query, cb) -> {
+            if (cidade == null || cidade.isBlank()) return null;
+            return cb.like(
+                cb.upper(root.get("adolescente").get("cidade")),
+                "%" + cidade.toUpperCase() + "%"
+            );
+        };
+    }
+
+    public static Specification<Internacao> tipoMedida(String tipo) {
+        return (root, query, cb) -> {
+            if (tipo == null || tipo.isBlank()) return null;
+            return cb.equal(root.get("tipoMedida"), tipo);
+        };
+    }
+
+    public static Specification<Internacao> status(StatusInternacaoEnum status) {
+        return (root, query, cb) -> {
+            if (status == null) return null;
+            return cb.equal(root.get("status"), status);
+        };
+    }
+    
 }

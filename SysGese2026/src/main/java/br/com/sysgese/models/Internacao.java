@@ -2,6 +2,9 @@ package br.com.sysgese.models;
 
 import java.time.LocalDate;
 
+import br.com.sysgese.enumerators.DocumentosEnum;
+import br.com.sysgese.enumerators.MotivoEnum;
+import br.com.sysgese.enumerators.ProcedenciaEnum;
 import br.com.sysgese.enumerators.StatusInternacaoEnum;
 import br.com.sysgese.enumerators.TipoMedidaEnum;
 import jakarta.persistence.Column;
@@ -33,7 +36,7 @@ public class Internacao {
     @JoinColumn(name = "ID_UNIDADE", nullable = false)
     private Unidade unidade;
 
-    @Column(name = "NUMERO_PROCESSO", nullable = false, length = 50)
+    @Column(name = "NUMERO_DOC_APRESENTADO", nullable = false, length = 50)
     private String numeroProcesso;
 
     @Enumerated(EnumType.STRING)
@@ -49,8 +52,9 @@ public class Internacao {
     @Column(name = "DATA_SAIDA")
     private LocalDate dataSaida;
 
-    @Column(name = "MOTIVO", nullable = false, columnDefinition = "TEXT")
-    private String motivo;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "MOTIVO", nullable = false)
+    private MotivoEnum motivo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false, length = 20)
@@ -61,6 +65,28 @@ public class Internacao {
 
     @Column(name = "DATA_ALT", nullable = false)
     private LocalDate dataAlt;
+    
+    @Column(name="REICIDENTE", nullable=true)
+    private Boolean reicidente;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "DOC_APRESENTADO", nullable = false)
+    private DocumentosEnum docApresentado;
+    
+    @Column(name = "DATA_APREENSAO", nullable = false)
+    private LocalDate dataAprensao;
+    
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PROCEDENCIA", nullable = false)
+    private ProcedenciaEnum procedencia;
+    
+    
+    @Column(name = "PROCED_OUTRO", nullable = false, length = 50)
+    private String procedenciaOutros;
+    
+    @Column(name = "PROCED_TRANSF", nullable = false, length = 50)
+    private String procedenciaTransferecia;
 
     @PrePersist
     public void prePersist() {
@@ -138,13 +164,7 @@ public class Internacao {
 		this.dataSaida = dataSaida;
 	}
 
-	public String getMotivo() {
-		return motivo;
-	}
 
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
 
 	public StatusInternacaoEnum getStatus() {
 		return status;
@@ -169,6 +189,68 @@ public class Internacao {
 	public void setDataAlt(LocalDate dataAlt) {
 		this.dataAlt = dataAlt;
 	}
+
+	public MotivoEnum getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(MotivoEnum motivo) {
+		this.motivo = motivo;
+	}
+
+	public Boolean getReicidente() {
+		return reicidente;
+	}
+
+	public void setReicidente(Boolean reicidente) {
+		this.reicidente = reicidente;
+	}
+
+	public DocumentosEnum getDocApresentado() {
+		return docApresentado;
+	}
+
+	public void setDocApresentado(DocumentosEnum docApresentado) {
+		this.docApresentado = docApresentado;
+	}
+
+	public LocalDate getDataAprensao() {
+		return dataAprensao;
+	}
+
+	public void setDataAprensao(LocalDate dataAprensao) {
+		this.dataAprensao = dataAprensao;
+	}
+
+	public ProcedenciaEnum getProcedencia() {
+		return procedencia;
+	}
+
+	public void setProcedencia(ProcedenciaEnum procedencia) {
+		this.procedencia = procedencia;
+	}
+
+	public String getProcedenciaOutros() {
+		return procedenciaOutros;
+	}
+
+	public void setProcedenciaOutros(String procedenciaOutros) {
+		this.procedenciaOutros = procedenciaOutros;
+	}
+
+	public String getProcedenciaTransferecia() {
+		return procedenciaTransferecia;
+	}
+
+	public void setProcedenciaTransferecia(String procedenciaTransferecia) {
+		this.procedenciaTransferecia = procedenciaTransferecia;
+	}
+	
+	
+	
+	
+	
+	
 
   
 }

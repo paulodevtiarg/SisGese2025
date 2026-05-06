@@ -10,8 +10,8 @@
 	<script th:src="@{/sd-admin/js/sb-admin-2.min.js}"></script>
 
 	<script th:src="@{/sd-admin/vendor/chart.js/Chart.min.js}"></script>
-	<script th:src="@{/sd-admin/js/demo/chart-area-demo.js}"></script>
-	<script th:src="@{/sd-admin/js/demo/chart-pie-demo.js}"></script>
+	<!-- <script th:src="@{/sd-admin/js/demo/chart-area-demo.js}"></script> -->
+	<!-- <script th:src="@{/sd-admin/js/demo/chart-pie-demo.js}"></script>-->
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -802,6 +802,177 @@ Você NÃO pode alterar ou internar novamente.`);
             })
             .catch(err => console.error("Erro:", err));
 
+    });
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const el = document.getElementById("graficoInternacoesUnidade");
+    
+    const el2 = document.getElementById("graficoInternacoesGeral");
+    
+    if (!el) return;
+    if(!el2) return;
+
+    let dados = el.getAttribute("data-valores");
+    
+    let dadosGeral = el2.getAttribute("data-valores");
+    
+    if (!dados) return;
+    
+    if(!dadosGeral) return;
+
+    dados = JSON.parse(dados);
+	dadosGeral = JSON.parse(dadosGeral);
+	
+    const meses = [
+        "Jan","Fev","Mar","Abr","Mai","Jun",
+        "Jul","Ago","Set","Out","Nov","Dez"
+    ];
+
+    let valores = [];
+    let valoresGeral = [];
+
+    for (let i = 1; i <= 12; i++) {
+        valores.push(Number(dados[i]) || 0);
+    }
+    
+    for (let i = 1; i <= 12; i++) {
+        valoresGeral.push(Number(dadosGeral[i]) || 0);
+    }
+
+    // 🔥 pega o maior valor
+    let maxValor = Math.max(...valores);
+    
+    let maxValorGeral = Math.max(...valoresGeral);
+
+    // 🔥 se tudo for 0, força pelo menos 1
+    if (maxValor === 0) {
+        maxValor = 1;
+    }
+    
+    // 🔥 se tudo for 0, força pelo menos 1
+    if (maxValorGeral === 0) {
+        maxValorGeral = 1;
+    }
+
+    const ctx = document.getElementById("chartUnidade");
+    const ctxGeral = document.getElementById("chartGeral");
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: "Internações",
+                data: valores,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: maxValor,
+                        stepSize: 1,
+                        callback: function(value) {
+                            if (Number.isInteger(value)) {
+                                return value;
+                            }
+                        }
+                    }
+                }]
+            }
+        }
+    });
+    
+    
+    new Chart(ctxGeral, {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: "Internações todas as Unidades",
+                data: valoresGeral,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: maxValorGeral,
+                        stepSize: 1,
+                        callback: function(value) {
+                            if (Number.isInteger(value)) {
+                                return value;
+                            }
+                        }
+                    }
+                }]
+            }
+        }
+    });
+      
+    
+    
+   
+
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const dataEl = document.getElementById("graficoPizza");
+    const canvas = document.getElementById("chartPizza");
+
+    if (!dataEl || !canvas) return;
+
+    let dados = dataEl.getAttribute("data-valores");
+
+    if (!dados) return;
+
+    dados = JSON.parse(dados);
+
+    const labels = Object.keys(dados);
+    const valores = Object.values(dados);
+
+    if (labels.length === 0) {
+        console.log("Sem internações ainda");
+        return;
+    }
+
+    new Chart(canvas, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: valores,
+                backgroundColor: [
+                    "#4e73df",
+                    "#1cc88a",
+                    "#36b9cc",
+                    "#f6c23e",
+                    "#e74a3b",
+                    "#858796"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
     });
 
 });

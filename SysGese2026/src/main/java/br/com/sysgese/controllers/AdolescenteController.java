@@ -129,8 +129,7 @@ public class AdolescenteController {
             unidadeFiltro = lotacaoAtiva.getUnidade().getId();
         }
         
-        System.out.println("UNIDADE LOGADA: " + lotacaoAtiva.getUnidade().getNome());
-        System.out.println("IS MASTER: " + AuthUtil.isMaster(session));
+        
         Page<AdolescenteDTO> adolescenteDTO =
                 adolescenteService.buscarAdolescentesDaUnidade(
                 		unidadeFiltro,

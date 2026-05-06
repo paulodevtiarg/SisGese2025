@@ -92,8 +92,7 @@ public class LoginController {
 	    session.setAttribute("nomeUnidade", lotacao.getUnidade().getNome());
 	    session.setAttribute("isMaster", isMaster);
 	    
-	    System.out.println("LOTACAO: " + lotacao);
-	    System.out.println("UNIDADE: " + lotacao.getUnidade());
+	 
 
 	    return "redirect:/home";
 	}

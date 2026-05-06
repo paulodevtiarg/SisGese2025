@@ -3,6 +3,7 @@ package br.com.sysgese.utils;
 import org.springframework.stereotype.Component;
 
 import br.com.sysgese.dtos.AdolescenteDTO;
+import br.com.sysgese.dtos.InternacaoDTO;
 
 @Component
 public class UrlUtils {
@@ -21,6 +22,19 @@ public class UrlUtils {
 			        page
 			    );
     }
+	
+	public String internacaoQuery(InternacaoDTO filtro, int page) {
+	    return String.format(
+	        "nomeAdolescente=%s&cidadeAdolescente=%s&tipoMedida=%s&filtroStatus=%s&filtroUnidadeId=%s&size=%s&page=%d",
+	        filtro.getNomeAdolescente() != null ? filtro.getNomeAdolescente() : "",
+	        filtro.getCidadeAdolescente() != null ? filtro.getCidadeAdolescente() : "",
+	        filtro.getTipoMedida() != null ? filtro.getTipoMedida() : "",
+	        filtro.getFiltroStatus() != null ? filtro.getFiltroStatus() : "ATIVA",
+	        filtro.getFiltroUnidadeId() != null ? filtro.getFiltroUnidadeId() : "",
+	        filtro.getSize() != null ? filtro.getSize() : 10,
+	        page
+	    );
+	}
 
 
 }

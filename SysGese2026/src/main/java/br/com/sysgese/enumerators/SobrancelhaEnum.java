@@ -6,6 +6,8 @@ public enum SobrancelhaEnum {
     MEDIA("Média"),
     GROSSA("Grossa"),
     ARQUEADA("Arqueada"),
+    SEPARADA("Separada"),
+    JUNTA("Junta"),
     RETA("Reta"),
     FALHADA("Falhada");
 
