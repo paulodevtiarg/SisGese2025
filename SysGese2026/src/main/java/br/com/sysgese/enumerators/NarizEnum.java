@@ -2,11 +2,17 @@ package br.com.sysgese.enumerators;
 
 public enum NarizEnum {
 
-    FINO("Fino"),
-    LARGO("Largo"),
-    ARREBITADO("Arrebitado"),
-    ADUNCO("Adunco"),
-    RETO("Reto");
+	ACHATADO_LONGO("Achatado e Longo"),
+	ADUNCO("Adunco"),
+	ARREDONDADO("Arredondado"),
+	ARREBITADO("Arrebitado/Curvo"),
+	CURTO("Curto"),
+	FINO("Fino"),
+	GRANDE("Grande"),
+	LARGO("Largo"),
+	LONGO("Longo"),
+	PEQUENO("Pequeno"),
+	RETO("Reto");
 
     private final String descricao;
 

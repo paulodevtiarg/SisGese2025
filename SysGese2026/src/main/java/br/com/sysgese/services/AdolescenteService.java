@@ -443,6 +443,12 @@ public class AdolescenteService {
         );
     }
     
-    
+	public Long contarPorUnidade(Long unidadeId) {
+	    return repository.countByIdUnidadeCadastro(unidadeId);
+	}
+	
+	public Long contarTodos() {
+	    return repository.count();
+	}
     
 }

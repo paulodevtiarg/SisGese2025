@@ -6,6 +6,8 @@ public enum OrelhaEnum {
     MEDIA("Média"),
     GRANDE("Grande"),
     COLADA("Colada"),
+    ABANO("Abano"),
+    NORMAL("Normal"),
     DESCOLADA("Descolada");
 
     private final String descricao;

@@ -28,9 +28,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name="ADOLESCENTE")
@@ -280,9 +283,23 @@ public class Adolescente {
     @Column(name = "ID_UNIDADE_CADASTRO")
     private Long idUnidadeCadastro;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_UNIDADE_CADASTRO", insertable = false, updatable = false)
+    private Unidade unidadeCadastro;
     
     
-    public Long getIdUnidadeCadastro() {
+    
+    
+    
+    public Unidade getUnidadeCadastro() {
+		return unidadeCadastro;
+	}
+
+	public void setUnidadeCadastro(Unidade unidadeCadastro) {
+		this.unidadeCadastro = unidadeCadastro;
+	}
+
+	public Long getIdUnidadeCadastro() {
 		return idUnidadeCadastro;
 	}
 
@@ -313,6 +330,23 @@ public class Adolescente {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
  private List<Internacao> internacoes = new ArrayList<>();
+    
+    
+    
+    
+    @SuppressWarnings("unused")
+    @Transient
+	private Integer idade;
+	
+    
+    public Integer getIdade() {
+	    if (this.dataNascimento == null) {
+	        return null;
+	    }
+	    return java.time.Period.between(this.dataNascimento, java.time.LocalDate.now()).getYears();
+	}
+
+    
     
     public List<Internacao> getInternacoes() {
         return internacoes;

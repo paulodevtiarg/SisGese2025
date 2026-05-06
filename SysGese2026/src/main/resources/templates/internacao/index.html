@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+<title>Adolescentes</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+
+		<div class="container-fluid p-2">
+			<div class="row">
+				<div class="col-12">
+					<nav aria-label="breadcrumb card"
+						style="margin-top: -25px; font-size: 0.8rem;">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a th:href="@{/home}"> <i
+									class="fa-duotone fa-solid fa-house fs-7"></i> Home
+							</a></li>
+							<li class="breadcrumb-item"><span class="text-muted">
+									<i class="fa-duotone fa-solid fa-building-lock"></i>
+									Internações
+							</span></li>
+
+						</ol>
+					</nav>
+				</div>
+				<div class="col-12">
+					<!-- Mensagens de erro e de ok -->
+					<div th:if="${msgOk}"
+						class="alert alert-success alert-dismissible fade show auto-close"
+						role="alert" id="successAlert">
+						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
+							th:text="${msgOk}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+
+					<!-- Mensagem de Erro -->
+					<div th:if="${msgErro}"
+						class="alert alert-danger alert-dismissible fade show auto-close"
+						role="alert" id="errorAlert">
+						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
+							th:text="${msgErro}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+				</div>
+				<div class="col-12" style="margin-top: -15px;">
+					<div class="card">
+						<div
+							class="card-header d-flex justify-content-between align-items-center fs-6 fw-semibold text-uppercase">
+
+							<h6 class="mb-0 text-secondary">Internações</h6>
+
+
+							<a th:href="@{'/internacoes/novo?' + ${queryParams}}"
+								class="btn btn-outline-sistema" data-bs-toggle="tooltip"
+								title="Novo Adolescente"> <i class="fa-duotone fa-plus"></i>
+								Novo
+							</a>
+
+
+
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-12">
+									<form th:action="@{/internacoes}" method="get" class="mb-3">
+										<input type="hidden" name="unidadeId" th:value="${unidadeId}">
+										<div class="row g-2">
+											<div class="col-md-6 input-group-sm">
+												<label class="form-label fw-semibold">Nome do
+													Adolescente</label> <input type="text" name="nomeAdolescente"
+													th:value="${filtro.nomeAdolescente}" class="form-control"
+													placeholder="Digite para buscar">
+											</div>
+
+											<div class="col-md-4 input-group-sm">
+												<label class="form-label fw-semibold">Cidade do
+													Adolescente</label> <input type="text" name="cidadeAdolescente"
+													th:value="${filtro.cidadeAdolescente}" class="form-control"
+													placeholder="Digite para buscar">
+											</div>
+
+
+
+										</div>
+
+										<div class="row g-2 mt-1">
+
+
+
+
+
+
+											<div class="col-md-2 input-group-sm">
+												<label class="form-label fw-semibold">Status</label> <select
+													name="filtroStatus" class="form-select">
+
+													<option th:value="''"
+														th:selected="${filtro.filtroStatus == null}">
+														Todos</option>
+
+													<option th:each="st : ${statusList}" th:value="${st}"
+														th:text="${st.descricao}"
+														th:selected="${st == filtro.filtroStatus}"></option>
+
+												</select>
+											</div>
+
+											<div class="col-md-1 input-group-sm">
+												<label class="form-label fw-semibold">Linhas</label> <select
+													name="size" class="form-select">
+													<option value="10" th:selected="${filtro.size == 10}">10</option>
+													<option value="15" th:selected="${filtro.size == 15}">15</option>
+													<option value="20" th:selected="${filtro.size == 20}">20</option>
+													<option value="25" th:selected="${filtro.size == 25}">25</option>
+													<option value="30" th:selected="${filtro.size == 30}">30</option>
+												</select>
+											</div>
+											<div class="col-md-3 input-group-sm" th:if="${isMaster}">
+												<label class="form-label fw-semibold">Unidade</label> <select
+													name="filtroUnidadeId" class="form-select">
+													<option value="">Todas</option>
+
+													<option th:each="u : ${unidades}" th:value="${u.id}"
+														th:text="${u.nome}"
+														th:selected="${u.id == filtro.filtroUnidadeId}">
+													</option>
+												</select>
+											</div>
+											<div class="col-md-3 input-group-sm" th:if="${!isMaster}">
+												<label class="form-label fw-semibold">Unidade</label> <input
+													type="text" class="form-control"
+													th:value="${lotacaoUsuarioLogado.unidade.nome}" disabled>
+											</div>
+
+											<div class="col-md-1 d-flex align-items-end input-group-sm">
+												<div
+													th:replace="fragments/botoesBusca :: btnBuscar('Aplicar Filtros')"></div>
+											</div>
+
+										</div>
+									</form>
+
+
+
+
+								</div>
+								<div class="col-12">
+									<div class="d-none d-md-block">
+										<table class="table table-striped table-bordered align-middle">
+											<thead class="table-dark"
+												style="--bs-table-bg: #0c174a; --bs-table-border-color: #0e2583;">
+												<tr>
+													<th style="width: 10%;" class="text-center">Foto</th>
+													<th>Dados</th>
+																									<th>Unidade Cadastro</th>
+													<th>Unidade Internação</th>
+													<th>Status da Internação</th>
+													<th>Início</th>
+													<th>Fim(rovável)</th>
+													<th class="text-center" style="width: 140px;">Ações</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="internacao : ${lista}">
+
+													<td style="width: 10%;" class="text-center"><img
+														th:if="${internacao.fotoAdolescente != null}"
+														th:src="${internacao.fotoAdolescente}" class="foto-tabela">
+														<img th:if="${internacao.fotoAdolescente == null}"
+														src="/img/sem-foto.png" class="foto-tabela"></td>
+
+
+
+
+													<td>
+														<div class="fw-semibold"
+															th:text="${internacao.nomeAdolescente}"></div> <small
+														class="text-muted d-block"> Natural: <span
+															th:text="${internacao.cidadeAdolescente}"></span> / <span
+															th:text="${internacao.ufAdolescente}"></span> • <span
+															th:text="${internacao.idadeAdolescente}"></span> anos
+													</small> <small class="text-muted d-block"> Mãe: <span
+															th:text="${internacao.maeDoAdolescente}"></span>
+													</small>
+													</td>
+
+													<td th:text="${internacao.nomeUnidadeCadastro}"></td>
+													<td th:text="${internacao.nomeUnidadeInternacao}"></td>
+
+
+<td class="text-center">
+    <span class="badge"
+          th:text="${internacao.status.descricao}"
+          th:classappend="${
+              internacao.status.name() == 'ATIVA' ? ' bg-success-subtle text-success' :
+              internacao.status.name() == 'FINALIZADA' ? ' bg-secondary-subtle text-secondary' :
+              internacao.status.name() == 'CANCELADA' ? ' bg-danger-subtle text-danger' :
+              ' bg-warning-subtle text-warning'
+          }">
+    </span>
+</td>
+													<td
+														th:text="${#temporals.format(internacao.dataInicio, 'dd/MM/yyyy')}"></td>
+													<td
+														th:text="${internacao.dataPrevisaoSaida != null ? #temporals.format(internacao.dataPrevisaoSaida, 'dd/MM/yyyy') : '-'}"></td>
+
+													<td class="text-center text-nowrap"><a
+														th:href="@{'/internacoes/detalhes/' + ${internacao.id} + '?'+ ${queryParams}}"
+														class="btn btn-outline-sistema btn-sm px-2"
+														data-bs-toggle="tooltip" title="Detalhes"> <i
+															class="fa-duotone fa-eye"></i>
+													</a> <a
+														th:href="${isMaster} ? @{/internacoes/editar/+ ${internacao.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm px-2"
+														data-bs-toggle="tooltip" title="Editar"> <i
+															class="fa-duotone fa-pen-to-square"></i>
+													</a> <a
+														th:href="${isMaster} ? @{/internacoes/excluir/+ ${internacao.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm px-2"
+														data-bs-toggle="tooltip" title="Excluir"
+														onclick="return confirm('Deseja excluir essa Função?');">
+															<i class="fa-duotone fa-trash"></i>
+													</a></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div class="d-block d-md-none">
+
+										<div class="card mb-3 shadow-sm"
+											th:each="internacao : ${lista}">
+
+											<div class="card-body">
+
+												<div class="d-flex gap-3">
+
+													<!-- FOTO -->
+													<img th:if="${internacao.fotoAdolescente != null}"
+														th:src="${internacao.fotoAdolescente}"
+														class="foto-card-mobile"> <img
+														th:if="${internacao.fotoAdolescente == null}"
+														src="/img/sem-foto.png" class="foto-card-mobile">
+
+													<!-- DADOS -->
+													<div class="flex-grow-1">
+
+														<!-- NOME -->
+														<div class="fw-bold">
+															<span th:text="${internacao.nomeAdolescente}"></span>
+														</div>
+
+														<!-- INFO BASICA -->
+														<small class="text-muted d-block"> <span
+															th:text="${internacao.idadeAdolescente}"></span> anos • <span
+															th:text="${internacao.cidadeAdolescente}"></span> / <span
+															th:text="${internacao.ufAdolescente}"></span>
+														</small>
+
+														<!-- MAE -->
+														<small class="text-muted d-block"> Mãe: <span
+															th:text="${internacao.maeDoAdolescente}"></span>
+														</small>
+
+														<!-- UNIDADES -->
+														<small class="text-muted d-block"> Cadastro: <span
+															th:text="${internacao.nomeUnidadeCadastro}"></span>
+														</small> <small class="text-muted d-block"> Internação: <span
+															th:text="${internacao.nomeUnidadeInternacao}"></span>
+														</small>
+
+														<!-- DATAS -->
+														<small class="text-muted d-block"> Início: <span
+															th:text="${#temporals.format(internacao.dataInicio, 'dd/MM/yyyy')}"></span>
+															• Fim: <span
+															th:text="${internacao.dataPrevisaoSaida != null ? #temporals.format(internacao.dataPrevisaoSaida, 'dd/MM/yyyy') : '-'}"></span>
+														</small>
+
+														<!-- STATUS -->
+														<div class="mt-2">
+															<span class="badge fw-semibold"
+																th:text="${internacao.status.descricao}"
+																th:classappend="
+                                ${internacao.status.name() == 'ATIVA'} ? ' bg-success-subtle text-success' :
+                                ${internacao.status.name() == 'FINALIZADA'} ? ' bg-secondary-subtle text-secondary' :
+                                ${internacao.status.name() == 'CANCELADA'} ? ' bg-danger-subtle text-danger' :
+                                ' bg-warning-subtle text-warning'">
+															</span>
+														</div>
+
+													</div>
+
+												</div>
+
+												<!-- AÇÕES -->
+												<div class="d-flex justify-content-end gap-2 mt-3">
+
+													<a
+														th:href="@{'/internacoes/detalhes/' + ${internacao.id} + '?'+ ${queryParams}}"
+														class="btn btn-outline-sistema btn-sm"
+														data-bs-toggle="tooltip" title="Detalhes"> <i
+														class="fa-duotone fa-eye"></i>
+													</a> <a
+														th:href="${isMaster} ? @{/internacoes/editar/+ ${internacao.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm"
+														data-bs-toggle="tooltip" title="Editar"> <i
+														class="fa-duotone fa-pen-to-square"></i>
+													</a> <a
+														th:href="${isMaster} ? @{/internacoes/excluir/+ ${internacao.id} + '?'+ ${queryParams}} : '#'"
+														th:classappend="${!isMaster} ? ' disabled opacity-50'"
+														class="btn btn-outline-sistema btn-sm"
+														data-bs-toggle="tooltip" title="Excluir"
+														onclick="return confirm('Deseja excluir essa internação?');">
+														<i class="fa-duotone fa-trash"></i>
+													</a>
+
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+
+
+								</div>
+							</div>
+
+						</div>
+						<div class="card-footer d-flex justify-content-end">
+
+    <nav aria-label="Paginação">
+        <ul class="pagination mb-0">
+
+            <!-- Anterior -->
+            <li class="page-item"
+                th:classappend="${pagina.first} ? 'disabled'">
+                
+                <a class="page-link"
+                   th:href="@{'/internacoes?' + ${@urlUtils.internacaoQuery(filtro, pagina.number - 1)}}">
+                    Anterior
+                </a>
+            </li>
+
+            <!-- Números -->
+            <li th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
+                class="page-item"
+                th:classappend="${i == pagina.number} ? 'active'">
+                
+                <a class="page-link"
+                   th:href="@{'/internacoes?' + ${@urlUtils.internacaoQuery(filtro, i)}}"
+                   th:text="${i + 1}">
+                </a>
+            </li>
+
+            <!-- Próxima -->
+            <li class="page-item"
+                th:classappend="${pagina.last} ? 'disabled'">
+                
+                <a class="page-link"
+                   th:href="@{'/internacoes?' + ${@urlUtils.internacaoQuery(filtro, pagina.number + 1)}}">
+                    Próxima
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+</body>
+</html>
+
