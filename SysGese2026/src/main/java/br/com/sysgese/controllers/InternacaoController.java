@@ -1,5 +1,8 @@
 package br.com.sysgese.controllers;
 
+import br.com.sysgese.dtos.AdolescenteDTO;
+import br.com.sysgese.enumerators.*;
+import br.com.sysgese.services.AdolescenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.sysgese.dtos.InternacaoDTO;
-import br.com.sysgese.enumerators.StatusInternacaoEnum;
-import br.com.sysgese.enumerators.TipoMedidaEnum;
 import br.com.sysgese.mappers.InternacaoMapper;
 import br.com.sysgese.models.Internacao;
 import br.com.sysgese.models.Lotacao;
@@ -22,6 +23,8 @@ import br.com.sysgese.services.InternacaoService;
 import br.com.sysgese.services.UnidadeService;
 import br.com.sysgese.utils.UrlUtils;
 import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/internacoes")
@@ -35,6 +38,9 @@ public class InternacaoController {
 	
 	@Autowired
 	private InternacaoMapper internacaoMapper;
+
+    @Autowired
+    private AdolescenteService adolescenteService;
 	
 	@Autowired
 	private UrlUtils urlUtils;
@@ -72,10 +78,9 @@ public String index(
 
     Page<Internacao> pagina = internacaoService
             .buscarComFiltro(filtro, unidadeFiltro, isMaster, pageable);
-    
-    
 
-    // 🔥 AQUI É O PULO DO GATO
+
+
     Page<InternacaoDTO> paginaDTO = pagina.map(internacaoMapper::toDTO);
 
     model.addAttribute("pagina", paginaDTO);
@@ -95,5 +100,39 @@ public String index(
 
     return "internacao/index";
 }
+
+    @GetMapping("/novo")
+    public String novo(
+            @ModelAttribute("filtro") InternacaoDTO filtro,
+            @RequestParam(defaultValue = "0") int page,
+            HttpSession session,
+            Model model
+    ){
+        boolean isMaster = (Boolean) session.getAttribute("isMaster");
+
+        Lotacao lotacaoAtiva =
+                (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
+
+        Long unidadeFiltro = lotacaoAtiva.getUnidade().getId();
+
+        List<AdolescenteDTO> adolescentesElegiveis =   adolescenteService.buscarElegiveisParaInternacao(unidadeFiltro,  isMaster );
+
+
+
+        //Carregar o objeto
+        model.addAttribute("adolescentesElegiveis", adolescentesElegiveis);
+        model.addAttribute("internacao", new InternacaoDTO());
+        model.addAttribute("tipoMedida", TipoMedidaEnum.values());
+        model.addAttribute("motivo", MotivoEnum.values());
+        model.addAttribute("statusInternacqao", StatusInternacaoEnum.values());
+        model.addAttribute("documentosApresentado", DocumentosEnum.values());
+        model.addAttribute("procedencia", ProcedenciaEnum.values());
+        model.addAttribute("activeMenu", "gestao");
+        model.addAttribute("queryParams", urlUtils.internacaoQuery(filtro, page));
+        model.addAttribute("pageTitle", "Internações");
+
+
+        return "internacao/form";
+    }
 
 }

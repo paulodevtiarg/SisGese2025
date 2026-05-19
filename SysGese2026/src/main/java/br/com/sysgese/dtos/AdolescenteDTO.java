@@ -218,13 +218,37 @@ private List<EnderecoDTO> enderecos;
         private String filtroStatus;
         private Integer size = 10;
 		
-		
-		
-		
+	//Status da Internação
+	private Boolean possuiInternacaoAtiva;
 
+	private String statusInternacao;
 
+	private String nomeUnidadeInternacao;
 
-	 // Getters e Setters
+	public Boolean getPossuiInternacaoAtiva() {
+		return possuiInternacaoAtiva;
+	}
+
+	public void setPossuiInternacaoAtiva(Boolean possuiInternacaoAtiva) {
+		this.possuiInternacaoAtiva = possuiInternacaoAtiva;
+	}
+
+	public String getStatusInternacao() {
+		return statusInternacao;
+	}
+
+	public void setStatusInternacao(String statusInternacao) {
+		this.statusInternacao = statusInternacao;
+	}
+
+	public String getNomeUnidadeInternacao() {
+		return nomeUnidadeInternacao;
+	}
+
+	public void setNomeUnidadeInternacao(String nomeUnidadeInternacao) {
+		this.nomeUnidadeInternacao = nomeUnidadeInternacao;
+	}
+// Getters e Setters
         
         
         

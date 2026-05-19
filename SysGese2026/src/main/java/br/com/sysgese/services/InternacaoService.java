@@ -139,13 +139,13 @@ public class InternacaoService {
         }
 
         // padrão = ATIVA
-        if (filtro.getStatus() == null) {
+        if (filtro.getFiltroStatus() == null ) {
             spec = spec.and((root, query, cb) ->
                 cb.equal(root.get("status"), StatusInternacaoEnum.ATIVA)
             );
-        } else {
+        } else if (!filtro.getFiltroStatus().equals("TODAS")){
             spec = spec.and((root, query, cb) ->
-                cb.equal(root.get("status"), filtro.getStatus())
+                cb.equal(root.get("status"), filtro.getFiltroStatus())
             );
         }
 

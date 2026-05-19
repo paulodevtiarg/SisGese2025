@@ -14,7 +14,7 @@ JpaSpecificationExecutor<Adolescente> {
 	  Optional<Adolescente> findByCpf(String cpf);
 	  
 	  Long countByIdUnidadeCadastro(Long unidadeId);
-	  
+
 	 
 	
 }
