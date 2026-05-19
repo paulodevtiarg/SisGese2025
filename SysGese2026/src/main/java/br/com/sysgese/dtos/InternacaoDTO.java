@@ -40,37 +40,25 @@ public class InternacaoDTO {
 
     @NotNull(message = "Status é obrigatório")
     private StatusInternacaoEnum status;
-    
-    
-   
+
     private Boolean reicidente;
-    
-    
+
     private DocumentosEnum docApresentado;
-    
-  
+
     private LocalDate dataAprensao;
-    
-    
-   
+
     private ProcedenciaEnum procedencia;
-    
-    
-  
+
     private String procedenciaOutros;
-    
-   
+
     private String procedenciaTransferecia;
-    
-    
-    
+
     //filtro:
     private String filtroNomeAdolescente;
     private String filtroCidadeAdolescente;
-    private StatusInternacaoEnum filtroStatus; // ATIVA, FINALIZADA...
+	private String filtroStatus;
     private Long filtroUnidadeId;
     private Integer size;
-     
 
     private String nomeUnidade;
         
@@ -87,13 +75,7 @@ public class InternacaoDTO {
     private String nomeUnidadeCadastro;
     
     private Integer idadeAdolescente;
-    
-    
-    
-    
-    
-    
-    
+
 
 	public String getMaeDoAdolescente() {
 		return maeDoAdolescente;
@@ -126,8 +108,6 @@ public class InternacaoDTO {
 	public void setCidadeAdolescente(String cidadeAdolescente) {
 		this.cidadeAdolescente = cidadeAdolescente;
 	}
-
-
 
 	public String getUfAdolescente() {
 		return ufAdolescente;
@@ -178,9 +158,6 @@ public class InternacaoDTO {
 	}
 
 
-
-
-
 	public String getFiltroNomeAdolescente() {
 		return filtroNomeAdolescente;
 	}
@@ -197,11 +174,11 @@ public class InternacaoDTO {
 		this.filtroCidadeAdolescente = filtroCidadeAdolescente;
 	}
 
-	public StatusInternacaoEnum getFiltroStatus() {
+	public String getFiltroStatus() {
 		return filtroStatus;
 	}
 
-	public void setFiltroStatus(StatusInternacaoEnum filtroStatus) {
+	public void setFiltroStatus(String filtroStatus) {
 		this.filtroStatus = filtroStatus;
 	}
 

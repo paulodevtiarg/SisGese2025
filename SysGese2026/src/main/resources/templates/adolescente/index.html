@@ -220,6 +220,28 @@
 													</small> <small class="text-muted d-block"> Mãe: <span
 															th:text="${adolescente.mae}"></span>
 													</small>
+                                                        <small class="d-block mt-1">
+
+        <span th:if="${adolescente.possuiInternacaoAtiva}"
+              class="badge bg-danger-subtle text-danger">
+
+            Internado
+
+            <span th:if="${adolescente.nomeUnidadeInternacao != null}">
+                •
+                <span th:text="${adolescente.nomeUnidadeInternacao}"></span>
+            </span>
+
+        </span>
+                                                            
+                                                            <span th:if="${!adolescente.possuiInternacaoAtiva}"
+                                                                  class="badge bg-success-subtle text-success">
+
+            Livre
+
+        </span>
+                                                        
+                                                        </small>
 													</td>
 
 													<td th:text="${adolescente.enderecoAtual?.cidade}"></td>
@@ -237,12 +259,14 @@
 														class="badge bg-danger-subtle text-danger fw-semibold px-3 py-2">
 															Inativo </span></td>
 
-													<td class="text-center text-nowrap"><a
+													<td class="text-center text-nowrap">
+														<a
 														th:href="@{'/adolescentes/detalhes/' + ${adolescente.id} + '?'+ ${queryParams}}"
 														class="btn btn-outline-sistema btn-sm px-2"
 														data-bs-toggle="tooltip" title="Detalhes"> <i
 															class="fa-duotone fa-eye"></i>
-													</a> <a
+													</a>
+														<a
 														th:href="${isMaster} ? @{/adolescentes/editar/+ ${adolescente.id} + '?'+ ${queryParams}} : '#'"
 														th:classappend="${!isMaster} ? ' disabled opacity-50'"
 														class="btn btn-outline-sistema btn-sm px-2"

@@ -1,11 +1,7 @@
 package br.com.sysgese.services;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,6 +157,24 @@ public class AdolescenteService {
      Map<Long, String> mapaUnidades =
              unidadeService.buscarNomesPorIds(idsUnidades);
 
+
+        Set<Long> idsAdolescentes = adolescentes.getContent().stream()
+                .map(Adolescente::getId)
+                .collect(Collectors.toSet());
+
+        List<Internacao> internacoesAtivas =
+                internacaoRepository.findByAdolescenteIdInAndStatus(
+                        new ArrayList<>(idsAdolescentes),
+                        StatusInternacaoEnum.ATIVA
+                );
+        Map<Long, Internacao> mapaInternacoes =
+                internacoesAtivas.stream()
+                        .collect(Collectors.toMap(
+                                i -> i.getAdolescente().getId(),
+                                i -> i
+                        ));
+
+
      // 🔥 AQUI é onde entra seu código
      return adolescentes.map(adolescente -> {
          AdolescenteDTO dto = mapper.toDTO(adolescente);
@@ -170,6 +184,30 @@ public class AdolescenteService {
                  ? mapaUnidades.get(adolescente.getIdUnidadeCadastro().longValue())
                  : null
          );
+
+         Internacao internacao =
+                 mapaInternacoes.get(adolescente.getId());
+
+         if (internacao != null) {
+
+             dto.setPossuiInternacaoAtiva(true);
+
+             dto.setStatusInternacao(
+                     internacao.getStatus().getDescricao()
+             );
+
+             if (internacao.getUnidade() != null) {
+
+                 dto.setNomeUnidadeInternacao(
+                         internacao.getUnidade().getNome()
+                 );
+             }
+
+         } else {
+
+             dto.setPossuiInternacaoAtiva(false);
+         }
+
 
          return dto;
      });
@@ -450,5 +488,79 @@ public class AdolescenteService {
 	public Long contarTodos() {
 	    return repository.count();
 	}
-    
+
+    public List<AdolescenteDTO> buscarElegiveisParaInternacao(
+            Long unidadeId,
+            boolean isMaster
+    ) {
+
+        Specification<Adolescente> spec = null;
+
+        // se NÃO for master filtra pela unidade
+        if (!isMaster) {
+
+            spec = AdolescenteSpecification
+                    .unidadeCadastro(unidadeId);
+        }
+
+        List<Adolescente> adolescentes =
+                spec != null
+                        ? repository.findAll(spec)
+                        : repository.findAll();
+        List<AdolescenteDTO> elegiveis = new ArrayList<>();
+
+        for (Adolescente adolescente : adolescentes) {
+
+            List<Internacao> internacoes =
+                    internacaoRepository
+                            .findByAdolescenteIdOrderByDataInicioDesc(
+                                    adolescente.getId()
+                            );
+
+            // nunca teve internação
+            if (internacoes.isEmpty()) {
+
+                elegiveis.add(mapper.toDTO(adolescente));
+                continue;
+            }
+
+            Internacao ultima = internacoes.get(0);
+
+            // FINALIZADA → pode
+            if (ultima.getStatus() == StatusInternacaoEnum.FINALIZADA) {
+
+                elegiveis.add(mapper.toDTO(adolescente));
+                continue;
+            }
+
+            // TRANSFERIDA
+            if (ultima.getStatus() == StatusInternacaoEnum.TRANSFERIDA) {
+
+                boolean possuiAtivaPosterior =
+                        internacoes.stream()
+                                .anyMatch(i ->
+                                        i.getStatus() == StatusInternacaoEnum.ATIVA &&
+                                                (
+                                                        i.getDataInicio().isAfter(
+                                                                ultima.getDataInicio()
+                                                        )
+                                                                ||
+                                                                i.getDataInicio().isEqual(
+                                                                        ultima.getDataInicio()
+                                                                )
+                                                )
+                                );
+
+                // se NÃO possui ativa posterior
+                // ele pode internar novamente
+                if (!possuiAtivaPosterior) {
+
+                    elegiveis.add(mapper.toDTO(adolescente));
+                }
+            }
+        }
+
+        return elegiveis;
+    }
+
 }

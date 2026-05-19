@@ -112,8 +112,7 @@ public class AdolescenteController {
     ) {
 		
 		// Pega a unidade do usuário logado
-		
-		boolean isMaster = (Boolean) session.getAttribute("isMaster");         
+		boolean isMaster = (Boolean) session.getAttribute("isMaster");
 
         Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
         
@@ -160,14 +159,11 @@ public class AdolescenteController {
 	        @RequestParam(defaultValue = "0") int page,
 	        Model model
 	) {
-
 	    model.addAttribute("adolescente", new AdolescenteDTO());
 	    model.addAttribute("endereco", new EnderecoDTO());
-
 	    model.addAttribute("generos", GeneroEnum.values());
 	    model.addAttribute("racas", RacaCorEnum.values());
 	    model.addAttribute("estados", EstadosEnum.values());
-
 	    model.addAttribute("anoEscolaridade", AnoEscolaridadeEnum.values());
 	    model.addAttribute("bioFisico", BiofisicoEnum.values());
 	    model.addAttribute("boca", BocaEnum.values());
@@ -182,11 +178,8 @@ public class AdolescenteController {
 	    model.addAttribute("rosto", RostoEnum.values());
 	    model.addAttribute("sobrancelhas", SobrancelhaEnum.values());
 	    model.addAttribute("orelhas", OrelhaEnum.values());
-
 	    model.addAttribute("pageTitle", "Adolescentes");
 	    model.addAttribute("activeMenu", "gestao");
-
-	    // 🔥 AGORA SIM
 	    model.addAttribute("queryParams", urlUtils.adolescenteQuery(filtro, page));
 	    
 	    return "adolescente/form";
@@ -446,7 +439,13 @@ public class AdolescenteController {
 
         return ResponseEntity.ok(response);
     }
-    
+	@GetMapping("/buscaAdolescente/{id}")
+	@ResponseBody
+	public AdolescenteDTO buscarAdolescente(
+			@PathVariable Long id
+	) {
+		return adolescenteService.buscarPorId(id);
+	}
     
 	
 }

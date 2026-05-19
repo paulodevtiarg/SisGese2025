@@ -473,8 +473,14 @@ function fecharModal() {
 
 	<script>
 function toggleQtdFilhos() {
-    const sim = document.getElementById('filhosSim').checked;
+    
+    const radio = document.getElementById('filhosSim');
     const input = document.getElementById('qtdFilhos');
+    
+    // 🔥 blindagem
+    if (!radio || !input) return;
+    const sim = radio.checked;
+  
 
     if (sim) {
         input.disabled = false;
@@ -494,8 +500,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	<script>
 function toggleCaract() {
-    const sim = document.getElementById('caracSim').checked;
+    const radio = document.getElementById('caracSim');
     const input = document.getElementById('carcDesc');
+    
+    if (!radio || !input) return;
+    const sim = radio.checked;
 
     if (sim) {
         input.disabled = false;

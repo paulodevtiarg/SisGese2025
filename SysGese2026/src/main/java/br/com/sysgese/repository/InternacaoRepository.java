@@ -19,6 +19,8 @@ extends JpaRepository<Internacao, Long>,
     long countByStatus(StatusInternacaoEnum status);
 
     long countByUnidadeIdAndStatus(Long unidadeId, StatusInternacaoEnum status);
+
+    List<Internacao> findByAdolescenteIdOrderByDataInicioDesc(Long id);
     
     List<Internacao> findByDataInicioBetween(LocalDate inicio, LocalDate fim);
     
@@ -29,5 +31,10 @@ extends JpaRepository<Internacao, Long>,
     );
     
     List<Internacao> findByDataInicioBetween(LocalDateTime inicio, LocalDateTime fim);
+
+    List<Internacao> findByAdolescenteIdInAndStatus(
+            List<Long> ids,
+            StatusInternacaoEnum status
+    );
 
 }
