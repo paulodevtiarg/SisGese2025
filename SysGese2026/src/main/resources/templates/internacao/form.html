@@ -108,38 +108,193 @@
                                    <div class="card-body">
                                        
                                        <div class="row">
-                                           
-                                           <div class="col-md-3">
+                                           <div class="col-md-2 d-flex ">
+                                               <div class="foto-3x4-container-dt mb-2 w-100 h-100">
+                                                   <div  class="foto-wrapper-dt">
+                                                       <img id="fotoAdolescente"  class="foto-3x4-img-dt" alt="Foto do Adolescente">
+                                                   </div>
                                                    
-                                                   <img id="fotoAdolescente"
-                                                        class="img-fluid rounded foto-adolescente-card">
-                                                        
+                                               </div>
+                                               
+                                           </div>
+                                           <div class="col-md-10">
+                                               <div class="row">
+                                                   <div class="col-md-6 mb-2">
+                                                       <div class="input-group">
+                                                           <span class="input-group-text label-fixa">Nome</span>
+                                                           <input  id="nomeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       </div>
+                                                   </div>
+                                                   <div class="col-md-2 mb-2">
+                                                       <div class="input-group">
+                                                           <span class="input-group-text label-fixa">Idade</span>
+                                                           <input  id="idadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       </div>
+                                                   
+                                                   </div>
+                                                   <div class="col-md-4 mb-2">
+                                                       <div class="input-group">
+                                                           <span class="input-group-text label-fixa">Cidade</span>
+                                                           <input  id="cidadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       </div>
+                                                   
+                                                   </div>
+                                               </div>
+                                               
+                                               <div class="row">
+                                                   <div class="col-md-12 mb-2">
+                                                       <div class="input-group">
+                                                           <span class="input-group-text label-fixa">Mãe</span>
+                                                           <input  id="maeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       </div>
+                                                   
+                                                   </div>
+                                               </div>
+                                               <div class="row">
+                                                   <div class="col-md-3 mb-2">
+                                                       <!-- envia valor quando select estiver disabled -->
+                                                       <input type="hidden"
+                                                              th:if="${!usuarioMaster}"
+                                                              th:field="*{idUnidade}"/>
+                                                       <label   class="form-label fw-semibold text-secondary">  Unidade para Internação * </label>
+                                                       <select class="form-select"
+                                                               th:field="*{idUnidade}"   th:classappend="${#fields.hasErrors('idUnidade')} ? 'is-invalid' : ''"
+                                                               th:disabled="${!usuarioMaster}">
+                                                       
+                                                       <option value="">Selecione</option>
+                                                           
+                                                           <option th:each="u : ${unidades}"
+                                                                   th:value="${u.id}"
+                                                                   th:text="${u.nome}">
+                                                           </option>
+                                                   
+                                                       </select>
+                                                       
+                                                            <div class="invalid-feedback d-block"
+                                                            style="min-height: 20px;"
+                                                            th:if="${#fields.hasErrors('idUnidade')}"
+                                                            th:errors="*{idUnidade}">
+                                                            
+                                                            </div>
+                                                   </div>
+                                                   
+                                                   <div class="col-md-3 mb-2">
+                                                       <label for="tipoMedida"
+                                                              class="form-label fw-semibold text-secondary">
+                                                           Tipo de Medida * </label>
+                                                       <select class="form-select" th:field="*{tipoMedida}" id="tipoMedida"
+                                                                                       th:classappend="${#fields.hasErrors('tipoMedida')} ? 'is-invalid' : ''">
+                                                                 <option value="">Selecione</option>
+                                                                 <option th:each="g : ${tipoMedidas}" th:value="${g}"th:text="${g.descricao}"></option>
+                                                   
+                                                        </select>
+                                                       
+                                                       <div class="invalid-feedback d-block"
+                                                            style="min-height: 20px;"
+                                                            th:if="${#fields.hasErrors('tipoMedida')}"
+                                                            th:errors="*{tipoMedida}"></div>
+                                                   </div>
+                                                   
+                                                   <div class="col-md-6 mb-2">
+                                                       <label for="docApresentado"
+                                                              class="form-label fw-semibold text-secondary">
+                                                           Doc. Apresentado  * </label>
+                                                       <select class="form-select" th:field="*{docApresentado}" id="docApresentado"
+                                                               th:classappend="${#fields.hasErrors('docApresentado')} ? 'is-invalid' : ''">
+                                                           
+                                                           <option value="">Selecione</option>
+                                                           
+                                                           <option th:each="g : ${documentosApresentado}" th:value="${g}"
+                                                                   th:text="${g.descricao}"></option>
+                                                       
+                                                       </select>
+                                                       
+                                                       <div class="invalid-feedback d-block"
+                                                            style="min-height: 20px;"
+                                                            th:if="${#fields.hasErrors('docApresentado')}"
+                                                            th:errors="*{docApresentado}"></div>
+                                                   </div>
+                                                   
+                                                   
+                                               </div>
+                                               
+                                               <div class="row">
+                                                   <div class="col-md-6 mb-2">
+                                                       <label class="form-label fw-semibold text-secondary">
+                                                           Nº Doc. Apresentado * </label>
+                                                       <input type="text" th:field="*{numeroProcesso}" id="numeroProcesso"
+                                                                               placeholder="Digite o Número do Documento/Processo"
+                                                                               class="form-control" th:classappend="${#fields.hasErrors('numeroProcesso')} ? 'is-invalid' : ''">
+                                                       <div class="invalid-feedback d-block"
+                                                            style="min-height: 20px;"
+                                                            th:if="${#fields.hasErrors('numeroProcesso')}"
+                                                            th:errors="*{numeroProcesso}"></div>
+                                                   </div>
+                                                   
+                                                   <div class="col-md-3 mb-2">
+                                                           <label class="form-label text-muted fw-medium">Data da Apreesão </label>
+                                                           
+                                                           <div class="d-flex align-items-center gap-2">
+                                                                <div class="input-group input-group shadow">
+																		<span class="input-group-text bg-white">
+                                                                            <i class="fa-duotone fa-calendar-days text-secondary"></i>
+																		</span>
+                                                                    <input type="date" th:field="*{dataAprensao}" class="form-control">
+                                                               </div>
+                                                               
+                                                           </div>
+                                                           
+                                                   </div>
+                                                   
+                                                   <div class="col-md-3 mb-2">
+                                                      
+                                                           <label for="docApresentado"
+                                                                  class="form-label fw-semibold text-secondary">Motivo * </label>
+                                                           <select class="form-select" th:field="*{motivo}" id="motivo"
+                                                                   th:classappend="${#fields.hasErrors('motivo')} ? 'is-invalid' : ''">
+                                                               
+                                                               <option value="">Selecione</option>
+                                                               
+                                                               <option th:each="g : ${motivos}" th:value="${g}"
+                                                                       th:text="${g.descricao}"></option>
+                                                           
+                                                           </select>
+                                                           
+                                                           <div class="invalid-feedback d-block"
+                                                                style="min-height: 20px;"
+                                                                th:if="${#fields.hasErrors('motivo')}"
+                                                                th:errors="*{motivo}"></div>
+                                                       </div>
+                                                  
+                                                   
+                                                   
+                                               </div>
+                                               
+                                               <div class="row">
+                                                   <div class="col-md-3 mb-2">
+                                                       <label class="form-label text-muted fw-medium">Inicio da Medida *</label>
+                                                       
+                                                       <div class="d-flex align-items-center gap-2">
+                                                           <div class="input-group input-group shadow">
+																		<span class="input-group-text bg-white">
+                                                                            <i class="fa-duotone fa-calendar-days text-secondary"></i>
+																		</span>
+                                                               <input type="date" th:field="*{dataInicio}" class="form-control" th:classappend="${#fields.hasErrors('numeroProcesso')} ? 'is-invalid' : ''">
+                                                               <div class="invalid-feedback d-block"
+                                                                    style="min-height: 20px;"
+                                                                    th:if="${#fields.hasErrors('dataInicio')}"
+                                                                    th:errors="*{dataInicio}"></div>
+                                                           </div>
+                                                       
+                                                       </div>
+                                                   
+                                                   </div>
+                                               </div>
                                               
-                                           
                                            </div>
                                            
-                                           <div class="col-md-9">
-                                               
-                                               <h5 id="nomeAdolescente"></h5>
-                                               
-                                               <p>
-                                                   Idade:
-                                                   <span id="idadeAdolescente"></span>
-                                               </p>
-                                               
-                                               <p>
-                                                   Mãe:
-                                                   <span id="maeAdolescente"></span>
-                                               </p>
-                                               
-                                               <p>
-                                                   Cidade:
-                                                   <span id="cidadeAdolescente"></span>
-                                               </p>
-                                           
-                                           </div>
-                                       
                                        </div>
+                                       
                                    
                                    </div>
                                
@@ -209,18 +364,18 @@
                         }
                         
                         const nome = document.getElementById('nomeAdolescente');
-                        if (nome) nome.innerText = adolescente.nome || '-';
+                        if (nome) nome.value = adolescente.nome || '-';
                         
                         const idade = document.getElementById('idadeAdolescente');
-                        if (idade) idade.innerText = adolescente.idade || '-';
+                        if (idade) idade.value = adolescente.idade || '-';
                         
                         const mae = document.getElementById('maeAdolescente');
-                        if (mae) mae.innerText = adolescente.mae || '-';
+                        if (mae) mae.value = adolescente.mae || '-';
                         
                         const cidade = document.getElementById('cidadeAdolescente');
                         
                         if (cidade) {
-                            cidade.innerText =
+                            cidade.value =
                                     (adolescente.cidadeNascimento || '-') +
                                     '/' +
                                     (adolescente.ufNascimento || '-');

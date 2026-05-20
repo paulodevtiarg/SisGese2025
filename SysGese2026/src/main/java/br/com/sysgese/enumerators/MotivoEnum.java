@@ -1,7 +1,7 @@
 package br.com.sysgese.enumerators;
 
 public enum MotivoEnum {
-	    BUSCA_APREENSAO("Busca e Apreensão"),
+	    BUSCA_APREENSAO("Busca e/ou Apreensão"),
 	    REGRESSÃO("Regressão"),
 	    IGNORADO("Ignorado"),
 	    OUTROS("Outros");
