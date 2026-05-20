@@ -110,27 +110,36 @@ public String index(
     ){
         boolean isMaster = (Boolean) session.getAttribute("isMaster");
 
-        Lotacao lotacaoAtiva =
-                (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
+        Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
 
         Long unidadeFiltro = lotacaoAtiva.getUnidade().getId();
 
         List<AdolescenteDTO> adolescentesElegiveis =   adolescenteService.buscarElegiveisParaInternacao(unidadeFiltro,  isMaster );
 
+        InternacaoDTO internacao = new InternacaoDTO();
 
+        // Se NÃO for master, já define a unidade automaticamente
+        if (!isMaster) {
+            internacao.setIdUnidade(unidadeFiltro);
+        }
 
+        model.addAttribute("internacao", internacao);
+
+        // Master recebe lista de unidades
+        if (isMaster) {
+            model.addAttribute("unidades", unidadeService.listarTodas());
+        }
         //Carregar o objeto
+        model.addAttribute("usuarioMaster", isMaster);
         model.addAttribute("adolescentesElegiveis", adolescentesElegiveis);
-        model.addAttribute("internacao", new InternacaoDTO());
-        model.addAttribute("tipoMedida", TipoMedidaEnum.values());
-        model.addAttribute("motivo", MotivoEnum.values());
+        model.addAttribute("tipoMedidas", TipoMedidaEnum.values());
+        model.addAttribute("motivos", MotivoEnum.values());
         model.addAttribute("statusInternacqao", StatusInternacaoEnum.values());
         model.addAttribute("documentosApresentado", DocumentosEnum.values());
         model.addAttribute("procedencia", ProcedenciaEnum.values());
         model.addAttribute("activeMenu", "gestao");
         model.addAttribute("queryParams", urlUtils.internacaoQuery(filtro, page));
         model.addAttribute("pageTitle", "Internações");
-
 
         return "internacao/form";
     }
