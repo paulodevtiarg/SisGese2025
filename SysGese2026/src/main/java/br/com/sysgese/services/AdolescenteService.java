@@ -38,38 +38,43 @@ import br.com.sysgese.specifications.InternacaoSpecification;
 @Service
 public class AdolescenteService {
 
-    @Autowired
-    private AdolescenteRepository repository;
-    
-    @Autowired
-    private UnidadeService unidadeService;
-    
-    @Autowired
-    private EnderecoService enderecoService;
+    private final AdolescenteRepository repository;
+    private final UnidadeService unidadeService;
+    private final EnderecoService enderecoService;
+    private final InternacaoRepository internacaoRepository;
+    private final FotoRepository fotoRepository;
+    private final FotoService fotoService;
+    private final TatuagemService tatuagemService;
+    private final CicatrizService cicatrizService;
+    private final TatuagemRepository tatuagemRepository;
+    private final CicatrizRepository cicatrizRepository;
+    private final AdolescenteMapper mapper;
 
-    @Autowired
-    private InternacaoRepository internacaoRepository;
-
-    @Autowired
-    private FotoRepository fotoRepository;
-    
-    @Autowired
-    private FotoService fotoService;
-    
-    @Autowired
-    private TatuagemService tatuagemService;
-    
-    @Autowired
-    private CicatrizService cicatrizService;
-
-    @Autowired
-    private TatuagemRepository tatuagemRepository;
-
-    @Autowired
-    private CicatrizRepository cicatrizRepository;
-
-    @Autowired
-    private AdolescenteMapper mapper;
+    public AdolescenteService(
+            AdolescenteRepository repository,
+            UnidadeService unidadeService,
+            EnderecoService enderecoService,
+            InternacaoRepository internacaoRepository,
+            FotoRepository fotoRepository,
+            FotoService fotoService,
+            TatuagemService tatuagemService,
+            CicatrizService cicatrizService,
+            TatuagemRepository tatuagemRepository,
+            CicatrizRepository cicatrizRepository,
+            AdolescenteMapper mapper
+    ) {
+        this.repository = repository;
+        this.unidadeService = unidadeService;
+        this.enderecoService = enderecoService;
+        this.internacaoRepository = internacaoRepository;
+        this.fotoRepository = fotoRepository;
+        this.fotoService = fotoService;
+        this.tatuagemService = tatuagemService;
+        this.cicatrizService = cicatrizService;
+        this.tatuagemRepository = tatuagemRepository;
+        this.cicatrizRepository = cicatrizRepository;
+        this.mapper = mapper;
+    }
 
     // ========================= BUSCA =========================
 

@@ -53,6 +53,12 @@ public class InternacaoDTO {
 
     private String procedenciaTransferecia;
 
+	private Long idInfracao;
+	private String descricaoInfracao;
+	private String artigoInfracao;
+
+
+
     //filtro:
     private String filtroNomeAdolescente;
     private String filtroCidadeAdolescente;
@@ -76,6 +82,29 @@ public class InternacaoDTO {
     
     private Integer idadeAdolescente;
 
+	public Long getIdInfracao() {
+		return idInfracao;
+	}
+
+	public void setIdInfracao(Long idInfracao) {
+		this.idInfracao = idInfracao;
+	}
+
+	public String getDescricaoInfracao() {
+		return descricaoInfracao;
+	}
+
+	public void setDescricaoInfracao(String descricaoInfracao) {
+		this.descricaoInfracao = descricaoInfracao;
+	}
+
+	public String getArtigoInfracao() {
+		return artigoInfracao;
+	}
+
+	public void setArtigoInfracao(String artigoInfracao) {
+		this.artigoInfracao = artigoInfracao;
+	}
 
 	public String getMaeDoAdolescente() {
 		return maeDoAdolescente;

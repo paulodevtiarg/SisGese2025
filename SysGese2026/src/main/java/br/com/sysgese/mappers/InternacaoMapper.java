@@ -24,7 +24,9 @@ public interface InternacaoMapper {
     @Mapping(source = "unidade.nome", target = "nomeUnidade")
     @Mapping(source = "adolescente.nome", target = "nomeAdolescente")
     @Mapping(source = "adolescente.cidadeNascimento", target = "cidadeAdolescente")
-   
+    @Mapping(source = "infracao.id", target = "idInfracao")
+    @Mapping(source = "infracao.artigo", target = "artigoInfracao")
+    @Mapping(source = "infracao.descricao", target = "descricaoInfracao")
     @Mapping(source = "adolescente.ufNascimento", target = "ufAdolescente")
     @Mapping(source = "adolescente.fotoRegistro", target = "fotoAdolescente")
     @Mapping(source = "unidade.nome", target = "nomeUnidadeInternacao")
@@ -43,6 +45,7 @@ public interface InternacaoMapper {
     @Mapping(target = "dataAlt", ignore = true)
     @Mapping(target = "adolescente.id", source = "idAdolescente")
     @Mapping(target = "unidade.id", source = "idUnidade")
+    @Mapping(target = "infracao.id", source = "idInfracao")
     Internacao toEntity(InternacaoDTO dto);
 
     // ==============================
@@ -54,5 +57,6 @@ public interface InternacaoMapper {
     @Mapping(target = "dataAlt", ignore = true)
     @Mapping(target = "adolescente.id", source = "idAdolescente")
     @Mapping(target = "unidade.id", source = "idUnidade")
+    @Mapping(target = "infracao.id", source = "idInfracao")
     void updateEntityFromDTO(InternacaoDTO dto, @MappingTarget Internacao entity);
 }

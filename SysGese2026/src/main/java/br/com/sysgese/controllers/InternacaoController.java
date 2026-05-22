@@ -1,11 +1,17 @@
 package br.com.sysgese.controllers;
 
 import br.com.sysgese.dtos.AdolescenteDTO;
-import br.com.sysgese.dtos.EnderecoDTO;
+import br.com.sysgese.dtos.InternacaoDTO;
 import br.com.sysgese.enumerators.*;
+import br.com.sysgese.mappers.InternacaoMapper;
+import br.com.sysgese.models.Internacao;
+import br.com.sysgese.models.Lotacao;
 import br.com.sysgese.services.AdolescenteService;
+import br.com.sysgese.services.InternacaoService;
+import br.com.sysgese.services.UnidadeService;
+import br.com.sysgese.utils.UrlUtils;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,41 +20,34 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import br.com.sysgese.dtos.InternacaoDTO;
-import br.com.sysgese.mappers.InternacaoMapper;
-import br.com.sysgese.models.Internacao;
-import br.com.sysgese.models.Lotacao;
-import br.com.sysgese.services.InternacaoService;
-import br.com.sysgese.services.UnidadeService;
-import br.com.sysgese.utils.UrlUtils;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/internacoes")
 public class InternacaoController {
-	
-	@Autowired
-	private InternacaoService internacaoService;
-	
-	@Autowired
-	private UnidadeService unidadeService;
-	
-	@Autowired
-	private InternacaoMapper internacaoMapper;
 
-    @Autowired
-    private AdolescenteService adolescenteService;
-	
-	@Autowired
-	private UrlUtils urlUtils;
+    private final InternacaoService internacaoService;
+    private final UnidadeService unidadeService;
+    private final InternacaoMapper internacaoMapper;
+    private final AdolescenteService adolescenteService;
+    private final UrlUtils urlUtils;
+
+    public InternacaoController(
+            InternacaoService internacaoService,
+            UnidadeService unidadeService,
+            InternacaoMapper internacaoMapper,
+            AdolescenteService adolescenteService,
+            UrlUtils urlUtils
+    ) {
+        this.internacaoService = internacaoService;
+        this.unidadeService = unidadeService;
+        this.internacaoMapper = internacaoMapper;
+        this.adolescenteService = adolescenteService;
+        this.urlUtils = urlUtils;
+    }
 	
 
 @GetMapping
@@ -176,7 +175,6 @@ public String index(
             if (isMaster) {
                 model.addAttribute("unidades", unidadeService.listarTodas());
             }
-
             model.addAttribute("usuarioMaster", isMaster);
             model.addAttribute("adolescentesElegiveis", adolescentesElegiveis);
             model.addAttribute("tipoMedidas", TipoMedidaEnum.values());
@@ -188,9 +186,18 @@ public String index(
             model.addAttribute("queryParams", urlUtils.internacaoQuery(filtro, page));
             model.addAttribute("pageTitle", "Internações");
 
-            return "internacoes/form";
+            return "internacao/form";
+        }
+        try {
+            internacaoService.salvar(dto);
+            redirectAttributes.addFlashAttribute("msgOk", "Registro de Internação salvo com sucesso!");
+
+        }
+        catch (Exception e) {
+
+            redirectAttributes.addFlashAttribute("msgErro", "Erro ao salvar o Registtro: " + e.getMessage());
         }
 
-        return null;
+        return "redirect:/internacoes";
     }
 }

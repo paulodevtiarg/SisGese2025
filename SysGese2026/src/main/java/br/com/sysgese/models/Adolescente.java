@@ -218,8 +218,7 @@ public class Adolescente {
     
     @OneToMany(mappedBy = "adolescente", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Endereco> enderecos;
-    
-    
+
     
     
     
