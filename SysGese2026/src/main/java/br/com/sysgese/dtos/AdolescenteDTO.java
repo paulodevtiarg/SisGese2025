@@ -85,27 +85,11 @@ private EnderecoDTO enderecoAtual;
 
 private List<EnderecoDTO> enderecos;
 
-	    // ==============================
-	    // Contatos
-	    // ==============================
-
-	  
 	    private String telefone1;
-
-	   
 	    private String telefone2;
-
-
-
-	  
 	    private String telefoneRecado;
-
 	    @Size(max = 255)
 	    private String nomeContatoRecado;
-
-	    // ==============================
-	    // Documentos
-	    // ==============================
 
 	    @Size(max = 255)
 	    private String registroCivil;
@@ -249,11 +233,7 @@ private List<EnderecoDTO> enderecos;
 		this.nomeUnidadeInternacao = nomeUnidadeInternacao;
 	}
 // Getters e Setters
-        
-        
-        
-        
-        
+
         
 		
 		public Integer getIdade() {

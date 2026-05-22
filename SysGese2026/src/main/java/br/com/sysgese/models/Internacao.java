@@ -7,18 +7,7 @@ import br.com.sysgese.enumerators.MotivoEnum;
 import br.com.sysgese.enumerators.ProcedenciaEnum;
 import br.com.sysgese.enumerators.StatusInternacaoEnum;
 import br.com.sysgese.enumerators.TipoMedidaEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "INTERNACAO")
@@ -88,7 +77,20 @@ public class Internacao {
     @Column(name = "PROCED_TRANSF", nullable = false, length = 50)
     private String procedenciaTransferecia;
 
-    @PrePersist
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID_INFRACAO")
+	private Infracao infracao;
+
+
+	public Infracao getInfracao() {
+		return infracao;
+	}
+
+	public void setInfracao(Infracao infracao) {
+		this.infracao = infracao;
+	}
+
+	@PrePersist
     public void prePersist() {
         this.dataCad = LocalDate.now();
         this.dataAlt = LocalDate.now();

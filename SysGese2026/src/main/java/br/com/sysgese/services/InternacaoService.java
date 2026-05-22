@@ -19,6 +19,7 @@ import br.com.sysgese.models.Internacao;
 
 import br.com.sysgese.repository.InternacaoRepository;
 import br.com.sysgese.specifications.InternacaoSpecification;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class InternacaoService {
@@ -31,6 +32,23 @@ public class InternacaoService {
 
     @Autowired
     private LotacaoService lotacaoService;
+
+
+
+    @Transactional
+    public Internacao salvar(InternacaoDTO dto){
+        Internacao entity;
+        if(dto.getId()!=null){
+            //Busca
+            entity = internacaoRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Registro de Internação não encontrado"));
+            mapper.updateEntityFromDTO(dto, entity);
+        }else{
+            entity = mapper.toEntity(dto);
+            entity.setDataCad(LocalDate.now());
+        }
+        entity.setDataAlt(LocalDate.now());
+        return internacaoRepository.save(entity);
+    }
 
     /**
      * Busca internações **da unidade do servidor logado**, aplicando filtros
