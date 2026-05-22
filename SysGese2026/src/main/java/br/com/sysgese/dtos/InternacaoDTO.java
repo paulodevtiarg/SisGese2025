@@ -35,7 +35,7 @@ public class InternacaoDTO {
 
     private LocalDate dataSaida;
 
-    @NotBlank(message = "Motivo é obrigatório")
+	@NotNull(message = "Motivo é obrigatório")
     private MotivoEnum motivo;
 
     @NotNull(message = "Status é obrigatório")

@@ -236,9 +236,8 @@ public class AdolescenteController {
 		    model.addAttribute("rosto", RostoEnum.values());
 		    model.addAttribute("sobrancelhas", SobrancelhaEnum.values());
 		    model.addAttribute("orelhas", OrelhaEnum.values());
-		    
-		      model.addAttribute("pageTitle", "Adolescentes");
-		      model.addAttribute("activeMenu", "gestao");
+		    model.addAttribute("pageTitle", "Adolescentes");
+		    model.addAttribute("activeMenu", "gestao");
 
 		    return "adolescente/form";
 		}
@@ -255,8 +254,7 @@ public class AdolescenteController {
 	    // 💾 SALVA ADOLESCENTE
 	    // =====================================================
 	   try {
-		    
-		    
+
 		    Servidor usuarioLogado = (Servidor) session.getAttribute("usuarioLogado");
 
 		    Optional<Lotacao> lotacaoOpt =

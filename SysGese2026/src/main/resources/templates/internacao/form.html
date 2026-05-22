@@ -4,7 +4,7 @@
 	layout:decorate="~{layout/base}">
 
 <head>
-<title>Adolescente</title>
+<title>Internação</title>
 <!-- Este será substituído -->
 
 </head>
@@ -22,9 +22,7 @@
 									class="fa-duotone fa-solid fa-house fs-7"></i> Home
 							</a></li>
                             <li class="breadcrumb-item">
-                                <a th:href="${queryParams != null and queryParams != ''}
-                    ? '/internacoes?' + queryParams
-                    : '/internacoes'">
+                                <a th:href="${queryParams != null and queryParams != ''} ? '/internacoes?' + queryParams: '/internacoes'">
                                     <i class="fa-duotone fa-solid fa-building-lock fs-7"></i>
                                     Internações
                                 </a>
@@ -61,8 +59,8 @@
 
 					<form th:action="@{/internacoes/salvar}"
 						th:object="${internacao}" method="post"
-						enctype="multipart/form-data">
-						
+						>
+                        <input type="hidden" th:field="*{status}">
 						<div class="card">
 
 							<div class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
@@ -88,7 +86,7 @@
 							<div class="row">
                                 <div class="col-md-6 input-group-sm">
                                     <label class="form-label fw-semibold">Adolescente para Internação</label>
-                                        <select id="adolescenteSelect" class="form-select"
+                                        <select id="adolescenteSelect" class="form-select mt-1"
                                                 th:field="*{idAdolescente}">
                                             <option value="">Selecione</option>
                                             <option th:each="adol : ${adolescentesElegiveis}"
@@ -97,7 +95,46 @@
                                             </option>
                                         </select>
                                         
+                                </div>
+                                <div class="col-md-3" id="campoReincidente">
+                                    
+                                    <label class="form-label text-muted fw-medium">
+                                        Reincidente?
+                                    </label>
+                                    
+                                    <div class="d-flex gap-2">
+                                        
+                                        <!-- SIM -->
+                                        <input
+                                                type="radio"
+                                                class="btn-check"
+                                                th:field="*{reicidente}"
+                                                id="reicidenteSim"
+                                                value="true"
+                                                autocomplete="off">
+                                        
+                                        <label class="btn btn-outline-danger rounded-pill px-3"
+                                               for="reicidenteSim"><i class="fa-duotone fa-solid fa-face-pouting fs-6"></i>
+                                            Sim
+                                        </label>
+                                        
+                                        <!-- NÃO -->
+                                        <input
+                                                type="radio"
+                                                class="btn-check"
+                                                th:field="*{reicidente}"
+                                                id="reicidenteNao"
+                                                value="false"
+                                                autocomplete="off">
+                                        
+                                        <label class="btn btn-outline-success rounded-pill px-3"
+                                               for="reicidenteNao"> <i class="fa-duotone fa-solid fa-face-grin-beam fs-6"></i>
+                                            Não
+                                        </label>
+                                    
                                     </div>
+                                
+                                </div>
                                 
                                 
                             </div>
@@ -245,7 +282,7 @@
                                                            </div>
                                                            
                                                    </div>
-                                                   
+                                               
                                                    <div class="col-md-3 mb-2">
                                                       
                                                            <label for="docApresentado"
@@ -289,6 +326,79 @@
                                                        </div>
                                                    
                                                    </div>
+                                                   <div class="col-md-3 mb-2">
+                                                       <label class="form-label text-muted fw-medium">Data Prevista Para Saída </label>
+                                                       
+                                                       <div class="d-flex align-items-center gap-2">
+                                                           <div class="input-group input-group shadow">
+																		<span class="input-group-text bg-white">
+                                                                            <i class="fa-duotone fa-calendar-days text-secondary"></i>
+																		</span>
+                                                               <input type="date" th:field="*{dataPrevisaoSaida}" class="form-control">
+                                                           </div>
+                                                       
+                                                       </div>
+                                                   
+                                                   </div>
+                                                   <div class="col-md-6 mb-2"
+                                                        id="colProcedencia">
+                                                       
+                                                       <label for="procedencia"
+                                                              class="form-label fw-semibold text-secondary">
+                                                           Procedência *
+                                                       </label>
+                                                       
+                                                       <select class="form-select"
+                                                               th:field="*{procedencia}"
+                                                               id="procedencia"
+                                                               th:classappend="${#fields.hasErrors('procedencia')} ? 'is-invalid' : ''">
+                                                           
+                                                           <option value="">Selecione</option>
+                                                           
+                                                           <option th:each="g : ${procedencias}"
+                                                                   th:value="${g}"
+                                                                   th:text="${g.descricao}">
+                                                           </option>
+                                                       
+                                                       </select>
+                                                       
+                                                       <div class="invalid-feedback d-block"
+                                                            style="min-height: 20px;"
+                                                            th:if="${#fields.hasErrors('procedencia')}"
+                                                            th:errors="*{procedencia}">
+                                                       </div>
+                                                   
+                                                   </div>
+                                                   <!-- OUTROS -->
+                                                   <div class="col-md-3 mb-2 d-none" id="campoProcedenciaOutros">
+                                                       
+                                                       <label class="form-label fw-semibold text-secondary">
+                                                           Informe a Procedência *
+                                                       </label>
+                                                       
+                                                       <input type="text"
+                                                              class="form-control"
+                                                              th:field="*{procedenciaOutros}"
+                                                              maxlength="50">
+                                                   
+                                                   </div>
+                                                   
+                                                   <!-- TRANSFERÊNCIA -->
+                                                   <div class="col-md-3 mb-2 d-none" id="campoProcedenciaTransferencia">
+                                                       
+                                                       <label class="form-label fw-semibold text-secondary">
+                                                           Unidade de Origem *
+                                                       </label>
+                                                       
+                                                       <input type="text"
+                                                              class="form-control"
+                                                              th:field="*{procedenciaTransferecia}"
+                                                              maxlength="50">
+                                                   
+                                                   </div>
+                                                 
+                                         
+                                               
                                                </div>
                                               
                                            </div>
@@ -309,12 +419,8 @@
 
 
 						</div>
-
-						<div
-							class="card-footer d-flex justify-content-end align-items-center">
-							<h6>Digite todos os campos. Campos com (*) são obrigatórios.</h6>
-
-						</div>
+                        
+                        <div th:replace="~{fragments/footerForm :: footerForm}"></div>
 					</form>
 				</div>
 				<!-- fim do card -->
@@ -405,6 +511,88 @@
                 });
                 
             });
+        
+        </script>
+        
+        <script>
+            
+            function controlarProcedencia() {
+                
+                const procedencia =
+                        document.getElementById('procedencia').value;
+                
+                const campoOutros =
+                        document.getElementById('campoProcedenciaOutros');
+                
+                const campoTransferencia =
+                        document.getElementById('campoProcedenciaTransferencia');
+                
+                const colProcedencia =
+                        document.getElementById('colProcedencia');
+                
+                // RESET
+                campoOutros.classList.add('d-none');
+                campoTransferencia.classList.add('d-none');
+                
+                // volta para col-md-6
+                colProcedencia.classList.remove('col-md-3');
+                colProcedencia.classList.add('col-md-6');
+                
+                // OUTROS
+                if (procedencia === 'OUTROS') {
+                    
+                    campoOutros.classList.remove('d-none');
+                    
+                    colProcedencia.classList.remove('col-md-6');
+                    colProcedencia.classList.add('col-md-3');
+                }
+                
+                // TRANSFERÊNCIA
+                if (procedencia === 'TRANSF_UNIDADE') {
+                    
+                    campoTransferencia.classList.remove('d-none');
+                    
+                    colProcedencia.classList.remove('col-md-6');
+                    colProcedencia.classList.add('col-md-3');
+                }
+            }
+            
+            document.getElementById('procedencia')
+                    .addEventListener('change', controlarProcedencia);
+            
+            document.addEventListener('DOMContentLoaded', controlarProcedencia);
+        
+        </script>
+        <script>
+            
+            function controlarReincidente() {
+                
+                const adolescente =
+                        document.getElementById('adolescenteSelect').value;
+                
+                const campoReincidente =
+                        document.getElementById('campoReincidente');
+                
+                if (adolescente && adolescente.trim() !== '') {
+                    
+                    campoReincidente.classList.remove('d-none');
+                    
+                } else {
+                    
+                    campoReincidente.classList.add('d-none');
+                    
+                    // limpa seleção ao ocultar
+                    document.getElementById('reicidenteSim').checked = false;
+                    document.getElementById('reicidenteNao').checked = false;
+                }
+            }
+            
+            // alteração do select
+            document.getElementById('adolescenteSelect')
+                    .addEventListener('change', controlarReincidente);
+            
+            // executa ao carregar
+            document.addEventListener('DOMContentLoaded', controlarReincidente);
         
         </script>
 	</div>
