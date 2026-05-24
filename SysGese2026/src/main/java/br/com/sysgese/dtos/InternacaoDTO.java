@@ -21,8 +21,7 @@ public class InternacaoDTO {
     @NotNull(message = "Unidade é obrigatória")
     private Long idUnidade;
 
-    @NotBlank(message = "Número do processo é obrigatório")
-    @Size(max = 50)
+
     private String numeroProcesso;
 
     @NotNull(message = "Tipo de medida é obrigatório")
@@ -53,6 +52,7 @@ public class InternacaoDTO {
 
     private String procedenciaTransferecia;
 
+	@NotNull(message = "Infração é obrigatória")
 	private Long idInfracao;
 	private String descricaoInfracao;
 	private String artigoInfracao;

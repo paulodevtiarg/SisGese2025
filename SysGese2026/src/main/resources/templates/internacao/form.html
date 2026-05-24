@@ -236,8 +236,7 @@
                                                        <label for="docApresentado"
                                                               class="form-label fw-semibold text-secondary">
                                                            Doc. Apresentado  * </label>
-                                                       <select class="form-select" th:field="*{docApresentado}" id="docApresentado"
-                                                               th:classappend="${#fields.hasErrors('docApresentado')} ? 'is-invalid' : ''">
+                                                       <select class="form-select" th:field="*{docApresentado}" id="docApresentado" >
                                                            
                                                            <option value="">Selecione</option>
                                                            
@@ -246,10 +245,6 @@
                                                        
                                                        </select>
                                                        
-                                                       <div class="invalid-feedback d-block"
-                                                            style="min-height: 20px;"
-                                                            th:if="${#fields.hasErrors('docApresentado')}"
-                                                            th:errors="*{docApresentado}"></div>
                                                    </div>
                                                    
                                                    
@@ -261,11 +256,8 @@
                                                            Nº Doc. Apresentado * </label>
                                                        <input type="text" th:field="*{numeroProcesso}" id="numeroProcesso"
                                                                                placeholder="Digite o Número do Documento/Processo"
-                                                                               class="form-control" th:classappend="${#fields.hasErrors('numeroProcesso')} ? 'is-invalid' : ''">
-                                                       <div class="invalid-feedback d-block"
-                                                            style="min-height: 20px;"
-                                                            th:if="${#fields.hasErrors('numeroProcesso')}"
-                                                            th:errors="*{numeroProcesso}"></div>
+                                                                               class="form-control" >
+                                                   
                                                    </div>
                                                    
                                                    <div class="col-md-3 mb-2">
@@ -290,7 +282,7 @@
                                                            <select class="form-select" th:field="*{motivo}" id="motivo"
                                                                    th:classappend="${#fields.hasErrors('motivo')} ? 'is-invalid' : ''">
                                                                
-                                                               <option value="">Selecione</option>
+                                                                 <option value="">Selecione</option>
                                                                
                                                                <option th:each="g : ${motivos}" th:value="${g}"
                                                                        th:text="${g.descricao}"></option>
@@ -370,7 +362,7 @@
                                                    
                                                    </div>
                                                    <!-- OUTROS -->
-                                                   <div class="col-md-3 mb-2 d-none" id="campoProcedenciaOutros">
+                                                         <div class="col-md-3 mb-2 d-none" id="campoProcedenciaOutros">
                                                        
                                                        <label class="form-label fw-semibold text-secondary">
                                                            Informe a Procedência *
@@ -395,13 +387,39 @@
                                                               th:field="*{procedenciaTransferecia}"
                                                               maxlength="50">
                                                    
-                                                   </div>
+                                               </div>
                                                  
                                          
                                                
                                                </div>
                                               
                                            </div>
+                                           
+                                       </div>
+                                       <div class="row mt-2">
+                                           <div class="col-md-12">
+                                               
+                                              
+                                                   <label class="form-label">Infração</label>
+                                                   
+                                                   <select class="form-select" th:field="*{idInfracao}" th:classappend="${#fields.hasErrors('idInfracao')} ? 'is-invalid' : ''">
+                                                       <option value="">Selecione</option>
+                                                       
+                                                       <option th:each="infracao : ${infracoes}"
+                                                               th:value="${infracao.id}"
+                                                               th:text="'Análogo ao Art. ' + ${infracao.artigo} + ' - ' + ${infracao.descricao}+' - ('+${infracao.categoria}+')'">
+                                                       </option>
+                                                   </select>
+                                               <div class="invalid-feedback d-block"
+                                                    style="min-height: 20px;"
+                                                    th:if="${#fields.hasErrors('idInfracao')}"
+                                                    th:errors="*{idInfracao}">
+                                               
+                                               </div>
+                                               
+                                           
+                                           </div>
+                                           
                                            
                                        </div>
                                        
@@ -594,6 +612,55 @@
             // executa ao carregar
             document.addEventListener('DOMContentLoaded', controlarReincidente);
         
+        </script>
+        
+        
+        
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", async function () {
+                
+                const select = document.getElementById('adolescenteSelect');
+                const card = document.getElementById('cardAdolescente');
+                
+                if (!select || !select.value) return;
+                
+                try {
+                    
+                    const response = await fetch('/adolescentes/buscaAdolescente/' + select.value);
+                    
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar adolescente");
+                    }
+                    
+                    const adolescente = await response.json();
+                    
+                    card.classList.remove('d-none');
+                    
+                    document.getElementById('nomeAdolescente').value =
+                            adolescente.nome || '-';
+                    
+                    document.getElementById('idadeAdolescente').value =
+                            adolescente.idade || '-';
+                    
+                    document.getElementById('maeAdolescente').value =
+                            adolescente.mae || '-';
+                    
+                    document.getElementById('cidadeAdolescente').value =
+                            (adolescente.cidadeNascimento || '-') +
+                            '/' +
+                            (adolescente.ufNascimento || '-');
+                    
+                    document.getElementById('fotoAdolescente').src =
+                            adolescente.fotoRegistro || '/img/sem-foto.png';
+                    
+                } catch (e) {
+                    
+                    console.error(e);
+                    
+                }
+                
+            });
         </script>
 	</div>
  

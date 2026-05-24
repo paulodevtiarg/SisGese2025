@@ -37,4 +37,7 @@ extends JpaRepository<Internacao, Long>,
             StatusInternacaoEnum status
     );
 
+    List<Internacao> findByUnidadeId(Long unidadeId);
+
+
 }

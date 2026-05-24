@@ -1,8 +1,10 @@
 package br.com.sysgese.services;
 
 import br.com.sysgese.dtos.InfracaoDTO;
+import br.com.sysgese.dtos.InternacaoDTO;
 import br.com.sysgese.mappers.InfracaoMapper;
 import br.com.sysgese.models.Infracao;
+import br.com.sysgese.models.Internacao;
 import br.com.sysgese.repository.InfracaoRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,6 @@ public class InfracaoService {
 
         return mapper.toDTOList(infracoes);
     }
+
 
 }

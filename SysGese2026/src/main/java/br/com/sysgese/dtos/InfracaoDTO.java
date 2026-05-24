@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class InfracaoDTO {
-
+    private Long id;
     @NotBlank(message = "Artigo é obrigatória")
     @Size(max = 255, message = "Artigo não pode ter mais de 255 caracteres")
     private String artigo;
@@ -35,6 +35,14 @@ public class InfracaoDTO {
 
     public void setArtigo(String artigo) {
         this.artigo = artigo;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDescricao() {
