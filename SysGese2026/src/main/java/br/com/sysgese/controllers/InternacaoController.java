@@ -7,6 +7,7 @@ import br.com.sysgese.mappers.InternacaoMapper;
 import br.com.sysgese.models.Internacao;
 import br.com.sysgese.models.Lotacao;
 import br.com.sysgese.services.AdolescenteService;
+import br.com.sysgese.services.InfracaoService;
 import br.com.sysgese.services.InternacaoService;
 import br.com.sysgese.services.UnidadeService;
 import br.com.sysgese.utils.UrlUtils;
@@ -34,19 +35,22 @@ public class InternacaoController {
     private final InternacaoMapper internacaoMapper;
     private final AdolescenteService adolescenteService;
     private final UrlUtils urlUtils;
+    private final InfracaoService infracaoService;
 
     public InternacaoController(
             InternacaoService internacaoService,
             UnidadeService unidadeService,
             InternacaoMapper internacaoMapper,
             AdolescenteService adolescenteService,
-            UrlUtils urlUtils
+            UrlUtils urlUtils,
+            InfracaoService infracaoService
     ) {
         this.internacaoService = internacaoService;
         this.unidadeService = unidadeService;
         this.internacaoMapper = internacaoMapper;
         this.adolescenteService = adolescenteService;
         this.urlUtils = urlUtils;
+        this.infracaoService = infracaoService;
     }
 	
 
@@ -100,6 +104,7 @@ public String index(
     model.addAttribute("pageTitle", "Internações");
     model.addAttribute("statusList", StatusInternacaoEnum.values());
     model.addAttribute("tipoMedidaList", TipoMedidaEnum.values());
+    model.addAttribute("activeMenu", "gestao");
     model.addAttribute("unidadeId", unidadeFiltro);
 
     return "internacao/index";
@@ -146,6 +151,7 @@ public String index(
         model.addAttribute("activeMenu", "gestao");
         model.addAttribute("queryParams", urlUtils.internacaoQuery(filtro, page));
         model.addAttribute("pageTitle", "Internações");
+        model.addAttribute("infracoes", infracaoService.listarAtivas());
 
         return "internacao/form";
     }
@@ -185,6 +191,7 @@ public String index(
             model.addAttribute("activeMenu", "gestao");
             model.addAttribute("queryParams", urlUtils.internacaoQuery(filtro, page));
             model.addAttribute("pageTitle", "Internações");
+            model.addAttribute("infracoes", infracaoService.listarAtivas());
 
             return "internacao/form";
         }

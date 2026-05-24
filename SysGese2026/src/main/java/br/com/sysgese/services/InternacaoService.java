@@ -30,6 +30,8 @@ public class InternacaoService {
     @Autowired
     private InternacaoMapper mapper;
 
+
+
     @Autowired
     private LotacaoService lotacaoService;
 
@@ -169,5 +171,8 @@ public class InternacaoService {
 
         return internacaoRepository.findAll(spec, pageable);
     }
+
+
+
     
 }
