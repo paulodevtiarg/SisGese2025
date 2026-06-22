@@ -1,7 +1,9 @@
 package br.com.sysgese.controllers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,15 +90,38 @@ public class HomeController {
 			model.addAttribute("internacoesPorUnidadeJson", "{}");
 		}
 
-	   /*
-	   Map<String, Long> fake = new HashMap<>();
-	   fake.put("Unidade A", 5L);
-	   fake.put("Unidade B", 3L);
+	  //Idade
+		Map<String, Long> idadeUnidade = internacaoService.buscarInternacoesPorFaixaEtaria(unidadeId);
+		Map<String, Long> idadeGeral =	internacaoService.buscarInternacoesPorFaixaEtaria(null);
+		model.addAttribute("idadeUnidade", idadeUnidade);
+		model.addAttribute("idadeGeral", idadeGeral);
 
-	   model.addAttribute("internacoesPorUnidadeJson",
-	           objectMapper.writeValueAsString(fake));*/
+		//cores
+		List<String> cores = new ArrayList<>();
+		int i = 0;
+		for (String key : idadeUnidade.keySet()) {
+			cores.add(corPorIndice(i));
+			i++;
+		}
+		List<String> coresGeral = new ArrayList<>();
+		int i2 = 0;
 
+		for (String key : idadeGeral.keySet()) {
+			coresGeral.add(corPorIndice(i2));
+			i2++;
+		}
 
+		//Por cidade
+		Map<String, Long> cidadeUnidade = internacaoService.buscarInternacoesPorCidade(unidadeId);
+		Map<String, Long> cidadeGeral = internacaoService.buscarInternacoesPorCidade(null);
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		model.addAttribute("cidadeUnidadeJson", mapper.writeValueAsString(cidadeUnidade));
+		model.addAttribute("cidadeGeralJson", mapper.writeValueAsString(cidadeGeral));
+
+		model.addAttribute("coresGeral", coresGeral);
+		model.addAttribute("coresUnidade", cores);
 		model.addAttribute("totalAdolescentes", totalAdolescentes);
 		model.addAttribute("nomeUnidade", nomeUnidade);
 		model.addAttribute("usuario", usuario);
@@ -108,5 +133,15 @@ public class HomeController {
 		model.addAttribute("pageTitle", "Home - Sisgese");
 
 		return "home/index";
+	}
+
+	private String corPorIndice(int i) {
+		switch (i) {
+			case 0: return "bg-danger";
+			case 1: return "bg-warning";
+			case 2: return "bg-info";
+			case 3: return "bg-success";
+			default: return "bg-primary";
+		}
 	}
 }

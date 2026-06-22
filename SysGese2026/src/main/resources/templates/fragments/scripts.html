@@ -986,5 +986,101 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
 
+			const unidadeCanvas = document.getElementById("chartCidadeUnidade");
+			const geralCanvas = document.getElementById("chartCidadeGeral");
+
+			const unidadeData = document.getElementById("graficoCidadeUnidade");
+			const geralData = document.getElementById("graficoCidadeGeral");
+
+			if (!unidadeCanvas || !geralCanvas || !unidadeData || !geralData) {
+				return;
+			}
+
+			let dadosUnidade = JSON.parse(unidadeData.getAttribute("data-valores") || "{}");
+			let dadosGeral = JSON.parse(geralData.getAttribute("data-valores") || "{}");
+
+			const labelsUnidade = Object.keys(dadosUnidade);
+			const valoresUnidade = Object.values(dadosUnidade).map(v => Number(v) || 0);
+
+			const labelsGeral = Object.keys(dadosGeral);
+			const valoresGeral = Object.values(dadosGeral).map(v => Number(v) || 0);
+
+			let maxUnidade = Math.max(...valoresUnidade);
+			let maxGeral = Math.max(...valoresGeral);
+
+			if (maxUnidade === 0) maxUnidade = 1;
+			if (maxGeral === 0) maxGeral = 1;
+
+			// 🔥 CHART JS 2.x (CORRETO)
+			new Chart(unidadeCanvas, {
+				type: 'bar',
+				data: {
+					labels: labelsUnidade,
+					datasets: [{
+						label: 'Internações por Cidade',
+						data: valoresUnidade,
+						backgroundColor: [
+							'#4e73df',
+							'#1cc88a',
+							'#36b9cc',
+							'#f6c23e',
+							'#e74a3b',
+							'#858796'
+						]
+					}]
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true,
+								min: 0,
+								max: maxUnidade,
+								stepSize: 1
+							}
+						}]
+					}
+				}
+			});
+
+			new Chart(geralCanvas, {
+				type: 'bar',
+				data: {
+					labels: labelsGeral,
+					datasets: [{
+						label: 'Internações Gerais por Cidade',
+						data: valoresGeral,
+						backgroundColor: [
+							'#6610f2',
+							'#fd7e14',
+							'#20c997',
+							'#dc3545',
+							'#0dcaf0',
+							'#6f42c1'
+						]
+					}]
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true,
+								min: 0,
+								max: maxGeral,
+								stepSize: 1
+							}
+						}]
+					}
+				}
+			});
+
+		});
+	</script>
 </th:block>
