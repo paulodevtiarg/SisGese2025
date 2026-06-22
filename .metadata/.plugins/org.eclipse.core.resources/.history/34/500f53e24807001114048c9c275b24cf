@@ -1,5 +1,0 @@
-package br.com.sysgese.mappers;
-
-public interface UnidadeMapper {
-
-}
