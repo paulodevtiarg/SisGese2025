@@ -227,7 +227,123 @@
                         
                         </div>
                         <!-- fim row dos graficos -->
-                    
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 d-flex">
+                                <!-- Project Card Example -->
+                                <div class="card shadow mb-4 w-100">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Internações por Faixa Etária</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="nav nav-tabs mb-2">
+                                            <li class="nav-item">
+                                                <button class="nav-link active" data-bs-toggle="tab"
+                                                        href="#cse-norte-fx-etaria">
+                                                    <span th:text="${nomeUnidade}"></span>
+                                                </button>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <button class="nav-link" data-bs-toggle="tab" href="#geral-fx-etaria">
+                                                    Todas</button>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content flex-grow-1">
+                                            <div class="tab-pane fade show active h-100" id="cse-norte-fx-etaria">
+                                                <div th:each="item, iterStat : ${idadeUnidade}">
+
+                                                    <h4 class="small font-weight-bold">
+                                                        <span th:text="${item.key}"></span>
+                                                        <span class="float-right" th:text="${item.value}"></span>
+                                                    </h4>
+
+                                                    <div class="progress mb-4">
+
+                                                        <div class="progress-bar"
+                                                             th:class="${coresUnidade[iterStat.index]}"
+                                                             th:style="'width:' + ${item.value} + '%'"
+                                                             th:attr="aria-valuenow=${item.value}, aria-valuemin=0, aria-valuemax=100">
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="tab-pane fade h-100" id="geral-fx-etaria">
+                                                <div th:each="item, iterStat : ${idadeGeral}">
+
+                                                    <h4 class="small font-weight-bold">
+                                                        <span th:text="${item.key}"></span>
+                                                        <span class="float-right" th:text="${item.value}"></span>
+                                                    </h4>
+
+                                                    <div class="progress mb-4">
+
+                                                        <div class="progress-bar"
+                                                             th:class="${coresGeral[iterStat.index]}"
+                                                             role="progressbar"
+                                                             th:style="'width:' + ${item.value} + '%'"
+                                                             th:attr="aria-valuenow=${item.value}, aria-valuemin=0, aria-valuemax=100">
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--Segunda col -->
+                            <div class="col-xl-6 col-lg-6 d-flex">
+                                <div class="card shadow mb-4 w-100">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Internações por Cidade</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="nav nav-tabs mb-2">
+                                            <li class="nav-item">
+                                                <button class="nav-link active" data-bs-toggle="tab"
+                                                        href="#cse-norte-cidade">
+                                                    <span th:text="${nomeUnidade}"></span>
+                                                </button>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <button class="nav-link" data-bs-toggle="tab" href="#geral-cidade">
+                                                    Todas</button>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content flex-grow-1">
+                                            <div class="tab-pane fade show active h-100" id="cse-norte-cidade">
+                                                <div id="graficoCidadeUnidade"
+                                                     th:data-valores="${cidadeUnidadeJson}"
+                                                     style="display:none;"></div>
+
+                                                <div style="height:300px;">
+                                                    <canvas id="chartCidadeUnidade"></canvas>
+                                                </div>
+                                            </div>
+
+                                            <div class="tab-pane fade h-100" id="geral-cidade">
+                                                <div id="graficoCidadeGeral"
+                                                     th:data-valores="${cidadeGeralJson}"
+                                                     style="display:none;"></div>
+
+                                                <div style="height:300px;">
+                                                    <canvas id="chartCidadeGeral"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--fim segunda col -->
+                        </div>
                     
                     
                     
@@ -235,10 +351,6 @@
                 
                 </div>
                 <!-- fim do card principal -->
-            
-            
-            
-            
             </div>
             <!-- fim da terceira col -->
         
