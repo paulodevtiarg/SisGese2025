@@ -254,6 +254,10 @@ public class InternacaoService {
 
         return mapa;
     }
+
+    public List<String> listarCidades() {
+        return internacaoRepository.listarCidadesInternados();
+    }
 }
 
     

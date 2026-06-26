@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysgese.dtos.RelatorioDashboardDTO;
+import br.com.sysgese.dtos.RelatorioDashboardFiltroDTO;
+import br.com.sysgese.services.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +30,8 @@ public class HomeController {
 	@Autowired
 	private InternacaoService internacaoService;
 
+	@Autowired
+	private HomeService homeService;
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -117,6 +122,11 @@ public class HomeController {
 
 		ObjectMapper mapper = new ObjectMapper();
 
+
+		List<String> listaCidades = internacaoService.listarCidades();
+		model.addAttribute("listaCidades", listaCidades);
+
+
 		model.addAttribute("cidadeUnidadeJson", mapper.writeValueAsString(cidadeUnidade));
 		model.addAttribute("cidadeGeralJson", mapper.writeValueAsString(cidadeGeral));
 
@@ -133,6 +143,21 @@ public class HomeController {
 		model.addAttribute("pageTitle", "Home - Sisgese");
 
 		return "home/index";
+	}
+	@GetMapping("/relatorios/dashboard")
+	public String gerarRelatorioDashboard(
+			RelatorioDashboardFiltroDTO filtro,
+			HttpSession session,
+			Model model) {
+
+		Long unidadeId = (Long) session.getAttribute("unidadeId");
+
+		RelatorioDashboardDTO relatorio =
+				homeService.gerarRelatorio(filtro, unidadeId);
+
+		model.addAttribute("relatorio", relatorio);
+
+		return "relatorios/dashboard";
 	}
 
 	private String corPorIndice(int i) {

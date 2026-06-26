@@ -1083,4 +1083,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		});
 	</script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const tipo = document.getElementById("tipoPeriodo");
+			const divAno = document.getElementById("divAno");
+			const divAnoInicio = document.getElementById("divAnoInicio");
+			const divAnoFim = document.getElementById("divAnoFim");
+
+			function atualizarCampos() {
+				divAno.classList.add("d-none");
+				divAnoInicio.classList.add("d-none");
+				divAnoFim.classList.add("d-none");
+
+				if (tipo.value === "ANO_ESPECIFICO") {
+					divAno.classList.remove("d-none");
+				}
+
+				if (tipo.value === "INTERVALO") {
+					divAnoInicio.classList.remove("d-none");
+					divAnoFim.classList.remove("d-none");
+				}
+			}
+
+			tipo.addEventListener("change", atualizarCampos);
+			atualizarCampos();
+		});
+	</script>
 </th:block>
