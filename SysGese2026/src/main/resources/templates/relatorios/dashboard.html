@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+
+        .unidade-info h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .unidade-info p {
+            margin: 2px 0;
+            font-size: 13px;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+
+        .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+    <img class="logo"
+         th:src="${relatorio.logoUrl}"
+         alt="Logo Unidade">
+
+    <div class="unidade-info">
+        <h1 th:text="${relatorio.nomeUnidade}">Nome da Unidade</h1>
+
+        <p th:text="'Cidade: ' + ${relatorio.cidade}"></p>
+        <p th:text="'CNPJ: ' + ${relatorio.cnpj}"></p>
+        <p th:text="'Telefone: ' + ${relatorio.telefone}"></p>
+    </div>
+</div>
+
+<!-- CONTEÚDO -->
+<div class="section">
+
+    <div class="card">
+        <div class="title">Total de Adolescentes</div>
+        <span th:text="${relatorio.totalAdolescentes}"></span>
+    </div>
+
+    <div class="card">
+        <div class="title">Total Geral</div>
+        <span th:text="${relatorio.totalGeral}"></span>
+    </div>
+
+    <div class="card">
+        <div class="title">Internados Unidade</div>
+        <span th:text="${relatorio.internadosUnidade}"></span>
+    </div>
+
+    <div class="card">
+        <div class="title">Internados Geral</div>
+        <span th:text="${relatorio.internadosGeral}"></span>
+    </div>
+
+</div>
+
+</body>
+</html>
