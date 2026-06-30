@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+
+    <style>
+        @page {
+            size: A4;
+            margin: 20px;
+        }
+
+        body {
+            font-family: Arial;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* HEADER BREADCRUMB (removido no PDF visual) */
+        .breadcrumb {
+            display: none;
+        }
+
+        /* CONTAINER */
+        .container {
+            width: 100%;
+        }
+
+        /* CARD PRINCIPAL */
+        .card {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        .card-header {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        /* HEADER RELATÓRIO (IGUAL TELA) */
+        .header-relatorio {
+            width: 100%;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header-table {
+            width: 100%;
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+        }
+
+        .unidade-info h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .unidade-info p {
+            margin: 2px 0;
+            font-size: 12px;
+        }
+
+        /* REPORT CARD */
+        .report-card {
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        .report-card-header {
+            background: #f2f2f2;
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .report-card-body {
+            padding: 10px;
+        }
+
+        /* LINHAS */
+        .city-row {
+            width: 100%;
+            display: table;
+            margin-bottom: 5px;
+        }
+
+        .city-name {
+            display: table-cell;
+        }
+
+        .city-dots {
+            display: table-cell;
+            border-bottom: 1px dotted #999;
+            width: 100%;
+        }
+
+        .city-value {
+            display: table-cell;
+            text-align: right;
+            font-weight: bold;
+            width: 50px;
+        }
+
+        /* TOTAL */
+        .total-box {
+            margin-top: 10px;
+            border-top: 2px solid #000;
+            padding-top: 5px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER IGUAL AO DA TELA -->
+    <div class="header-relatorio">
+        <table class="header-table">
+            <tr>
+                <td style="width:100px;">
+                    <img class="logo" th:src="${relatorio.logoUrl}" />
+                </td>
+
+                <td class="unidade-info">
+                    <h1 th:text="${relatorio.nomeUnidade}"></h1>
+                    <p th:text="'Cidade: ' + ${relatorio.cidade}"></p>
+                    <p th:text="'CNPJ: ' + ${relatorio.cnpj}"></p>
+                    <p th:text="'Telefone: ' + ${relatorio.telefone}"></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- CARD 1 -->
+    <div class="report-card"
+         th:if="${relatorio.modoVisualizacao == 'UNIDADE' or relatorio.modoVisualizacao == 'AMBAS'}">
+
+        <div class="report-card-header">
+            Adolescentes da Unidade
+        </div>
+
+        <div class="report-card-body">
+
+            <div th:each="cidade : ${relatorio.cidadeUnidade}">
+                <div class="city-row">
+                    <div class="city-name" th:text="${cidade.key}"></div>
+                    <div class="city-dots"></div>
+                    <div class="city-value" th:text="${cidade.value}"></div>
+                </div>
+            </div>
+
+            <div class="total-box">
+                Total: <span th:text="${relatorio.internadosUnidade}"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="report-card"
+         th:if="${relatorio.modoVisualizacao == 'TODAS' or relatorio.modoVisualizacao == 'AMBAS'}">
+
+        <div class="report-card-header">
+            Internados em Todas as Unidades
+        </div>
+
+        <div class="report-card-body">
+
+            <div th:each="cidade : ${relatorio.cidadeGeral}">
+                <div class="city-row">
+                    <div class="city-name" th:text="${cidade.key}"></div>
+                    <div class="city-dots"></div>
+                    <div class="city-value" th:text="${cidade.value}"></div>
+                </div>
+            </div>
+
+            <div class="total-box">
+                Total: <span th:text="${relatorio.internadosGeral}"></span>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

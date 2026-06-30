@@ -1,5 +1,7 @@
 package br.com.sysgese.dtos;
 
+import java.util.Map;
+
 public class RelatorioDashboardFiltroDTO {
     private String tipoPeriodo;
     private Integer ano;
@@ -7,6 +9,7 @@ public class RelatorioDashboardFiltroDTO {
     private Integer anoFim;
     private String cidade;
     private String modoVisualizacao;
+
 
     public String getTipoPeriodo() {
         return tipoPeriodo;
