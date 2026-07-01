@@ -46,12 +46,11 @@ public class HomeService {
 
         Integer ano = resolverAno(filtro);
 
-
-        String nomeUnidade = unidadeRepository.findById(unidadeId)
-                .map(Unidade::getNome)
-                .orElse("Desconhecida");
-
-        dto.setNomeUnidade(nomeUnidade);
+        dto.setModoVisualizacao(
+                filtro.getModoVisualizacao() != null
+                        ? filtro.getModoVisualizacao()
+                        : "TODAS"
+        );
 
         Unidade unidade = unidadeRepository.findById(unidadeId)
                 .orElseThrow(() -> new RuntimeException("Unidade não encontrada"));
@@ -62,18 +61,12 @@ public class HomeService {
         dto.setTelefone(unidade.getTelefone());
         dto.setLogoUrl(unidade.getLogoTimbrado());
 
-        dto.setTotalAdolescentes(buscarTotalAdolescentesUnidade(ano, filtro));
-        dto.setTotalGeral(buscarTotalAdolescentesGeral(ano, filtro));
-
+        // ✅ SOMENTE INTERNACOES (RELATÓRIO)
         dto.setInternadosUnidade(buscarInternadosUnidade(ano, filtro, unidadeId));
         dto.setInternadosGeral(buscarInternadosGeral(ano, filtro));
 
-        dto.setInternacoesJson(buscarInternacoesUnidadeJson(ano, filtro, unidadeId));
-        dto.setInternacoesGeralJson(buscarInternacoesGeralJson(ano, filtro));
-        dto.setInternacoesPorUnidadeJson(buscarInternacoesPorUnidadeJson(ano, filtro));
-
-        dto.setCidadeUnidadeJson(buscarCidadeUnidadeJson(ano, filtro,  unidadeId));
-        dto.setCidadeGeralJson(buscarCidadeGeralJson(ano, filtro));
+        dto.setCidadeUnidade(buscarCidadeUnidade(ano, filtro, unidadeId));
+        dto.setCidadeGeral(buscarCidadeGeral(ano, filtro));
 
         return dto;
     }
@@ -110,7 +103,14 @@ public class HomeService {
         LocalDate inicio = LocalDate.of(ano, 1, 1);
         LocalDate fim = LocalDate.of(ano, 12, 31);
 
-
+        if (filtro.getCidade() != null && !filtro.getCidade().isBlank()) {
+            return internacaoRepository.countByUnidadeIdAndCidade(
+                    unidadeId,
+                    filtro.getCidade(),
+                    inicio,
+                    fim
+            );
+        }
 
         return (long) internacaoRepository
                 .findByUnidadeIdAndDataInicioBetween(unidadeId, inicio, fim)
@@ -119,8 +119,17 @@ public class HomeService {
 
     private Long buscarInternadosGeral(Integer ano,
                                        RelatorioDashboardFiltroDTO filtro) {
+        System.out.println("CIDADE FILTRO: " + filtro.getCidade());
         LocalDate inicio = LocalDate.of(ano, 1, 1);
         LocalDate fim = LocalDate.of(ano, 12, 31);
+
+        if (filtro.getCidade() != null && !filtro.getCidade().isBlank()) {
+            return internacaoRepository.countGeralByCidade(
+                    filtro.getCidade(),
+                    inicio,
+                    fim
+            );
+        }
 
         return (long) internacaoRepository
                 .findByDataInicioBetween(inicio, fim)
@@ -177,6 +186,7 @@ public class HomeService {
 
         return new Gson().toJson(mapa.values());
     }
+    /*
     private String buscarCidadeGeralJson(Integer ano, RelatorioDashboardFiltroDTO filtro) {
 
         List<Object[]> dados =
@@ -189,7 +199,7 @@ public class HomeService {
         }
 
         return new Gson().toJson(mapa.values());
-    }
+    }*/
 
     private String buscarInternacoesPorUnidadeJson(Integer ano,
                                                    RelatorioDashboardFiltroDTO filtro) {
@@ -213,6 +223,63 @@ public class HomeService {
         json.put("values", valores);
 
         return jsonMapper.writeValueAsString(json);
+    }
+
+    private Map<String, Long> buscarCidadeUnidade(Integer ano,
+                                                  RelatorioDashboardFiltroDTO filtro,
+                                                  Long unidadeId) {
+
+        List<Object[]> dados;
+
+        if (filtro.getCidade() != null && !filtro.getCidade().isBlank()) {
+            dados = internacaoRepository
+                    .countInternacoesPorCidadeUnidadeFiltrado(
+                            unidadeId,
+                            filtro.getCidade()
+                    );
+        } else {
+            dados = internacaoRepository
+                    .countInternacoesPorCidadeUnidade(unidadeId);
+        }
+
+        Map<String, Long> mapa = new LinkedHashMap<>();
+
+        for (Object[] obj : dados) {
+            mapa.put((String) obj[0], (Long) obj[1]);
+        }
+
+        return mapa;
+    }
+
+    private Map<String, Long> buscarCidadeGeral(Integer ano,
+                                                RelatorioDashboardFiltroDTO filtro) {
+
+        LocalDate inicio = LocalDate.of(ano, 1, 1);
+        LocalDate fim = LocalDate.of(ano, 12, 31);
+
+        List<Object[]> dados;
+
+        // 🔥 AQUI ESTÁ A CHAMADA AO REPOSITORY FILTRADO
+        if (filtro.getCidade() != null && !filtro.getCidade().isBlank()) {
+            dados = internacaoRepository.countInternacoesPorCidadeGeralFiltrado(
+                    filtro.getCidade(),
+                    inicio,
+                    fim
+            );
+        } else {
+            dados = internacaoRepository.countInternacoesPorCidadeGeral(
+                    inicio,
+                    fim
+            );
+        }
+
+        Map<String, Long> mapa = new LinkedHashMap<>();
+
+        for (Object[] obj : dados) {
+            mapa.put((String) obj[0], (Long) obj[1]);
+        }
+
+        return mapa;
     }
 
 }

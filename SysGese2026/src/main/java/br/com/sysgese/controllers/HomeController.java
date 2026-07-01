@@ -9,6 +9,8 @@ import java.util.Map;
 import br.com.sysgese.dtos.RelatorioDashboardDTO;
 import br.com.sysgese.dtos.RelatorioDashboardFiltroDTO;
 import br.com.sysgese.services.HomeService;
+import br.com.sysgese.services.PdfService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +36,9 @@ public class HomeController {
 	private HomeService homeService;
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@Autowired
+	private PdfService pdfService;
 
 	@GetMapping
 	public String home( @RequestParam(required = false) Integer ano,
@@ -155,11 +160,36 @@ public class HomeController {
 		RelatorioDashboardDTO relatorio =
 				homeService.gerarRelatorio(filtro, unidadeId);
 
+
+		// ADICIONE ESTA LINHA PARA PASSAR O FILTRO PARA O MODEL
+		model.addAttribute("filtro", filtro);
 		model.addAttribute("relatorio", relatorio);
+		model.addAttribute("pageTitle", "Relatório - Sisgese");
 
 		return "relatorios/dashboard";
 	}
+	@GetMapping("/relatorios/dashboard/pdf")
+	public void gerarPdf(
+			RelatorioDashboardFiltroDTO filtro,
+			HttpSession session,
+			HttpServletResponse response) throws Exception {
+		System.out.println("ENTROU NO GERAR PDF");
+		Long unidadeId = (Long) session.getAttribute("unidadeId");
 
+		RelatorioDashboardDTO relatorio =
+				homeService.gerarRelatorio(filtro, unidadeId);
+
+		String html = pdfService.gerarHtmlRelatorio(relatorio, filtro);
+
+		byte[] pdf = pdfService.converterHtmlParaPdf(html);
+
+		response.setContentType("application/pdf");
+		response.setHeader("Content-Disposition", "attachment; filename=relatorio.pdf");
+		response.setContentLength(pdf.length);
+
+		response.getOutputStream().write(pdf);
+		response.getOutputStream().flush();
+	}
 	private String corPorIndice(int i) {
 		switch (i) {
 			case 0: return "bg-danger";

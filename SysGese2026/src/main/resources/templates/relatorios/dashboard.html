@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Relatório Dashboard</title>
-
+    <title>Relatório</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-            color: #333;
-        }
 
-        .header {
-            display: flex;
-            align-items: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
 
         .logo {
             width: 90px;
@@ -35,67 +24,290 @@
             margin: 2px 0;
             font-size: 13px;
         }
-
-        .section {
-            margin-top: 20px;
+        .header-relatorio {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .card {
+
+        .report-card {
             border: 1px solid #ddd;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 6px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,.08);
         }
 
-        .title {
-            font-weight: bold;
-            margin-bottom: 5px;
+        .report-card-header {
+            background: #f8f9fa;
+            padding: 14px 18px;
+            font-weight: 700;
+            border-bottom: 1px solid #ddd;
+            text-transform: uppercase;
+            color: #495057;
         }
+
+        .report-card-body {
+            padding: 20px;
+        }
+
+        .city-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .city-name {
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .city-dots {
+            flex-grow: 1;
+            border-bottom: 2px dotted #bbb;
+            margin: 0 10px;
+        }
+
+        .city-value {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 18px;
+            color: #0d6efd;
+        }
+
+        .total-box {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #343a40;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 18px;
+        }
+
+        .total-label {
+            font-weight: 600;
+        }
+
+        .total-value {
+            font-weight: 800;
+            font-size: 22px;
+            color: #198754;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+
+
+
     </style>
 </head>
 
 <body>
+<div layout:fragment="content">
 
-<!-- HEADER -->
-<div class="header">
 
-    <img class="logo"
-         th:src="${relatorio.logoUrl}"
-         alt="Logo Unidade">
+    <div class="container-fluid p-2">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb card"
+                     style="margin-top: -25px; font-size: 0.8rem;">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/home}"> <i
+                                class="fa-duotone fa-solid fa-house fs-7"></i> Home
+                        </a></li>
+                        <li class="breadcrumb-item"><span class="text-muted">
+									<i class="fa-duotone fa-solid fa-print"></i> Relatório
+							</span></li>
 
-    <div class="unidade-info">
-        <h1 th:text="${relatorio.nomeUnidade}">Nome da Unidade</h1>
+                    </ol>
+                </nav>
+            </div>
 
-        <p th:text="'Cidade: ' + ${relatorio.cidade}"></p>
-        <p th:text="'CNPJ: ' + ${relatorio.cnpj}"></p>
-        <p th:text="'Telefone: ' + ${relatorio.telefone}"></p>
+            <div class="col-12" style="margin-top: -15px;">
+                <div class="card">
+
+                    <div class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
+                        <h6 class="mb-0 text-secondary">Relatório Dashboard</h6>
+
+
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/home}"	class="btn btn-outline-danger"> <i
+                                    class="fa-duotone fa-solid fa-ban"></i> Cancelar
+                            </a>
+
+
+                            <button type="button"
+                                    class="btn btn-outline-primary"
+                                    onclick="baixarPdf()">
+                                <i class="fa fa-file-pdf"></i> Salvar PDF
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="hidden" id="cidade" th:value="${filtro != null ? filtro.cidade : ''}" />
+                                <input type="hidden" id="ano" th:value="${filtro != null ? filtro.ano : ''}" />
+                                <input type="hidden" id="modoVisualizacao" th:value="${relatorio != null ? relatorio.modoVisualizacao : ''}" />
+                                <!-- HEADER -->
+                                <div class="header-relatorio">
+
+                                    <img class="logo"
+                                         th:src="${relatorio.logoUrl}"
+                                         alt="Logo Unidade">
+
+                                    <div class="unidade-info">
+                                        <h1 th:text="${relatorio.nomeUnidade}">Nome da Unidade</h1>
+
+                                        <p th:text="'Cidade: ' + ${relatorio.cidade}"></p>
+                                        <p th:text="'CNPJ: ' + ${relatorio.cnpj}"></p>
+                                        <p th:text="'Telefone: ' + ${relatorio.telefone}"></p>
+                                    </div>
+                                </div>
+                                <!-- CONTEÚDO -->
+                                <div class="section">
+
+                                    <div class="report-card"  th:if="${relatorio.modoVisualizacao == 'UNIDADE' or relatorio.modoVisualizacao == 'AMBAS'}">
+                                        <div class="report-card-header">
+                                            Adolescentes da Unidade
+                                        </div>
+
+                                        <div class="report-card-body">
+
+                                            <div th:each="cidade : ${relatorio.cidadeUnidade}" class="city-row">
+                                                <span class="city-name" th:text="${cidade.key}"></span>
+                                                <span class="city-dots"></span>
+                                                <span class="city-value" th:text="${cidade.value}"></span>
+                                            </div>
+
+                                            <div class="total-box">
+                                                <span class="total-label">Total de Adolescentes:</span>
+                                                <span class="total-value" th:text="${relatorio.internadosUnidade}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="report-card"  th:if="${relatorio.modoVisualizacao == 'TODAS' or relatorio.modoVisualizacao == 'AMBAS'}" >
+                                        <div class="report-card-header">
+                                            Internados em Todas as Unidades
+                                        </div>
+
+                                        <div class="report-card-body">
+
+                                            <div th:each="cidade : ${relatorio.cidadeGeral}" class="city-row">
+                                                <span class="city-name" th:text="${cidade.key}"></span>
+                                                <span class="city-dots"></span>
+                                                <span class="city-value" th:text="${cidade.value}"></span>
+                                            </div>
+
+                                            <div class="total-box">
+                                                <span class="total-label">Total de Internados:</span>
+                                                <span class="total-value" th:text="${relatorio.internadosGeral}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
     </div>
+
+
+    <script>
+        async function baixarPdf() {
+            const overlay = document.getElementById("loadingOverlay");
+            if (overlay) overlay.style.display = "flex";
+
+            try {
+                // Função auxiliar para pegar valores
+                const getValue = (id) => {
+                    const element = document.getElementById(id);
+                    if (!element) return null;
+                    const value = element.value;
+                    return (value && value !== '' && value !== 'undefined') ? value : null;
+                };
+
+                const cidade = getValue('cidade');
+                const ano = getValue('ano');
+                const modoVisualizacao = getValue('modoVisualizacao');
+
+                // Constrói os parâmetros
+                const params = new URLSearchParams();
+                if (cidade) params.append('cidade', cidade);
+                if (ano) params.append('ano', ano);
+                if (modoVisualizacao) params.append('modoVisualizacao', modoVisualizacao);
+
+                const url = `/home/relatorios/dashboard/pdf?${params.toString()}`;
+                console.log('URL:', url); // Debug
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/pdf'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Erro ${response.status}: ${errorText}`);
+                }
+
+                const blob = await response.blob();
+
+                // Verifica o tipo do conteúdo
+                if (blob.type !== 'application/pdf' && blob.size > 0) {
+                    console.warn('Tipo de conteúdo inesperado:', blob.type);
+                }
+
+                if (blob.size === 0) {
+                    throw new Error('O PDF gerado está vazio');
+                }
+
+                // Cria o download
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `relatorio-dashboard-${new Date().toISOString().slice(0,10)}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(downloadUrl);
+
+            } catch (error) {
+                console.error('Erro ao baixar PDF:', error);
+                alert(`Erro ao gerar o PDF: ${error.message}`);
+            } finally {
+                if (overlay) overlay.style.display = 'none';
+            }
+        }
+    </script>
+
 </div>
 
-<!-- CONTEÚDO -->
-<div class="section">
-
-    <div class="card">
-        <div class="title">Total de Adolescentes</div>
-        <span th:text="${relatorio.totalAdolescentes}"></span>
-    </div>
-
-    <div class="card">
-        <div class="title">Total Geral</div>
-        <span th:text="${relatorio.totalGeral}"></span>
-    </div>
-
-    <div class="card">
-        <div class="title">Internados Unidade</div>
-        <span th:text="${relatorio.internadosUnidade}"></span>
-    </div>
-
-    <div class="card">
-        <div class="title">Internados Geral</div>
-        <span th:text="${relatorio.internadosGeral}"></span>
-    </div>
-
-</div>
 
 </body>
 </html>

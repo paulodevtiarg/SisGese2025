@@ -1,5 +1,7 @@
 package br.com.sysgese.dtos;
 
+import java.util.Map;
+
 public class RelatorioDashboardDTO {
     private String nomeUnidade;
 
@@ -19,15 +21,38 @@ public class RelatorioDashboardDTO {
     private String cnpj;
     private String telefone;
     private String logoUrl;
+    private String modoVisualizacao;
 
+    private Map<String, Long> cidadeUnidade;
+    private Map<String, Long> cidadeGeral;
 
+    public Map<String, Long> getCidadeUnidade() {
+        return cidadeUnidade;
+    }
 
+    public void setCidadeUnidade(Map<String, Long> cidadeUnidade) {
+        this.cidadeUnidade = cidadeUnidade;
+    }
+
+    public Map<String, Long> getCidadeGeral() {
+        return cidadeGeral;
+    }
+
+    public void setCidadeGeral(Map<String, Long> cidadeGeral) {
+        this.cidadeGeral = cidadeGeral;
+    }
 
     public String getNomeUnidade() {
         return nomeUnidade;
     }
 
+    public String getModoVisualizacao() {
+        return modoVisualizacao;
+    }
 
+    public void setModoVisualizacao(String modoVisualizacao) {
+        this.modoVisualizacao = modoVisualizacao;
+    }
 
     public void setNomeUnidade(String nomeUnidade) {
         this.nomeUnidade = nomeUnidade;

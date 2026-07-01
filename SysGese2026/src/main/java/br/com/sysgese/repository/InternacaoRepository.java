@@ -85,15 +85,18 @@ extends JpaRepository<Internacao, Long>,
     );
 
     @Query("""
-        SELECT e.cidade, COUNT(DISTINCT i.id)
-        FROM Internacao i
-        JOIN i.adolescente a
-        JOIN a.enderecos e
-        WHERE e.ativo = true
-        GROUP BY e.cidade
-        ORDER BY e.cidade
-    """)
-    List<Object[]> countInternacoesPorCidadeGeral();
+    SELECT e.cidade, COUNT(i)
+    FROM Internacao i
+    JOIN i.adolescente a
+    JOIN a.enderecos e
+    WHERE e.ativo = true
+      AND i.dataInicio BETWEEN :inicio AND :fim
+    GROUP BY e.cidade
+""")
+    List<Object[]> countInternacoesPorCidadeGeral(
+            @Param("inicio") LocalDate inicio,
+            @Param("fim") LocalDate fim
+    );
 
     @Query("""
         SELECT i.unidade.nome, COUNT(i)
@@ -120,6 +123,64 @@ extends JpaRepository<Internacao, Long>,
 """)
     List<String> listarCidadesInternados();
 
+    @Query("""
+    SELECT e.cidade, COUNT(i)
+    FROM Internacao i
+    JOIN i.adolescente a
+    JOIN Endereco e ON e.adolescente = a AND e.ativo = true
+    WHERE i.unidade.id = :unidadeId
+      AND e.cidade = :cidade
+    GROUP BY e.cidade
+""")
+    List<Object[]> countInternacoesPorCidadeUnidadeFiltrado(
+            @Param("unidadeId") Long unidadeId,
+            @Param("cidade") String cidade
+    );
+    @Query("""
+    SELECT COUNT(i)
+    FROM Internacao i
+    JOIN i.adolescente a
+    JOIN a.enderecos e
+    WHERE i.unidade.id = :unidadeId
+      AND e.ativo = true
+      AND e.cidade = :cidade
+      AND i.dataInicio BETWEEN :inicio AND :fim
+""")
+    Long countByUnidadeIdAndCidade(
+            @Param("unidadeId") Long unidadeId,
+            @Param("cidade") String cidade,
+            @Param("inicio") LocalDate inicio,
+            @Param("fim") LocalDate fim
+    );
 
+    @Query("""
+    SELECT COUNT(i)
+    FROM Internacao i
+    JOIN i.adolescente a
+    JOIN a.enderecos e
+    WHERE e.ativo = true
+      AND e.cidade = :cidade
+      AND i.dataInicio BETWEEN :inicio AND :fim
+""")
+    Long countGeralByCidade(
+            @Param("cidade") String cidade,
+            @Param("inicio") LocalDate inicio,
+            @Param("fim") LocalDate fim
+    );
 
+    @Query("""
+    SELECT e.cidade, COUNT(i)
+    FROM Internacao i
+    JOIN i.adolescente a
+    JOIN a.enderecos e
+    WHERE e.ativo = true
+      AND e.cidade = :cidade
+      AND i.dataInicio BETWEEN :inicio AND :fim
+    GROUP BY e.cidade
+""")
+    List<Object[]> countInternacoesPorCidadeGeralFiltrado(
+            @Param("cidade") String cidade,
+            @Param("inicio") LocalDate inicio,
+            @Param("fim") LocalDate fim
+    );
 }
