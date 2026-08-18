@@ -247,12 +247,7 @@ public class Internacao {
 	public void setProcedenciaTransferecia(String procedenciaTransferecia) {
 		this.procedenciaTransferecia = procedenciaTransferecia;
 	}
-	
-	
-	
-	
-	
-	
+
 
   
 }

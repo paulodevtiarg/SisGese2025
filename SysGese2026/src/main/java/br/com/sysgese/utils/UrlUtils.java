@@ -1,5 +1,6 @@
 package br.com.sysgese.utils;
 
+import br.com.sysgese.dtos.AtendimentoEnfermagemDTO;
 import org.springframework.stereotype.Component;
 
 import br.com.sysgese.dtos.AdolescenteDTO;
@@ -34,6 +35,32 @@ public class UrlUtils {
 	        filtro.getSize() != null ? filtro.getSize() : 10,
 	        page
 	    );
+	}
+
+	public String atendimentoEnfermagemQuery(
+			AtendimentoEnfermagemDTO filtro,
+			int page) {
+
+		return String.format(
+				"nomeAdolescente=%s&cidadeAdolescente=%s&filtroUnidadeId=%s&size=%s&page=%d",
+				filtro.getFiltroNomeAdolescente() != null
+						? filtro.getFiltroNomeAdolescente()
+						: "",
+
+				filtro.getFiltroCidadeAdolescente() != null
+						? filtro.getFiltroCidadeAdolescente()
+						: "",
+
+				filtro.getFiltroUnidadeId() != null
+						? filtro.getFiltroUnidadeId()
+						: "",
+
+				filtro.getSize() != null
+						? filtro.getSize()
+						: 10,
+
+				page
+		);
 	}
 
 

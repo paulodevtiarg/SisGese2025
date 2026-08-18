@@ -84,8 +84,7 @@ public String index(
             Sort.by("dataInicio").descending()
     );
 
-    Page<Internacao> pagina = internacaoService
-            .buscarComFiltro(filtro, unidadeFiltro, isMaster, pageable);
+    Page<Internacao> pagina = internacaoService.buscarComFiltro(filtro, unidadeFiltro, isMaster, pageable);
 
 
 
@@ -97,6 +96,8 @@ public String index(
     if (isMaster) {
         model.addAttribute("unidades", unidadeService.listarTodas());
     }
+
+    model.addAttribute("lotacaoUsuarioLogado", lotacaoAtiva );
 
     model.addAttribute("isMaster", isMaster);
     model.addAttribute("size", size);
