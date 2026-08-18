@@ -43,19 +43,40 @@
 			aria-expanded="true" aria-controls="collapseTwo"> <i class="fa-duotone fa-solid fa-family-dress"></i> <span>Gestão Socioeducativa</span>
 		</a>
    
-			<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" 	data-parent="#accordionSidebar">
+			<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 				<div class="bg-white py-2 collapse-inner rounded">
 					
-					<a class="collapse-item" th:href="@{/adolescentes}">Adolescentes</a> 
-			
-					
-					
-					
-					<a
-						class="collapse-item" th:href="@{/internacoes}">Internações</a>
-						
+					<a class="collapse-item" th:href="@{/adolescentes}">Adolescentes</a>
+					<a	class="collapse-item" th:href="@{/internacoes}">Internações</a>
+
 				</div>
-			</div></li>
+			</div>
+
+		</li>
+
+		<!-- Nav Item - Pages Collapse Menu -->
+		<li class="nav-item"  th:classappend="${activeMenu == 'atendimentos' ? 'active' : ''}">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAtendimento"
+			   aria-expanded="true" aria-controls="collapseTwo"><i class="fa-duotone fa-solid fa-user-doctor-hair"></i> <span>Atendimentos</span>
+		</a>
+
+			<div id="collapseAtendimento" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+
+					<a class="collapse-item"  th:href="@{/atendimentos/medico}">Médico</a>
+					<a	class="collapse-item" th:href="@{/atendimentos/enfermagem}">Enfermagem</a>
+					<a	class="collapse-item" th:href="@{/atendimentos/psicologico}">Psicológico</a>
+					<a	class="collapse-item" th:href="@{/atendimentos/social}">Psicológico</a>
+					<a	class="collapse-item" th:href="@{/atendimentos/juridico}">Juridico</a>
+
+
+				</div>
+			</div>
+
+		</li>
+
+
+
 
 		<!-- Nav Item - Utilities Collapse Menu -->
 		<li class="nav-item"><a class="nav-link collapsed" href="#"
