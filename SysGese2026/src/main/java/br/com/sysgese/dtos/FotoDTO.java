@@ -1,5 +1,6 @@
 package br.com.sysgese.dtos;
 
+import br.com.sysgese.enumerators.TipoFuncaoEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -7,12 +8,12 @@ public class FotoDTO {
     private Long id;
     @NotBlank(message = "Descrição  é obrigatório")
     private String descricaoDetalhe;
-    
-  
+
+    @NotNull(message = "Tipo da Função é Obrigatório")
+    private TipoFuncaoEnum chaveSistema;
+
     private String foto;
 
-    
-    
     
     @NotNull(message = "Adolescente é obrigatório")
     private Long adolescenteId;

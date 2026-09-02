@@ -2,14 +2,8 @@ package br.com.sysgese.models;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import br.com.sysgese.enumerators.TipoFuncaoEnum;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "FUNCAO")
@@ -58,6 +52,10 @@ public class Funcao {
 		return descricao;
 	}
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "CHAVE_SISTEMA", length = 50, unique = true)
+	private TipoFuncaoEnum chaveSistema;
+
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
@@ -86,6 +84,11 @@ public class Funcao {
 		this.dataAlt = dataAlt;
 	}
 
-    // getters e setters
-    
+	public TipoFuncaoEnum getChaveSistema() {
+		return chaveSistema;
+	}
+
+	public void setChaveSistema(TipoFuncaoEnum chaveSistema) {
+		this.chaveSistema = chaveSistema;
+	}
 }

@@ -113,9 +113,7 @@ public class AdolescenteController {
 		
 		// Pega a unidade do usuário logado
 		boolean isMaster = (Boolean) session.getAttribute("isMaster");
-
         Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
-        
         Long unidadeFiltro;
 
         if (isMaster) {
