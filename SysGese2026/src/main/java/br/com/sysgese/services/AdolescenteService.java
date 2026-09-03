@@ -567,5 +567,19 @@ public class AdolescenteService {
 
         return elegiveis;
     }
+    public List<AdolescenteDTO> buscarAdolescentesUnidade(Long unidadeId) {
 
+        Specification<Adolescente> spec =
+                AdolescenteSpecification.unidadeCadastro(unidadeId);
+
+        List<Adolescente> adolescentes =
+                repository.findAll(
+                        spec,
+                        Sort.by(Sort.Direction.ASC, "nome")
+                );
+
+        return adolescentes.stream()
+                .map(mapper::toDTO)
+                .toList();
+    }
 }

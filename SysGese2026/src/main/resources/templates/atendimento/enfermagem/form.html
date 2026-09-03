@@ -86,12 +86,40 @@
 
 							<div class="card-body">
 								<div class="row">
-									<div class="col-12">
+									<div class="col-md-6 input-group-sm">
+										<label class="form-label fw-semibold">Adolescente para Atendimento</label>
+										<select id="adolescenteSelect" class="form-select mt-1"
+										        th:field="*{idAdolescente}">
+											<option value="">Selecione</option>
+											<option th:each="adol : ${adolescentesUnidade}"
+											        th:value="${adol.id}"
+											        th:text="${adol.nome}">
+											</option>
+										</select>
 
+									</div>
+								</div>
+								<div class="row">
+									<div id="cardAdolescente" class="card mt-3 d-none">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-2 d-flex ">
+													<div class="foto-3x4-container-dt mb-2 w-100 h-100">
+														<div  class="foto-wrapper-dt">
+															<img id="fotoAdolescente"  class="foto-3x4-img-dt" alt="Foto do Adolescente">
+														</div>
 
+													</div>
+
+												</div>
+
+											<div>
+
+										</div><!--temrinando o cardo do adolesente
 
 
 									</div>
+
 
 								</div>
 								<!-- fim da col dentro do bdy -->

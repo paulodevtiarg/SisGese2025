@@ -4,10 +4,11 @@ import br.com.sysgese.dtos.AdolescenteDTO;
 import br.com.sysgese.dtos.AtendimentoEnfermagemDTO;
 import br.com.sysgese.dtos.AtendimentoEnfermagemResumoDTO;
 import br.com.sysgese.dtos.InternacaoDTO;
-import br.com.sysgese.enumerators.TipoFuncaoEnum;
+import br.com.sysgese.enumerators.*;
 import br.com.sysgese.mappers.AtendimentoEnfermagemMapper;
 import br.com.sysgese.models.AtendimentoEnfermagem;
 import br.com.sysgese.models.Lotacao;
+import br.com.sysgese.services.AdolescenteService;
 import br.com.sysgese.services.AtendimentoEnfermagemService;
 import br.com.sysgese.services.UnidadeService;
 import br.com.sysgese.utils.UrlUtils;
@@ -25,11 +26,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/atendimentos")
 public class AtendimentoController {
     @Autowired
     private AtendimentoEnfermagemService atendimentoEnfermagemService;
+    @Autowired
+    private  AdolescenteService adolescenteService;
     @Autowired
     private UnidadeService unidadeService;
     @Autowired
@@ -144,7 +149,33 @@ public class AtendimentoController {
 
             return "redirect:/atendimentos/enfermagem";
         }
-        model.addAttribute("atendimento", new AtendimentoEnfermagemDTO());
+        //Adolescentes para atendimento de enferemagem
+        List<AdolescenteDTO> adolescentesUnidade =  adolescenteService.buscarAdolescentesUnidade(unidadeFiltro);
+
+        //Objeto a ser preenchido
+        AtendimentoEnfermagemDTO atendimentoEnfermagemDTO = new AtendimentoEnfermagemDTO();
+
+        if (!isMaster) {
+            atendimentoEnfermagemDTO.setIdUnidade(unidadeFiltro);
+            atendimentoEnfermagemDTO.setIdServidor(lotacaoAtiva.getServidor().getId());
+        }
+        // Master recebe lista de unidades
+        if (isMaster) {
+            model.addAttribute("unidades", unidadeService.listarTodas());
+        }
+
+        model.addAttribute("atendimento",atendimentoEnfermagemDTO);
+        model.addAttribute("usuarioMaster", isMaster);
+        model.addAttribute("adolescentesUnidade", adolescentesUnidade);
+        model.addAttribute("motivoAtendimento", MotivoAtendimentoEnum.values());
+        model.addAttribute("estadoGeral", EstadoEnum.values());
+        model.addAttribute("conciencia", ConscienciaEnum.values());
+        model.addAttribute("conduta", CondutaEnum.values());
+        model.addAttribute("tipoDose", TipoDoseEnum.values());
+        model.addAttribute("viaAdm", ViaAdmEnum.values());
+        model.addAttribute("horarioMed", HorarioEnum.values());
+        model.addAttribute("encaminhamento", EncaminhamentoEnum.values());
+        model.addAttribute("encerramentoAtd", EncerramentoEnum.values());
 
         return "atendimento/enfermagem/form";
 
