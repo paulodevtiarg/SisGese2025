@@ -584,7 +584,14 @@ function mostrarLoading() {
         overlay.style.display = "flex";
     }
 }
+function esconderLoading() {
 
+	const overlay = document.getElementById("loadingOverlay");
+
+	if (overlay) {
+		overlay.style.display = "none";
+	}
+}
 // 🔥 captura clique em QUALQUER link
 document.addEventListener("click", function (e) {
     const link = e.target.closest("a");
@@ -1107,6 +1114,96 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			tipo.addEventListener("change", atualizarCampos);
 			atualizarCampos();
+		});
+	</script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+
+			const select = document.getElementById('adolescenteSelect');
+			const card = document.getElementById('cardAdolescente');
+
+			// Proteção: se não estiver numa página que usa esses elementos
+			if (!select || !card) {
+				return;
+			}
+
+			async function carregarAdolescente(idAdolescente) {
+
+				if (!idAdolescente) {
+					card.classList.add('d-none');
+					return;
+				}
+
+				// 🔥 Mostra o spinner global
+				mostrarLoading();
+
+				try {
+
+					const response = await fetch(
+							'/adolescentes/buscaAdolescente/' + idAdolescente
+					);
+
+					if (!response.ok) {
+						throw new Error("Erro ao buscar adolescente");
+					}
+
+					const adolescente = await response.json();
+
+					card.classList.remove('d-none');
+
+					const nome = document.getElementById('nomeAdolescente');
+					const idade = document.getElementById('idadeAdolescente');
+					const mae = document.getElementById('maeAdolescente');
+					const cidade = document.getElementById('cidadeAdolescente');
+					const foto = document.getElementById('fotoAdolescente');
+
+					if (nome) {
+						nome.value = adolescente.nome || '-';
+					}
+
+					if (idade) {
+						idade.value = adolescente.idade || '-';
+					}
+
+					if (mae) {
+						mae.value = adolescente.mae || '-';
+					}
+
+					if (cidade) {
+						cidade.value =
+								(adolescente.cidadeNascimento || '-') +
+								'/' +
+								(adolescente.ufNascimento || '-');
+					}
+
+					if (foto) {
+						foto.src =
+								adolescente.fotoRegistro || '/img/sem-foto.png';
+					}
+
+				} catch (e) {
+
+					console.error("Erro ao carregar adolescente:", e);
+
+					card.classList.add('d-none');
+
+				} finally {
+
+					// 🔥 SEMPRE fecha o spinner
+					esconderLoading();
+				}
+			}
+
+			// Se estiver editando e já houver adolescente selecionado
+			if (select.value) {
+				carregarAdolescente(select.value);
+			}
+
+			// 🔥 Ao selecionar/trocar adolescente
+			select.addEventListener('change', function () {
+				carregarAdolescente(this.value);
+			});
+
 		});
 	</script>
 </th:block>
