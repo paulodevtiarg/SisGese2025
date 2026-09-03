@@ -1,7 +1,10 @@
 package br.com.sysgese.controllers;
 
+import br.com.sysgese.dtos.AdolescenteDTO;
 import br.com.sysgese.dtos.AtendimentoEnfermagemDTO;
 import br.com.sysgese.dtos.AtendimentoEnfermagemResumoDTO;
+import br.com.sysgese.dtos.InternacaoDTO;
+import br.com.sysgese.enumerators.TipoFuncaoEnum;
 import br.com.sysgese.mappers.AtendimentoEnfermagemMapper;
 import br.com.sysgese.models.AtendimentoEnfermagem;
 import br.com.sysgese.models.Lotacao;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/atendimentos")
@@ -33,126 +37,48 @@ public class AtendimentoController {
     @Autowired
     private UrlUtils urlUtils;
 
-/*
+
     @GetMapping("/enfermagem")
     public String indexAtendimentoEnfermagem(
             @ModelAttribute("filtro")
             AtendimentoEnfermagemDTO filtro,
-            @RequestParam(value = "page", defaultValue = "0")int page,
-            @RequestParam(value = "size", defaultValue = "10")int size,
-            HttpSession session,
-            Model model) {
-
-        boolean isMaster = (Boolean) session.getAttribute("isMaster");
-        Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
-        Long unidadeSession =  (Long) session.getAttribute("unidadeId");
-
-
-        Long unidadeFiltro;
-
-        if (isMaster) {
-            // MASTER pode escolher unidade
-            unidadeFiltro = (filtro.getFiltroUnidadeId() != null)
-                    ? filtro.getFiltroUnidadeId()
-                    : lotacaoAtiva.getUnidade().getId(); // padrão
-        } else {
-            // NÃO MASTER sempre usa a própria unidade
-            unidadeFiltro = lotacaoAtiva.getUnidade().getId();
-        }
-
-
-        // ==========================================================
-        // TAMANHO DA PÁGINA
-        // ==========================================================
-
-        if (filtro.getSize() != null) {
-            size = filtro.getSize();
-        } else {
-            filtro.setSize(size);
-        }
-
-        Pageable pageable =
-                PageRequest.of(
-                        page,
-                        size,
-                        Sort.by(
-                                Sort.Direction.DESC,
-                                "data"
-                        )
-                );
-
-
-
-
-        Page<AtendimentoEnfermagem> pagina =  atendimentoEnfermagemService.buscarComFiltro(filtro, unidadeSession,isMaster, pageable );
-
-        Page<AtendimentoEnfermagemDTO> paginaDTO = pagina.map(atendimentoMapper::toDTO);
-        model.addAttribute("pagina", paginaDTO);
-        model.addAttribute("lista", paginaDTO.getContent());
-        model.addAttribute("isMaster",isMaster);
-        model.addAttribute("size",size);
-        model.addAttribute("queryParams",urlUtils.atendimentoEnfermagemQuery(filtro,page));
-        model.addAttribute("pageTitle","Atendimento de Enfermagem");
-        model.addAttribute("activeMenu","atendimentos");
-        model.addAttribute("unidadeId",unidadeFiltro);
-
-
-        return "atendimento/enfermagem/index";
-    } */
-
-    @GetMapping("/enfermagem")
-    public String indexAtendimentoEnfermagem(
-
-            @ModelAttribute("filtro")
-            AtendimentoEnfermagemDTO filtro,
-
             @RequestParam(value = "page", defaultValue = "0")
             int page,
-
             @RequestParam(value = "size", defaultValue = "10")
             int size,
-
             HttpSession session,
+            RedirectAttributes redirectAttributes,
             Model model) {
 
+        boolean isMaster =  (Boolean) session.getAttribute("isMaster");
+        Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
+        Long unidadeSession =(Long) session.getAttribute("unidadeId");
 
-        boolean isMaster =
-                (Boolean) session.getAttribute("isMaster");
-
-        Lotacao lotacaoAtiva =
-                (Lotacao) session.getAttribute(
-                        "lotacaoUsuarioLogado"
-                );
-
-        Long unidadeSession =
-                (Long) session.getAttribute("unidadeId");
+        TipoFuncaoEnum tipoFuncaoUsuario = null;
         if (isMaster) {
             model.addAttribute("unidades", unidadeService.listarTodas());
         }
+        if (lotacaoAtiva != null && lotacaoAtiva.getFuncao() != null) {
+            tipoFuncaoUsuario = lotacaoAtiva
+                    .getFuncao()
+                    .getChaveSistema();
+        }
 
-        // ==========================================================
-        // UNIDADE UTILIZADA NO FILTRO
-        // ==========================================================
+        boolean podeIncluirAtendimentoEnfermagem =
+                TipoFuncaoEnum.ENFERMEIRO.equals(tipoFuncaoUsuario)
+                        || TipoFuncaoEnum.TEC_ENFERMAGEM.equals(tipoFuncaoUsuario);
+
+
 
         Long unidadeFiltro;
 
         if (isMaster) {
-
-            unidadeFiltro =
-                    (filtro.getFiltroUnidadeId() != null)
-                            ? filtro.getFiltroUnidadeId()
-                            : lotacaoAtiva.getUnidade().getId();
+            unidadeFiltro = (filtro.getFiltroUnidadeId() != null)? filtro.getFiltroUnidadeId(): lotacaoAtiva.getUnidade().getId();
 
         } else {
-
-            unidadeFiltro =
-                    lotacaoAtiva.getUnidade().getId();
+            unidadeFiltro = lotacaoAtiva.getUnidade().getId();
         }
         model.addAttribute("lotacaoUsuarioLogado", lotacaoAtiva );
-
-        // ==========================================================
-        // TAMANHO DA PÁGINA
-        // ==========================================================
 
         if (filtro.getSize() != null) {
 
@@ -162,80 +88,65 @@ public class AtendimentoController {
 
             filtro.setSize(size);
         }
-
-
-        // ==========================================================
-        // PAGINAÇÃO
-        // ==========================================================
-
-        Pageable pageable =
-                PageRequest.of(
-                        page,
-                        size
-                );
-
-
-        // ==========================================================
-        // BUSCA UM REGISTRO POR ADOLESCENTE
-        // ==========================================================
-
         Page<AtendimentoEnfermagemResumoDTO> pagina =
                 atendimentoEnfermagemService
                         .buscarResumoPorAdolescente(
                                 filtro,
                                 unidadeSession,
                                 isMaster,
-                                pageable
+                                page
                         );
 
-
-        // ==========================================================
-        // MODEL
-        // ==========================================================
-
         model.addAttribute("pagina", pagina);
-
-        model.addAttribute(
-                "lista",
-                pagina.getContent()
-        );
-
-        model.addAttribute(
-                "isMaster",
-                isMaster
-        );
-
-        model.addAttribute(
-                "size",
-                size
-        );
-
-        model.addAttribute(
-                "queryParams",
-                urlUtils.atendimentoEnfermagemQuery(
-                        filtro,
-                        page
-                )
-        );
-
-        model.addAttribute(
-                "pageTitle",
-                "Atendimento de Enfermagem"
-        );
-
-        model.addAttribute(
-                "activeMenu",
-                "atendimentos"
-        );
-
-        model.addAttribute(
-                "unidadeId",
-                unidadeFiltro
-        );
+        model.addAttribute("lista", pagina.getContent());
+        model.addAttribute("isMaster", isMaster);
+        model.addAttribute("size", size);
+        model.addAttribute("queryParams",urlUtils.atendimentoEnfermagemQuery(filtro, page));
+        model.addAttribute("pageTitle","Atendimento de Enfermagem");
+        model.addAttribute("activeMenu","atendimentos");
+        model.addAttribute("podeIncluirAtendimentoEnfermagem",podeIncluirAtendimentoEnfermagem);
+        model.addAttribute("unidadeId",unidadeFiltro);
 
 
         return "atendimento/enfermagem/index";
     }
 
+    @GetMapping("/enfermagem/novo")
+    public String novo(
+            @ModelAttribute("filtro") AtendimentoEnfermagemDTO filtro,
+            @RequestParam(defaultValue = "0") int page,
+            HttpSession session,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ){
+        boolean isMaster = (Boolean) session.getAttribute("isMaster");
+        Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
+        Long unidadeFiltro = lotacaoAtiva.getUnidade().getId();
 
+        TipoFuncaoEnum tipoFuncaoUsuario = null;
+
+        if (lotacaoAtiva != null && lotacaoAtiva.getFuncao() != null) {
+            tipoFuncaoUsuario =
+                    lotacaoAtiva.getFuncao().getChaveSistema();
+        }
+
+        boolean podeIncluirAtendimentoEnfermagem =
+                TipoFuncaoEnum.ENFERMEIRO.equals(tipoFuncaoUsuario)
+                        || TipoFuncaoEnum.TEC_ENFERMAGEM.equals(tipoFuncaoUsuario);
+
+        // SOMENTE AQUI BLOQUEAMOS
+        if (!isMaster && !podeIncluirAtendimentoEnfermagem) {
+
+            redirectAttributes.addFlashAttribute(
+                    "msgErro",
+                    "Acesso não permitido. Você não possui permissão para incluir Atendimento de Enfermagem."
+            );
+
+            return "redirect:/atendimentos/enfermagem";
+        }
+        model.addAttribute("atendimento", new AtendimentoEnfermagemDTO());
+
+        return "atendimento/enfermagem/form";
+
+    }
 }

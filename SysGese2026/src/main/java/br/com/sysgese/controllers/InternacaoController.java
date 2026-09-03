@@ -124,7 +124,7 @@ public String index(
 
         Long unidadeFiltro = lotacaoAtiva.getUnidade().getId();
 
-        List<AdolescenteDTO> adolescentesElegiveis =   adolescenteService.buscarElegiveisParaInternacao(unidadeFiltro,  isMaster );
+        List<AdolescenteDTO> adolescentesElegiveis =  adolescenteService.buscarElegiveisParaInternacao(unidadeFiltro,  isMaster );
 
         InternacaoDTO internacao = new InternacaoDTO();
 

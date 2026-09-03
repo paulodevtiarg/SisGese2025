@@ -32,7 +32,7 @@
             </div>
             <div class="col-12">
                 <!-- Mensagens de erro e de ok -->
-                <div class="alert alert-success alert-dismissible fade show auto-close"
+                <div class="alert alert-success alert-dismissible fade show auto-close mb-3"
                      id="successAlert"
                      role="alert" th:if="${msgOk}">
                     <i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
@@ -42,7 +42,7 @@
                 </div>
 
                 <!-- Mensagem de Erro -->
-                <div class="alert alert-danger alert-dismissible fade show auto-close"
+                <div class="alert alert-danger alert-dismissible fade show auto-close mb-3"
                      id="errorAlert"
                      role="alert" th:if="${msgErro}">
                     <i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
@@ -57,11 +57,41 @@
 
                         <h6 class="mb-0 text-secondary">Atendimentos</h6>
 
-                        <a class="btn btn-outline-sistema"
-                           data-bs-toggle="tooltip" th:href="@{'/atendimentos/enfermagem/novo?' + ${queryParams}}"
-                           title="Novo Adolescente"> <i class="fa-duotone fa-plus"></i>
-                            Novo
+                        <!-- TEM PERMISSÃO + TEM QUERY PARAMS -->
+                        <a th:if="${(isMaster or podeIncluirAtendimentoEnfermagem)
+            and queryParams != null
+            and queryParams != ''}"
+                           th:href="@{'/atendimentos/enfermagem/novo?' + ${queryParams}}"
+                           class="btn btn-outline-sistema"
+                           data-bs-toggle="tooltip"
+                           title="Novo Atendimento de Enfermagem">
+
+                            <i class="fa-duotone fa-plus"></i> Novo
                         </a>
+
+
+                        <!-- TEM PERMISSÃO + NÃO TEM QUERY PARAMS -->
+                        <a th:if="${(isMaster or podeIncluirAtendimentoEnfermagem)
+            and (queryParams == null or queryParams == '')}"
+                           th:href="@{/atendimentos/enfermagem/novo}"
+                           class="btn btn-outline-sistema"
+                           data-bs-toggle="tooltip"
+                           title="Novo Atendimento de Enfermagem">
+
+                            <i class="fa-duotone fa-plus"></i> Novo
+                        </a>
+
+
+                        <!-- NÃO TEM PERMISSÃO -->
+                        <a th:if="${!isMaster and !podeIncluirAtendimentoEnfermagem}"
+                           href="#"
+                           class="btn btn-outline-sistema  opacity-50"
+                           data-bs-toggle="tooltip"
+                           title="Sem permissão para incluir Atendimento de Enfermagem">
+
+                            <i class="fa-duotone fa-plus"></i> Novo
+                        </a>
+
 
                     </div>
                     <div class="card-body">
@@ -72,12 +102,12 @@
                                     <div class="row g-2">
                                         <div class="col-md-4 input-group-sm">
                                             <label class="form-label fw-semibold">Nome do Adolescente</label>
-                                            <input class="form-control" name="nomeAdolescente" placeholder="Digite para buscar" th:value="${filtro.nomeAdolescente}" type="text">
+                                            <input class="form-control" name="filtroNomeAdolescente" placeholder="Digite para buscar" th:value="${filtro.filtroNomeAdolescente}" type="text">
                                         </div>
 
                                         <div class="col-md-4 input-group-sm">
                                             <label class="form-label fw-semibold">Cidade do Adolescente</label>
-                                            <input class="form-control" name="cidadeAdolescente" placeholder="Digite para buscar"  th:value="${filtro.cidadeAdolescente}" type="text">
+                                            <input class="form-control" name="filtroCidadeAdolescente" placeholder="Digite para buscar"  th:value="${filtro.filtroCidadeAdolescente}" type="text">
                                         </div>
 
                                         <div class="col-md-1 input-group-sm">
