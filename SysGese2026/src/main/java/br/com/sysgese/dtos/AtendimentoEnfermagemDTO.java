@@ -48,9 +48,19 @@ public class AtendimentoEnfermagemDTO {
     private BigDecimal temperatura;
 
 
-    @Digits(integer = 2, fraction = 1, message = "Saturação deve ter até 2 dígitos inteiros e 1 casa decimal (ex: 98.5)")
-    @DecimalMin(value = "70.0", message = "Saturação O₂ muito baixa (mínimo 70%)")
-    @DecimalMax(value = "100.0", message = "Saturação O₂ não pode ultrapassar 100%")
+    @Digits(
+            integer = 3,
+            fraction = 1,
+            message = "Saturação deve ter até 3 dígitos inteiros e 1 casa decimal (ex: 98.5)"
+    )
+    @DecimalMin(
+            value = "70.0",
+            message = "Saturação O₂ muito baixa (mínimo 70%)"
+    )
+    @DecimalMax(
+            value = "100.0",
+            message = "Saturação O₂ não pode ultrapassar 100%"
+    )
     @NumberFormat(pattern = "#,##0.0")
     private BigDecimal saturacaoO2;
 

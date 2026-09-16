@@ -11,24 +11,23 @@
 
 <body>
 	<div layout:fragment="content">
-
 		<div class="container-fluid p-2">
 			<div class="row">
 				<div class="col-12">
 					<nav aria-label="breadcrumb card"
-						style="margin-top: -25px; font-size: 0.8rem;">
+					     style="margin-top: -25px; font-size: 0.8rem;">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item"><a th:href="@{/home}"> <i
 									class="fa-duotone fa-solid fa-house fs-7"></i> Home
 							</a></li>
 							<li class="breadcrumb-item"><a
-								th:href="@{${queryParams != null and queryParams != ''} ? 
+									th:href="@{${queryParams != null and queryParams != ''} ?
               '/atendimentos/enfermagem?' + queryParams :
               '/atendimentos/enfermagem'}">
 								<i class="fa-duotone fa-solid fa-user-nurse"></i> Atendimentos
 
 							</a></li>
-							<li class="breadcrumb-item"><span class="text-muted"><i class="fa-duotone fa-solid fa-stethoscope"></i> Novo Registro </span></li>
+							<li class="breadcrumb-item"><span class="text-muted"><i class="fa-duotone fa-solid fa-stethoscope"></i> Novo Atendimento </span></li>
 
 
 						</ol>
@@ -37,43 +36,35 @@
 				<div class="col-12">
 					<!-- Mensagens de erro e de ok -->
 					<div th:if="${msgOk}"
-						class="alert alert-success alert-dismissible fade show"
-						role="alert" id="successAlert">
+					     class="alert alert-success alert-dismissible fade show"
+					     role="alert" id="successAlert">
 						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
 							th:text="${msgOk}"></span>
 						<button type="button" class="btn-close" data-bs-dismiss="alert"
-							aria-label="Close"></button>
+						        aria-label="Close"></button>
 					</div>
 
 					<!-- Mensagem de Erro -->
 					<div th:if="${msgErro}"
-						class="alert alert-danger alert-dismissible fade show"
-						role="alert" id="errorAlert">
+					     class="alert alert-danger alert-dismissible fade show"
+					     role="alert" id="errorAlert">
 						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
 							th:text="${msgErro}"></span>
 						<button type="button" class="btn-close" data-bs-dismiss="alert"
-							aria-label="Close"></button>
+						        aria-label="Close"></button>
 					</div>
 				</div>
 				<div class="col-12">
-
-					<form th:action="@{/atendimentos/enfermagem/salvar}"
-						th:object="${atendimento}" method="post">
-
+					<form th:action="@{/atendimentos/enfermagem/salvar}" th:object="${atendimento}" method="post">
 						<div class="card">
+							<div class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
 
-							<div
-								class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
-
-								<h5 class="mb-0 text-secondary">Novo Registro</h5>
+								<h5 class="mb-0 text-secondary">Novo Atendimento de Enfermagem</h5>
 
 								<div class="d-flex gap-2">
-									<a
-										th:href="@{${queryParams != null and queryParams != ''} ? 
-              '/atendimentos/enfermagem?' + queryParams :
-              '/atendimentos/enfermagem'}"
-										class="btn btn-outline-danger"> <i
-										class="fa-duotone fa-solid fa-ban"></i> Cancelar
+									<a	th:href="@{${queryParams != null and queryParams != ''} ? '/atendimentos/enfermagem?' + queryParams : '/atendimentos/enfermagem'}"
+											class="btn btn-outline-danger"> <i
+											class="fa-duotone fa-solid fa-ban"></i> Cancelar
 									</a>
 
 									<button type="submit" class="btn btn-outline-sistema">
@@ -81,9 +72,7 @@
 									</button>
 								</div>
 
-							</div>
-
-
+							</div> <!--fim do header -->
 							<div class="card-body">
 								<div class="row">
 									<div class="col-md-6 input-group-sm">
@@ -98,7 +87,7 @@
 										</select>
 
 									</div>
-								</div>
+								</div> <!--primeira row do body -->
 								<div class="row">
 									<div id="cardAdolescente" class="card mt-3 d-none">
 										<div class="card-body">
@@ -112,44 +101,660 @@
 													</div>
 
 												</div>
+												<div class="col-md-10">
+													<div class="row">
+														<div class="col-md-6 mb-2">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Nome</span>
+																<input  id="nomeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+															</div>
+														</div>
+														<div class="col-md-2 mb-2">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Idade</span>
+																<input  id="idadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+															</div>
 
-											<div>
+														</div>
+														<div class="col-md-4 mb-2">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Cidade</span>
+																<input  id="cidadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+															</div>
 
-										</div><!--temrinando o cardo do adolesente
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-12 mb-2">
+															<div class="input-group">
+																<span class="input-group-text label-fixa">Mãe</span>
+																<input  id="maeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+															</div>
+
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-3 mb-2">
+															<!-- envia valor quando select estiver disabled -->
+															<input type="hidden"
+															       th:if="${!usuarioMaster}"
+															       th:field="*{idUnidade}"/>
+															<label   class="form-label fw-semibold text-secondary">  Unidade para Internação * </label>
+															<select class="form-select"
+															        th:field="*{idUnidade}"   th:classappend="${#fields.hasErrors('idUnidade')} ? 'is-invalid' : ''"
+															        th:disabled="${!usuarioMaster}">
+
+																<option value="">Selecione</option>
+
+																<option th:each="u : ${unidades}"
+																        th:value="${u.id}"
+																        th:text="${u.nome}">
+																</option>
+
+															</select>
+
+															<div class="invalid-feedback d-block"
+															     style="min-height: 20px;"
+															     th:if="${#fields.hasErrors('idUnidade')}"
+															     th:errors="*{idUnidade}">
+
+															</div>
+														</div>
+														<div class="col-md-9 mb-2" id="colMotivoAtendimento">
+															<label for="motivoAtendimento"  class="form-label fw-semibold text-secondary">Motivo do Atendimento * </label>
+															<select class="form-select" th:field="*{motivoAtendimento}" id="motivoAtendimento"
+															        th:classappend="${#fields.hasErrors('motivoAtendimento')} ? 'is-invalid' : ''">
+																<option value="">Selecione</option>
+																<option th:each="g : ${motivoAtendimentos}" th:value="${g}" th:text="${g.descricao}"></option>
+
+															</select>
+
+															<div class="invalid-feedback d-block"
+															     style="min-height: 20px;"
+															     th:if="${#fields.hasErrors('motivoAtendimento')}"
+															     th:errors="*{motivoAtendimento}"></div>
+														</div>
+														<div class="col-md-5 mb-2 d-none" id="campoMotivoOutros">
+
+															<label for="motivoOutros"
+															       class="form-label fw-semibold text-secondary">
+																Informe o Motivo *
+															</label>
+
+															<input type="text"
+															       class="form-control"
+															       th:field="*{motivoOutros}"
+															       id="motivoOutros"
+															       maxlength="50"
+															       disabled placeholder="Digite MOTIVO caso nao tenha a opção ao lado">
+
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-md-2">
+															<label for="paSistolica" class="form-label text-muted fw-medium">Pressao Sistólica</label>
+															<input type="text" class="form-control" th:field="*{paSistolica}" id="paSistolica" placeholder="Ex.: 120" maxlength="3"
+															       inputmode="numeric"> <small class="text-muted d-block"
+															                                   style="font-size: 0.60rem; line-height: 1;">
+															mmHg
+														</small>
+
+														</div>
+														<div class="col-md-2">
+															<label for="paDiastolica" class="form-label text-muted fw-medium">Pressao Diastólica</label>
+															<input type="text" class="form-control" th:field="*{paDiastolica}" id="paDiastolica" placeholder="Ex.: 80" maxlength="3"
+															       inputmode="numeric"> <small class="text-muted d-block"
+															                                   style="font-size: 0.60rem; line-height: 1;">
+															mmHg
+														</small>
+
+														</div>
+														<div class="col-md-2">
+															<label for="frequenciaCardiaca" class="form-label text-muted fw-medium">Frequência Cardiáca</label>
+															<input type="text" class="form-control" th:field="*{frequenciaCardiaca}" id="frequenciaCardiaca" placeholder="Ex.: 80" maxlength="3"
+															       inputmode="numeric">  <small class="text-muted d-block"
+															                                    style="font-size: 0.65rem; line-height: 1; ">
+															bpm
+														</small>
+
+														</div>
+														<div class="col-md-2">
+															<label for="frequenciaRespiratoria" class="form-label text-muted fw-medium">Frequência Respiratória</label>
+															<input type="text" class="form-control" th:field="*{frequenciaRespiratoria}" id="frequenciaRespiratoria" placeholder="Ex.: 18" maxlength="3"
+															       inputmode="numeric"> <small class="text-muted d-block"
+															                                   style="font-size: 0.65rem; line-height: 1;">
+															irpm
+														</small>
+
+														</div>
+														<div class="col-md-2">
+															<label for="temperatura" class="form-label text-muted fw-medium">Temperatura</label>
+															<input type="text" class="form-control" th:field="*{temperatura}" id="temperatura" placeholder="Ex.: 36,5" maxlength="3"
+															       inputmode="numeric"> <small class="text-muted d-block"
+															                                   style="font-size: 0.65rem; line-height: 1;">
+															ºC
+														</small>
+
+														</div>
+														<div class="col-md-2">
+															<label for="saturacaoO2" class="form-label text-muted fw-medium">Saturação O²</label>
+															<input type="text" class="form-control" th:field="*{saturacaoO2}" id="saturacaoO2" placeholder="Ex.: 98" maxlength="3"
+															       inputmode="numeric"> <small class="text-muted d-block"
+															                                   style="font-size: 0.65rem; line-height: 1;">
+															%
+														</small>
+
+														</div>
+													</div>
+
+													<div class="row mt-1">
+
+														<!-- GLICEMIA CAPILAR -->
+														<div class="col-md-2 mb-2"  id="colGlicemia">
+
+															<label for="glicemiaCapilar"
+															       class="form-label fw-semibold text-secondary">
+																Glicemia Capilar
+															</label>
+
+															<input type="text"
+															       class="form-control somente-decimal"
+															       th:field="*{glicemiaCapilar}"
+															       id="glicemiaCapilar"
+															       inputmode="decimal"
+															       data-casas="1"
+															       data-inteiros="3"
+															       placeholder="Ex.: 95,0"
+															       th:classappend="${#fields.hasErrors('glicemiaCapilar')} ? 'is-invalid' : ''">
+
+															<small class="text-muted d-block"
+															       style="font-size: 0.60rem; line-height: 1;">
+																mg/dL
+															</small>
+
+															<div class="invalid-feedback d-block"
+															     th:if="${#fields.hasErrors('glicemiaCapilar')}"
+															     th:errors="*{glicemiaCapilar}">
+															</div>
+
+														</div>
+
+
+														<!-- ESTADO GERAL -->
+														<div class="col-md-5 mb-2"
+														     id="colEstadoGeral">
+
+															<label for="estadoGeral"
+															       class="form-label fw-semibold text-secondary">
+																Estado Geral *
+															</label>
+
+															<select class="form-select"
+															        th:field="*{estadoGeral}"
+															        id="estadoGeral"
+															        th:classappend="${#fields.hasErrors('estadoGeral')} ? 'is-invalid' : ''">
+
+																<option value="">Selecione</option>
+
+																<option th:each="e : ${estadosGerais}"
+																        th:value="${e}"
+																        th:text="${e.descricao}">
+																</option>
+
+															</select>
+
+															<div class="invalid-feedback d-block"
+															     style="min-height: 20px;"
+															     th:if="${#fields.hasErrors('estadoGeral')}"
+															     th:errors="*{estadoGeral}">
+															</div>
+
+														</div>
+
+
+														<!-- ESTADO GERAL - OUTROS -->
+														<div class="col-md-3 mb-2 d-none"
+														     id="campoEstadoGeralOutros">
+
+															<label for="estadoGeralOutros"
+															       class="form-label fw-semibold text-secondary">
+																Informe o Estado Geral *
+															</label>
+
+															<input type="text"
+															       class="form-control"
+															       th:field="*{estadoGeralOutros}"
+															       id="estadoGeralOutros"
+															       maxlength="50"
+															       disabled
+															       placeholder="Descreva o estado geral">
+
+															<div class="invalid-feedback d-block"
+															     th:if="${#fields.hasErrors('estadoGeralOutros')}"
+															     th:errors="*{estadoGeralOutros}">
+															</div>
+
+														</div>
+
+														<!-- ESTADO GERAL -->
+														<div class="col-md-5 mb-2"
+														     id="colConsciencia">
+
+															<label for="consciencia"
+															       class="form-label fw-semibold text-secondary">
+																Consciencia Geral *
+															</label>
+
+															<select class="form-select"
+															        th:field="*{consciencia}"
+															        id="consciencia"
+															        th:classappend="${#fields.hasErrors('consciencia')} ? 'is-invalid' : ''">
+
+																<option value="">Selecione</option>
+
+																<option th:each="e : ${conciencias}"
+																        th:value="${e}"
+																        th:text="${e.descricao}">
+																</option>
+
+															</select>
+
+															<div class="invalid-feedback d-block"
+															     style="min-height: 20px;"
+															     th:if="${#fields.hasErrors('consciencia')}"
+															     th:errors="*{consciencia}">
+															</div>
+
+														</div>
+														<div class="col-md-3 mb-2 d-none"
+														     id="campoConcienciaOutros">
+
+															<label for="conscienciaOutros"
+															       class="form-label fw-semibold text-secondary">
+																Informe a Consciência Geral *
+															</label>
+
+															<input type="text"
+															       class="form-control"
+															       th:field="*{conscienciaOutros}"
+															       id="conscienciaOutros"
+															       maxlength="50"
+															       disabled
+															       placeholder="Descreva a Consciência">
+
+															<div class="invalid-feedback d-block"
+															     th:if="${#fields.hasErrors('conscienciaOutros')}"
+															     th:errors="*{conscienciaOutros}">
+															</div>
+
+														</div>
+
+
+
+													</div>
+
+												</div>
+											</div>
+
+										</div>
 
 
 									</div>
 
-
-								</div>
-								<!-- fim da col dentro do bdy -->
-
-
-							</div>
+								</div><!-- segunda row do body -->
 
 
 
+							</div> <!--fim do card body -->
+							<div th:replace="~{fragments/footerForm :: footerForm}"></div>
+						</div><!--fim do card -->
 
-
-						</div>
-                        
-                        <div th:replace="~{fragments/footerForm :: footerForm}"></div>
 					</form>
-				</div>
-				<!-- fim do card -->
 
 
+				</div><!--fim terceira col da primeira row-->
+
+			</div><!-- primeira row do fluid -->
+
+		</div><!--fim do container fluid -->
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+
+				configurarMotivoAtendimento();
+				configurarEstadoGeralEConsciencia();
+
+			});
 
 
-			</div>
+			function configurarMotivoAtendimento() {
 
-		</div>
-		<!-- FIM DO CARD -->
+				const selectMotivo =
+						document.getElementById("motivoAtendimento");
+
+				const colunaMotivo =
+						document.getElementById("colMotivoAtendimento");
+
+				const campoMotivoOutros =
+						document.getElementById("campoMotivoOutros");
+
+				const inputMotivoOutros =
+						document.getElementById("motivoOutros");
 
 
+				if (
+						!selectMotivo ||
+						!colunaMotivo ||
+						!campoMotivoOutros ||
+						!inputMotivoOutros
+				) {
+					return;
+				}
 
 
+				function atualizarMotivoOutros(limpar = false) {
 
-	</div>
+					const selecionouOutros =
+							selectMotivo.value === "OUTROS";
+
+
+					if (selecionouOutros) {
+
+						/*
+                         * MOTIVO ATENDIMENTO
+                         * col-md-8 -> col-md-3
+                         */
+						colunaMotivo.classList.remove("col-md-9");
+						colunaMotivo.classList.add("col-md-4");
+
+
+						/*
+                         * MOTIVO OUTROS
+                         * mostra col-md-5
+                         */
+						campoMotivoOutros.classList.remove("d-none");
+
+						inputMotivoOutros.disabled = false;
+						inputMotivoOutros.required = true;
+
+					} else {
+
+						/*
+                         * MOTIVO ATENDIMENTO
+                         * volta para col-md-8
+                         */
+						colunaMotivo.classList.remove("col-md-4");
+						colunaMotivo.classList.add("col-md-9");
+
+
+						/*
+                         * MOTIVO OUTROS
+                         * oculta novamente
+                         */
+						campoMotivoOutros.classList.add("d-none");
+
+						inputMotivoOutros.disabled = true;
+						inputMotivoOutros.required = false;
+
+
+						if (limpar) {
+							inputMotivoOutros.value = "";
+						}
+
+					}
+
+				}
+
+
+				/*
+                 * Quando o usuário altera o motivo
+                 */
+				selectMotivo.addEventListener("change", function () {
+
+					atualizarMotivoOutros(true);
+
+				});
+
+
+				/*
+                 * Estado inicial
+                 *
+                 * Importante para edição ou retorno de validação
+                 * do Thymeleaf.
+                 */
+				atualizarMotivoOutros(false);
+
+			}
+			function configurarEstadoGeralEConsciencia() {
+
+				const selectEstado =
+						document.getElementById("estadoGeral");
+
+				const colunaEstado =
+						document.getElementById("colEstadoGeral");
+
+				const campoEstadoOutros =
+						document.getElementById("campoEstadoGeralOutros");
+
+				const inputEstadoOutros =
+						document.getElementById("estadoGeralOutros");
+
+
+				const selectConsciencia =
+						document.getElementById("consciencia");
+
+				const colunaConsciencia =
+						document.getElementById("colConsciencia");
+
+				const campoConscienciaOutros =
+						document.getElementById("campoConcienciaOutros");
+
+				const inputConscienciaOutros =
+						document.getElementById("conscienciaOutros");
+
+
+				if (
+						!selectEstado ||
+						!colunaEstado ||
+						!campoEstadoOutros ||
+						!inputEstadoOutros ||
+						!selectConsciencia ||
+						!colunaConsciencia ||
+						!campoConscienciaOutros ||
+						!inputConscienciaOutros
+				) {
+					return;
+				}
+
+
+				/*
+                 * Remove qualquer col-md anterior
+                 * e coloca a nova largura.
+                 */
+				function definirColuna(elemento, tamanho) {
+
+					for (let i = 1; i <= 12; i++) {
+						elemento.classList.remove("col-md-" + i);
+					}
+
+					elemento.classList.add("col-md-" + tamanho);
+				}
+
+
+				function atualizarLinha(limparEstado = false,
+				                        limparConsciencia = false) {
+
+					const estadoOutros =
+							selectEstado.value === "OUTROS";
+
+					const conscienciaOutros =
+							selectConsciencia.value === "OUTROS";
+
+
+					/*
+                     * ============================================
+                     * MOSTRAR / ESCONDER ESTADO OUTROS
+                     * ============================================
+                     */
+
+					if (estadoOutros) {
+
+						campoEstadoOutros.classList.remove("d-none");
+
+						inputEstadoOutros.disabled = false;
+						inputEstadoOutros.required = true;
+
+					} else {
+
+						campoEstadoOutros.classList.add("d-none");
+
+						inputEstadoOutros.disabled = true;
+						inputEstadoOutros.required = false;
+
+						if (limparEstado) {
+							inputEstadoOutros.value = "";
+						}
+					}
+
+
+					/*
+                     * ============================================
+                     * MOSTRAR / ESCONDER CONSCIÊNCIA OUTROS
+                     * ============================================
+                     */
+
+					if (conscienciaOutros) {
+
+						campoConscienciaOutros.classList.remove("d-none");
+
+						inputConscienciaOutros.disabled = false;
+						inputConscienciaOutros.required = true;
+
+					} else {
+
+						campoConscienciaOutros.classList.add("d-none");
+
+						inputConscienciaOutros.disabled = true;
+						inputConscienciaOutros.required = false;
+
+						if (limparConsciencia) {
+							inputConscienciaOutros.value = "";
+						}
+					}
+
+
+					/*
+                     * ============================================
+                     * AJUSTE DO GRID
+                     * ============================================
+                     */
+
+
+					/*
+                     * NENHUM É OUTROS
+                     *
+                     * 2 + 5 + 5 = 12
+                     */
+					if (!estadoOutros && !conscienciaOutros) {
+
+						definirColuna(colunaEstado, 5);
+						definirColuna(colunaConsciencia, 5);
+
+					}
+
+
+					/*
+                     * SOMENTE ESTADO É OUTROS
+                     *
+                     * 2 + 3 + 4 + 3 = 12
+                     */
+					else if (estadoOutros && !conscienciaOutros) {
+
+						definirColuna(colunaEstado, 3);
+						definirColuna(campoEstadoOutros, 4);
+						definirColuna(colunaConsciencia, 3);
+
+					}
+
+
+					/*
+                     * SOMENTE CONSCIÊNCIA É OUTROS
+                     *
+                     * 2 + 3 + 3 + 4 = 12
+                     */
+					else if (!estadoOutros && conscienciaOutros) {
+
+						definirColuna(colunaEstado, 3);
+						definirColuna(colunaConsciencia, 3);
+						definirColuna(campoConscienciaOutros, 4);
+
+					}
+
+
+					/*
+                     * OS DOIS SÃO OUTROS
+                     *
+                     * 2 + 2 + 3 + 2 + 3 = 12
+                     */
+					else {
+
+						definirColuna(colunaEstado, 2);
+						definirColuna(campoEstadoOutros, 3);
+
+						definirColuna(colunaConsciencia, 2);
+						definirColuna(campoConscienciaOutros, 3);
+
+					}
+				}
+
+
+				/*
+                 * ============================================
+                 * EVENTO ESTADO GERAL
+                 * ============================================
+                 */
+
+				selectEstado.addEventListener("change", function () {
+
+					atualizarLinha(
+							true,
+							false
+					);
+
+				});
+
+
+				/*
+                 * ============================================
+                 * EVENTO CONSCIÊNCIA
+                 * ============================================
+                 */
+
+				selectConsciencia.addEventListener("change", function () {
+
+					atualizarLinha(
+							false,
+							true
+					);
+
+				});
+
+
+				/*
+                 * ============================================
+                 * ESTADO INICIAL
+                 * ============================================
+                 */
+
+				atualizarLinha(
+						false,
+						false
+				);
+
+			}
+		</script>
+	</div> <!--Fim do content -->
+
+
 </body>
 </html>

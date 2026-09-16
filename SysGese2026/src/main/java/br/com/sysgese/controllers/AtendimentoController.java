@@ -167,9 +167,9 @@ public class AtendimentoController {
         model.addAttribute("atendimento",atendimentoEnfermagemDTO);
         model.addAttribute("usuarioMaster", isMaster);
         model.addAttribute("adolescentesUnidade", adolescentesUnidade);
-        model.addAttribute("motivoAtendimento", MotivoAtendimentoEnum.values());
-        model.addAttribute("estadoGeral", EstadoEnum.values());
-        model.addAttribute("conciencia", ConscienciaEnum.values());
+        model.addAttribute("motivoAtendimentos", MotivoAtendimentoEnum.values());
+        model.addAttribute("estadosGerais", EstadoEnum.values());
+        model.addAttribute("conciencias", ConscienciaEnum.values());
         model.addAttribute("conduta", CondutaEnum.values());
         model.addAttribute("tipoDose", TipoDoseEnum.values());
         model.addAttribute("viaAdm", ViaAdmEnum.values());
