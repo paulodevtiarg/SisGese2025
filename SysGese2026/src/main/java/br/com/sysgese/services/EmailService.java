@@ -1,40 +1,55 @@
 package br.com.sysgese.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.web.client.RestClient;
+
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+	private final RestClient restClient;
+
+	private final String apiKey;
+	private final String remetente;
+
+	public EmailService(
+			@Value("${resend.api.key}") String apiKey,
+			@Value("${resend.from}") String remetente) {
+
+		this.apiKey = apiKey;
+		this.remetente = remetente;
+
+		this.restClient = RestClient.builder()
+				.baseUrl("https://api.resend.com")
+				.build();
+	}
 
     public void enviarCodigo(String email, String codigo, Boolean primeiroAcesso) {
 
         	
     	 try {
 
-    	        MimeMessage message = mailSender.createMimeMessage();
-    	        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-    	        helper.setTo(email);
-
     	        // 🔥 Título do email (assunto)
-    	        String assunto = (primeiroAcesso != null && primeiroAcesso)
-    	                ? "Primeiro Acesso - SYSGESE"
-    	                : "Recuperação de Senha - SYSGESE";
 
-    	        helper.setSubject(assunto);
+			 String assunto = Boolean.TRUE.equals(primeiroAcesso)
+							 ? "Primeiro Acesso - SYSGESE"
+							 : "Recuperação de Senha - SYSGESE";
+
 
     	        // 🔥 Conteúdo dinâmico
-    	        String titulo = (primeiroAcesso != null && primeiroAcesso)
+    	        String titulo = Boolean.TRUE.equals(primeiroAcesso)
     	                ? "Bem-vindo ao SYSGESE"
     	                : "Código de Recuperação de Senha";
 
-    	        String mensagem = (primeiroAcesso != null && primeiroAcesso)
+    	        String mensagem = Boolean.TRUE.equals(primeiroAcesso)
     	                ? "Utilize o código abaixo para criar sua senha de acesso:"
     	                : "Utilize o código abaixo para redefinir sua senha:";
     	        String html = """
@@ -92,9 +107,23 @@ public class EmailService {
     	        		</div>
     	        		""".formatted(titulo, mensagem, codigo);
 
-    	        helper.setText(html, true);
+			 Map<String, Object> body = Map.of(
+					 "from", remetente,
+					 "to", List.of(email),
+					 "subject", assunto,
+					 "html", html
+			 );
 
-    	        mailSender.send(message);
+			 restClient
+					 .post()
+					 .uri("/emails")
+					 .header(
+							 "Authorization",
+							 "Bearer " + apiKey
+					 )
+					 .body(body)
+					 .retrieve()
+					 .toBodilessEntity();
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao enviar e-mail", e);
