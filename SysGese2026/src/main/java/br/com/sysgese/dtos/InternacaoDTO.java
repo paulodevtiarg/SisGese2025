@@ -21,7 +21,6 @@ public class InternacaoDTO {
     @NotNull(message = "Unidade é obrigatória")
     private Long idUnidade;
 
-
     private String numeroProcesso;
 
     @NotNull(message = "Tipo de medida é obrigatório")

@@ -33,42 +33,40 @@
 						</ol>
 					</nav>
 				</div>
-				<div class="col-12">
-					<!-- Mensagens de erro e de ok -->
-					<div th:if="${msgOk}"
-					     class="alert alert-success alert-dismissible fade show"
-					     role="alert" id="successAlert">
-						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
-							th:text="${msgOk}"></span>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"
-						        aria-label="Close"></button>
-					</div>
-
-					<!-- Mensagem de Erro -->
-					<div th:if="${msgErro}"
-					     class="alert alert-danger alert-dismissible fade show"
-					     role="alert" id="errorAlert">
-						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
-							th:text="${msgErro}"></span>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"
-						        aria-label="Close"></button>
-					</div>
-				</div>
+				<div class="col-12" th:replace="~{fragments/componentes :: alertas}"></div>
 				<div class="col-12">
 					<form th:action="@{/atendimentos/enfermagem/salvar}" th:object="${atendimento}" method="post">
-						<div class="card">
-							<div class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
+						<!-- Dentro do form, junto com os outros hidden -->
+						<input type="hidden" th:field="*{idServidor}">
+						<input type="hidden" th:if="${!usuarioMaster}" th:field="*{idUnidade}"/>
 
-								<h5 class="mb-0 text-secondary">Novo Atendimento de Enfermagem</h5>
+						<input type="hidden" th:field="*{data}">
+						<input type="hidden"  th:field="*{hora}"/>
+						<div class="card">
+							<div class="card-header card-header-modern d-flex justify-content-between align-items-center">
+
+								<!-- Título com ícone -->
+								<div class="d-flex align-items-center gap-2">
+									<div class="header-icon">
+										<i class="fa-duotone fa-solid fa-user-nurse-hair-long"></i>
+									</div>
+									<div>
+										<h5 class="mb-0 fw-semibold">Novo Atendimento</h5>
+										<small class="text-muted">Preencha os dados do atendimento</small>
+									</div>
+								</div>
 
 								<div class="d-flex gap-2">
 									<a	th:href="@{${queryParams != null and queryParams != ''} ? '/atendimentos/enfermagem?' + queryParams : '/atendimentos/enfermagem'}"
-											class="btn btn-outline-danger"> <i
-											class="fa-duotone fa-solid fa-ban"></i> Cancelar
+											class="btn btn-light btn-modern d-flex align-items-center btn-sm gap-2"> <i
+											class="fa-duotone fa-solid fa-ban"></i> <span class="d-none d-sm-inline">Cancelar</span>
 									</a>
 
-									<button type="submit" class="btn btn-outline-sistema">
-										<i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
+									<button type="submit"
+									        class="btn btn-primary btn-modern d-flex align-items-center btn-sm gap-2"
+									        data-bs-toggle="tooltip" title="Salvar registro">
+										<i class="fa-duotone fa-solid fa-floppy-disk"></i>
+										<span class="d-none d-sm-inline">Salvar</span>
 									</button>
 								</div>
 
@@ -93,9 +91,9 @@
 										<div class="card-body">
 											<div class="row">
 												<div class="col-md-2 d-flex ">
-													<div class="foto-3x4-container-dt mb-2 w-100 h-100">
-														<div  class="foto-wrapper-dt">
-															<img id="fotoAdolescente"  class="foto-3x4-img-dt" alt="Foto do Adolescente">
+													<div class="foto-3x4-container-dt-at w-100">
+														<div  class="foto-wrapper-dt-at">
+															<img id="fotoAdolescente"  class="foto-3x4-img-dt-at" alt="Foto do Adolescente">
 														</div>
 
 													</div>
@@ -103,36 +101,40 @@
 												</div>
 												<div class="col-md-10">
 													<div class="row">
-														<div class="col-md-6 mb-2">
-															<div class="input-group">
-																<span class="input-group-text label-fixa">Nome</span>
-																<input  id="nomeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
-															</div>
-														</div>
-														<div class="col-md-2 mb-2">
-															<div class="input-group">
-																<span class="input-group-text label-fixa">Idade</span>
-																<input  id="idadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+
+														<div class="col-md-4 mb-2">
+															<div class="detalhe-item">
+																<span class="detalhe-label">Nome</span>
+																<span class="detalhe-valor" id="nomeAdolescente"></span>
 															</div>
 
 														</div>
 														<div class="col-md-4 mb-2">
-															<div class="input-group">
-																<span class="input-group-text label-fixa">Cidade</span>
-																<input  id="cidadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+															<div class="detalhe-item">
+																<span class="detalhe-label">Mãe</span>
+																<span class="detalhe-valor" id="maeAdolescente"></span>
+															</div>
+
+														</div>
+
+
+														<div class="col-md-1 mb-2">
+															<div class="detalhe-item">
+																<span class="detalhe-label">Idade</span>
+																<span class="detalhe-valor" id="idadeAdolescente"></span>
+															</div>
+
+														</div>
+
+														<div class="col-md-3 mb-2">
+															<div class="detalhe-item">
+																<span class="detalhe-label">Cidade do Adolescente</span>
+																<span class="detalhe-valor" id="cidadeAdolescente"></span>
 															</div>
 
 														</div>
 													</div>
-													<div class="row">
-														<div class="col-md-12 mb-2">
-															<div class="input-group">
-																<span class="input-group-text label-fixa">Mãe</span>
-																<input  id="maeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
-															</div>
 
-														</div>
-													</div>
 													<div class="row">
 														<div class="col-md-3 mb-2">
 															<!-- envia valor quando select estiver disabled -->
@@ -230,8 +232,7 @@
 														</div>
 														<div class="col-md-2">
 															<label for="temperatura" class="form-label text-muted fw-medium">Temperatura</label>
-															<input type="text" class="form-control" th:field="*{temperatura}" id="temperatura" placeholder="Ex.: 36,5" maxlength="3"
-															       inputmode="numeric"> <small class="text-muted d-block"
+															<input type="number" step="0.1" class="form-control" th:field="*{temperatura}" id="temperatura" placeholder="Ex.: 36.5"> <small class="text-muted d-block"
 															                                   style="font-size: 0.65rem; line-height: 1;">
 															ºC
 														</small>
@@ -390,10 +391,51 @@
 
 														</div>
 
+													</div>
 
+												</div>
+											</div>
+
+											<!--Row Abaixo da foto -->
+											<div class="row mt-2">
+												<div class="row mt-2">
+													<div class="col-md-2 mb-2">
+														<label for="dor" class="form-label fw-semibold text-secondary">Dor *</label>
+														<select id="dor" class="form-select" th:field="*{dor}" th:classappend="${#fields.hasErrors('dor')} ? 'is-invalid' : ''">
+															<option value="">Selecione</option>
+															<option value="true">SIM</option>
+															<option value="false">NÃO</option>
+														</select>
+														<div class="invalid-feedback d-block" th:if="${#fields.hasErrors('dor')}" th:errors="*{dor}"></div>
+													</div>
+
+													<div class="col-md-2 mb-2">
+														<label for="dorEscala" class="form-label fw-semibold text-secondary">
+															Escala de dor: <span id="valorDorEscala">0</span>/10
+														</label>
+														<input type="range"
+														       id="dorEscala"
+														       class="form-range form-control"
+														       th:field="*{dorEscala}"
+														       min="0"
+														       max="10"
+														       step="1"
+														       disabled>
 
 													</div>
 
+													<div class="col-md-4 mb-2">
+														<label for="dorLocal" class="form-label fw-semibold text-secondary">
+															Local da dor
+														</label>
+														<input type="text"
+														       id="dorLocal"
+														       class="form-control"
+														       th:field="*{dorLocal}"
+														       maxlength="50"
+														       disabled
+														       placeholder="Descreva o local da dor">
+													</div>
 												</div>
 											</div>
 
@@ -403,13 +445,73 @@
 									</div>
 
 								</div><!-- segunda row do body -->
+								<div class="row">
+									<div class="accordion mt-4 d-none" id="accordionConduta">
+										<div class="accordion-item">
+											<h2 class="accordion-header">
+												<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConduta">
+													<i class="fa-duotone fa-solid fa-notes-medical me-2"></i> Definir Conduta do Atendimento (Opcional agora)
+												</button>
+											</h2>
+											<div id="collapseConduta" class="accordion-collapse collapse" data-bs-parent="#accordionConduta">
+												<div class="accordion-body">
+													<!-- AQUI VÃO OS CAMPOS DA CONDUTA -->
+													<div class="row">
+														<div class="col-md-4 mb-3">
+															<label class="form-label fw-semibold text-secondary">Conduta *</label>
+															<select class="form-select" th:field="*{conduta}" id="selectConduta">
+																<option value="">Selecione...</option>
+																<option th:each="c : ${condutas}" th:value="${c}" th:text="${c.descricao}"></option>
+															</select>
+														</div>
+														<div class="col-md-8 mb-2">
+															<label for="condutaOutros" class="form-label fw-semibold text-secondary">
+																Defina a conduta
+															</label>
+															<input type="text"
+															       id="condutaOutros"
+															       class="form-control"
+															       th:field="*{condutaOutros}"
+															       maxlength="50"
+															       disabled
+															       placeholder="Descreva a conduta aplicada">
+														</div>
+														<!-- Outros campos condicionais (Medicamento, Encaminhamento, etc) -->
+													</div>
+													<div class="row">
+														<!-- ENCAMINHAMENTO EXTERNO (Coluna Principal) -->
+														<div class="col-md-4 mb-3">
+															<label class="form-label fw-semibold text-secondary">Encaminhamento *</label>
+															<select class="form-select" th:field="*{encaminhamentoExterno}" id="encExterno" disabled>
+																<option value="">Selecione...</option>
+																<option th:each="e : ${encamisExterno}" th:value="${e}" th:text="${e.descricao}"></option>
+															</select>
+														</div>
+														<!-- ENCAMINHAMENTO OUTROS (Coluna de Texto) -->
+														<div class="col-md-8 mb-3">
+															<label for="encaminhamentoOutros" class="form-label fw-semibold text-secondary">
+																Descreva o Encaminhamento
+															</label>
+															<input type="text"
+															       id="encaminhamentoOutros"
+															       class="form-control"
+															       th:field="*{encaminhamentoOutros}"
+															       maxlength="50"
+															       disabled
+															       placeholder="Descreva o encaminhamento externo">
+														</div>
+													</div>
 
-
-
+													<!-- Encerramento e Obs -->
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div> <!--fim do card body -->
-							<div th:replace="~{fragments/footerForm :: footerForm}"></div>
-						</div><!--fim do card -->
 
+						</div><!--fim do card -->
+						<div th:replace="~{fragments/footerForm :: footerForm}"></div>
 					</form>
 
 
@@ -419,6 +521,96 @@
 
 		</div><!--fim do container fluid -->
 		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				const dor = document.getElementById('dor');
+				const escala = document.getElementById('dorEscala');
+				const valorEscala = document.getElementById('valorDorEscala');
+				const local = document.getElementById('dorLocal');
+
+				function atualizarCamposDor() {
+					const temDor = dor.value === 'true';
+					escala.disabled = !temDor;
+					local.disabled = !temDor;
+
+					if (!temDor) {
+						escala.value = '0';
+						local.value = '';
+					}
+
+					valorEscala.textContent = escala.value;
+				}
+
+
+				dor.addEventListener('change', atualizarCamposDor);
+				escala.addEventListener('input', function () {
+					valorEscala.textContent = escala.value;
+				});
+
+				atualizarCamposDor();
+				// ==========================================
+				// LÓGICA DE CONDUTA E ENCAMINHAMENTO
+				// ==========================================
+				const selectConduta = document.getElementById('selectConduta');
+				const inputCondutaOutros = document.getElementById('condutaOutros');
+
+				const selectEncExterno = document.getElementById('encExterno');
+				const inputEncaminhamentoOutros = document.getElementById('encaminhamentoOutros');
+
+				function atualizarCampoConduta() {
+					if (!selectConduta) return;
+
+					// 1. Lógica do campo "Outros" da Conduta
+					const isCondutaOutros = selectConduta.value === 'OUTROS';
+					inputCondutaOutros.disabled = !isCondutaOutros;
+					if (!isCondutaOutros) inputCondutaOutros.value = '';
+
+					// 2. Lógica do Encaminhamento Externo
+					const isEncaminhamentoExterno = selectConduta.value === 'ENCAMINHAMENTO_EXTERNO';
+
+					// Se for encaminhamento externo, habilita o select. Se não, desabilita e limpa.
+					selectEncExterno.disabled = !isEncaminhamentoExterno;
+
+					if (!isEncaminhamentoExterno) {
+						selectEncExterno.value = ''; // Limpa a seleção
+					}
+
+					// 3. Atualiza o campo de texto "Outros" do Encaminhamento
+					atualizarCampoEncaminhamentoOutros();
+				}
+
+				function atualizarCampoEncaminhamentoOutros() {
+					if (!selectEncExterno) return;
+
+					// ATENÇÃO: Confirme se no seu Enum é 'OUTRO' ou 'OUTROS'
+					const isEncOutros = selectEncExterno.value === 'OUTRO';
+
+					// Só habilita se o encaminhamento externo estiver ativo E a opção for OUTRO
+					const deveHabilitar = (!selectEncExterno.disabled && isEncOutros);
+
+					inputEncaminhamentoOutros.disabled = !deveHabilitar;
+
+					if (!deveHabilitar) {
+						inputEncaminhamentoOutros.value = '';
+					}
+				}
+
+				// Listeners
+				if (selectConduta) {
+					selectConduta.addEventListener('change', atualizarCampoConduta);
+					atualizarCampoConduta(); // Executa ao carregar (útil no erro de validação)
+				}
+
+				if (selectEncExterno) {
+					selectEncExterno.addEventListener('change', atualizarCampoEncaminhamentoOutros);
+					atualizarCampoEncaminhamentoOutros(); // Executa ao carregar
+				}
+
+
+
+
+			});
+		</script>
+		<script>
 			document.addEventListener("DOMContentLoaded", function () {
 
 				configurarMotivoAtendimento();
@@ -426,6 +618,8 @@
 
 			});
 
+			const escala = document.getElementById('dorEscala');
+			document.getElementById('valorDorEscala').textContent = escala.value;
 
 			function configurarMotivoAtendimento() {
 

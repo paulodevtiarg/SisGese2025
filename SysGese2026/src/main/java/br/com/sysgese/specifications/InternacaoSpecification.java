@@ -2,6 +2,7 @@ package br.com.sysgese.specifications;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 import br.com.sysgese.enumerators.StatusInternacaoEnum;
@@ -73,44 +74,42 @@ public class InternacaoSpecification {
     private static Specification<Internacao> alwaysTrue() {
         return (root, query, cb) -> cb.conjunction();
     }
-    
+
     public static Specification<Internacao> unidade(Long unidadeId) {
         return (root, query, cb) -> {
-            if (unidadeId == null) return null;
+            if (unidadeId == null) return cb.conjunction();   // ✅
             return cb.equal(root.get("unidade").get("id"), unidadeId);
         };
     }
 
     public static Specification<Internacao> nomeAdolescente(String nome) {
         return (root, query, cb) -> {
-            if (nome == null || nome.isBlank()) return null;
+            if (nome == null || nome.isBlank()) return cb.conjunction();  // ✅
             return cb.like(
-                cb.upper(root.get("adolescente").get("nome")),
-                "%" + nome.toUpperCase() + "%"
+                    cb.upper(root.get("adolescente").get("nome")),
+                    "%" + nome.toUpperCase() + "%"
             );
         };
     }
 
     public static Specification<Internacao> cidadeAdolescente(String cidade) {
-        return (root, query, cb) -> {
-            if (cidade == null || cidade.isBlank()) return null;
-            return cb.like(
-                cb.upper(root.get("adolescente").get("cidade")),
-                "%" + cidade.toUpperCase() + "%"
-            );
-        };
+        if (cidade == null || cidade.isBlank()) return alwaysTrue();
+        return (root, query, cb) -> cb.like(
+                cb.upper(root.get("adolescente").get("cidadeNascimento")),
+                "%" + cidade.trim().toUpperCase() + "%"
+        );
     }
 
     public static Specification<Internacao> tipoMedida(String tipo) {
         return (root, query, cb) -> {
-            if (tipo == null || tipo.isBlank()) return null;
+            if (tipo == null || tipo.isBlank()) return cb.conjunction();  // ✅
             return cb.equal(root.get("tipoMedida"), tipo);
         };
     }
 
     public static Specification<Internacao> status(StatusInternacaoEnum status) {
         return (root, query, cb) -> {
-            if (status == null) return null;
+            if (status == null) return cb.conjunction();  // ✅
             return cb.equal(root.get("status"), status);
         };
     }

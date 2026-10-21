@@ -637,135 +637,130 @@ document.addEventListener("click", function (e) {
 
     let html = "";
 
-    if (tipo === "foto") {
-        html = `
-        	 <div class="row"> 
-        		 <div class="col-md-12 mb-2">
-         		   <div class="input-group">
-            		    <span class="input-group-text label-fixa">Descrição</span>
-             			   <input type="text" class="form-control" value="${card.dataset.desc || ''}" disabled>
-          			  </div>
-       			 </div>
-        
-        	</div>
-            
-        `;
-    }
-    if (tipo === "tatuagem") {
-        html = `
-            <div class="row">
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Ano</span>
-                        <input type="text" class="form-control" value="${card.dataset.ano || ''}" disabled>
-                    </div>
+	if (tipo === "foto") {
+		html = `
+        <div class="row g-2">
+            <div class="col-md-12">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Descrição</span>
+                    <span class="detalhe-valor text-left">${card.dataset.desc || '—'}</span>
                 </div>
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Forma</span>
-                        <input type="text" class="form-control" value="${card.dataset.forma || ''}" disabled>
-                    </div>
-                </div>
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Descrição</span>
-                        <input type="text" class="form-control" value="${card.dataset.desc || ''}" disabled>
-                    </div>
-                </div>
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Local</span>
-                        <input type="text" class="form-control" value="${card.dataset.local || ''}" disabled>
-                    </div>
-                </div>
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Remover</span>
-                        <input type="text" class="form-control" value="${card.dataset.remover == 'true' ? 'SIM' : 'NÃO'}" disabled>
-                    </div>
-                </div>
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Profissional</span>
-                        <input type="text" class="form-control" value="${card.dataset.prof == 'true' ? 'SIM' : 'NÃO'}" disabled>
-                    </div>
-                </div>
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Tem significado</span>
-                        <input type="text" class="form-control" value="${card.dataset.sig == 'true' ? 'SIM' : 'NÃO'}" disabled>
-                    </div>
-                </div>
-
-                <div class="col-md-12 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text label-fixa">Qual significado</span>
-                        <input type="text" class="form-control" value="${card.dataset.qualsig || ''}" disabled>
-                    </div>
-                </div>
-
             </div>
-        `;
-    }
+        </div>
+    `;
+	}
+	if (tipo === "tatuagem") {
+		html = `
+        <div class="row g-2">
 
-    if (tipo === "cicatriz") {
-        html = `
-        	 <div class="row"> 
-   				 <div class="col-md-12 mb-2">
-    		 		  <div class="input-group">
-       		 		   <span class="input-group-text label-fixa">Data</span>
-        			   <input type="text" class="form-control" value="${card.dataset.data|| ''}" disabled>
-     				 </div>
-  				 </div>
-  				 <div class="col-md-12 mb-2">
-		 		  <div class="input-group">
-  		 		   <span class="input-group-text label-fixa">Descrição</span>
-   			   <input type="text" class="form-control" value="${card.dataset.desc|| ''}" disabled>
-				 </div>
-				 </div>
-   
-   			</div>
-   		 <div class="row"> 
-			 <div class="col-md-12 mb-2">
-	 				  <div class="input-group">
-		 		 		  <span class="input-group-text label-fixa">Forma</span>
-			  			 <input type="text" class="form-control" value="${card.dataset.forma|| ''}" disabled>
-					 </div>
-			 </div>
-			 <div class="col-md-12 mb-2">
- 		  			<div class="input-group">
-	 		   			<span class="input-group-text label-fixa">Local</span>
-		  				 <input type="text" class="form-control" value="${card.dataset.local|| ''}" disabled>
-					 </div>
-		 	</div>
+            <div class="col-md-3">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Ano</span>
+                    <span class="detalhe-valor text-left">${card.dataset.ano || '—'}</span>
+                </div>
+            </div>
 
-		</div>
-		 <div class="row"> 
-		 <div class="col-md-12 mb-2">
- 				  <div class="input-group">
-	 		 		  <span class="input-group-text label-fixa">Tamanho <small>(cm)</small></span>
-		  			 <input type="text" class="form-control" value="${card.dataset.tamanho|| ''}" disabled>
-				 </div>
-		 </div>
-		 <div class="col-md-612mb-2">
-		  			<div class="input-group">
- 		   			<span class="input-group-text label-fixa">Tipo</span>
-	  				 <input type="text" class="form-control" value="${card.dataset.tipo2|| ''}" disabled>
-				 </div>
-	 	</div>
+            <div class="col-md-9">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Forma</span>
+                    <span class="detalhe-valor text-left">${card.dataset.forma || '—'}</span>
+                </div>
+            </div>
 
-	</div>          
-           
-        `;
-    }
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Local</span>
+                    <span class="detalhe-valor text-left">${card.dataset.local || '—'}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Interesse em remover</span>
+                    <span class="detalhe-valor text-left">${card.dataset.remover == 'true' ? 'SIM' : 'NÃO'}</span>
+                </div>
+            </div>
 
+            <div class="col-md-12">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Descrição</span>
+                    <span class="detalhe-valor text-left">${card.dataset.desc || '—'}</span>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Feita por profissional</span>
+                    <span class="detalhe-valor text-left">${card.dataset.prof == 'true' ? 'SIM' : 'NÃO'}</span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Tem significado</span>
+                    <span class="detalhe-valor text-left">${card.dataset.sig == 'true' ? 'SIM' : 'NÃO'}</span>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Qual significado</span>
+                    <span class="detalhe-valor text-left">${card.dataset.qualsig || '—'}</span>
+                </div>
+            </div>
+
+        </div>
+    `;
+	}
+	if (tipo === "cicatriz") {
+		html = `
+        <div class="row g-2">
+
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Data</span>
+                    <span class="detalhe-valor text-left">${card.dataset.data || '—'}</span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Forma</span>
+                    <span class="detalhe-valor text-left">${card.dataset.forma || '—'}</span>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Local</span>
+                    <span class="detalhe-valor text-left">${card.dataset.local || '—'}</span>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Descrição</span>
+                    <span class="detalhe-valor text-left">${card.dataset.desc || '—'}</span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Tamanho <small>(cm)</small></span>
+                    <span class="detalhe-valor text-left">${card.dataset.tamanho || '—'}</span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detalhe-item">
+                    <span class="detalhe-label text-left">Tipo</span>
+                    <span class="detalhe-valor text-left">${card.dataset.tipo2 || '—'}</span>
+                </div>
+            </div>
+
+        </div>
+    `;
+	}
     document.getElementById("modalInfo").innerHTML = html;
 });
 </script>
@@ -1121,8 +1116,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			const select = document.getElementById('adolescenteSelect');
 			const card = document.getElementById('cardAdolescente');
+			const cardConduta = document.getElementById('accordionConduta');
 
-			// Proteção: se não estiver numa página que usa esses elementos
 			if (!select || !card) {
 				return;
 			}
@@ -1131,17 +1126,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				if (!idAdolescente) {
 					card.classList.add('d-none');
+					cardConduta.classList.add('d-none');
 					return;
 				}
 
-				// 🔥 Mostra o spinner global
 				mostrarLoading();
 
 				try {
-
-					const response = await fetch(
-							'/adolescentes/buscaAdolescente/' + idAdolescente
-					);
+					const response = await fetch('/adolescentes/buscaAdolescente/' + idAdolescente);
 
 					if (!response.ok) {
 						throw new Error("Erro ao buscar adolescente");
@@ -1150,46 +1142,40 @@ document.addEventListener("DOMContentLoaded", function () {
 					const adolescente = await response.json();
 
 					card.classList.remove('d-none');
-
+					cardConduta.classList.remove('d-none')
+					// 🔥 BUSCANDO OS SPANS
 					const nome = document.getElementById('nomeAdolescente');
 					const idade = document.getElementById('idadeAdolescente');
 					const mae = document.getElementById('maeAdolescente');
 					const cidade = document.getElementById('cidadeAdolescente');
 					const foto = document.getElementById('fotoAdolescente');
 
+					// 🔥 USANDO textContent em vez de value
 					if (nome) {
-						nome.value = adolescente.nome || '-';
+						nome.textContent = adolescente.nome || '-';
 					}
 
 					if (idade) {
-						idade.value = adolescente.idade || '-';
+						idade.textContent = adolescente.idade || '-';
 					}
 
 					if (mae) {
-						mae.value = adolescente.mae || '-';
+						mae.textContent = adolescente.mae || '-';
 					}
 
 					if (cidade) {
-						cidade.value =
-								(adolescente.cidadeNascimento || '-') +
-								'/' +
-								(adolescente.ufNascimento || '-');
+						cidade.textContent = (adolescente.cidadeNascimento || '-') + '/' + (adolescente.ufNascimento || '-');
 					}
 
 					if (foto) {
-						foto.src =
-								adolescente.fotoRegistro || '/img/sem-foto.png';
+						foto.src = adolescente.fotoRegistro || '/img/sem-foto.png';
 					}
 
 				} catch (e) {
-
 					console.error("Erro ao carregar adolescente:", e);
-
 					card.classList.add('d-none');
-
+					cardConduta.classList.add('d-none');
 				} finally {
-
-					// 🔥 SEMPRE fecha o spinner
 					esconderLoading();
 				}
 			}
@@ -1199,11 +1185,69 @@ document.addEventListener("DOMContentLoaded", function () {
 				carregarAdolescente(select.value);
 			}
 
-			// 🔥 Ao selecionar/trocar adolescente
+			// Ao trocar o adolescente
 			select.addEventListener('change', function () {
 				carregarAdolescente(this.value);
 			});
 
+		});
+	</script>
+
+	<script>
+		document.addEventListener('click', function (e) {
+			const link = e.target.closest('.js-confirmar-exclusao');
+			if (!link) return;
+
+			const entidade = link.dataset.entidade || 'registro';
+			if (!confirm('Deseja excluir esse ' + entidade + '?')) {
+				e.preventDefault();
+				e.stopPropagation();
+				esconderLoading();  // ← adiciona isso
+			}
+		});
+	</script>
+
+	<!--Ativa Maiusculo -->
+	<script>
+		document.addEventListener("input", function (event) {
+
+			const campo = event.target;
+
+			if (!(campo instanceof HTMLInputElement)) {
+				return;
+			}
+
+			// Tipos nos quais NÃO devemos transformar o valor
+			const tiposIgnorados = [
+				"password",
+				"email",
+				"number",
+				"date",
+				"time",
+				"file",
+				"checkbox",
+				"radio",
+				"hidden"
+			];
+
+			if (tiposIgnorados.includes(campo.type)) {
+				return;
+			}
+
+			// Permite desativar em algum campo específico
+			if (campo.hasAttribute("data-no-uppercase")) {
+				return;
+			}
+
+			const inicio = campo.selectionStart;
+			const fim = campo.selectionEnd;
+
+			campo.value = campo.value.toUpperCase();
+
+			// Mantém o cursor na posição correta
+			if (inicio !== null && fim !== null) {
+				campo.setSelectionRange(inicio, fim);
+			}
 		});
 	</script>
 </th:block>

@@ -4534,7 +4534,7 @@ input[type="button"].btn-block {
 .card-body {
   flex: 1 1 auto;
   min-height: 1px;
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .card-title {
@@ -4728,8 +4728,8 @@ input[type="button"].btn-block {
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  padding: 0.55rem 0.5rem;
+  margin-bottom: 0.2rem;
   list-style: none;
   background-color: #eaecf4;
   border-radius: 0.35rem;

@@ -34,27 +34,7 @@
 						</ol>
 					</nav>
 				</div>
-				<div class="col-12">
-					<!-- Mensagens de erro e de ok -->
-					<div th:if="${msgOk}"
-						class="alert alert-success alert-dismissible fade show"
-						role="alert" id="successAlert">
-						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
-							th:text="${msgOk}"></span>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"
-							aria-label="Close"></button>
-					</div>
-
-					<!-- Mensagem de Erro -->
-					<div th:if="${msgErro}"
-						class="alert alert-danger alert-dismissible fade show"
-						role="alert" id="errorAlert">
-						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
-							th:text="${msgErro}"></span>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"
-							aria-label="Close"></button>
-					</div>
-				</div>
+                <div class="col-12" th:replace="~{fragments/componentes :: alertas}"></div>
 				<div class="col-12">
 
 					<form th:action="@{/internacoes/salvar}"
@@ -62,20 +42,36 @@
                         <input type="hidden" th:field="*{status}">
 						<div class="card">
 
-							<div class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
+                            <div class="card-header card-header-modern d-flex justify-content-between align-items-center">
+                                <!-- Título com ícone -->
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="header-icon">
+                                        <i class="fa-duotone fa-solid fa-users-between-lines"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0 fw-semibold">Novo Registro</h5>
+                                        <small class="text-muted">Escolha o Adolescente para Internação</small>
+                                    </div>
+                                </div>
 
-								<h5 class="mb-0 text-secondary">Novo Registro</h5>
-
-								<div class="d-flex gap-2">
-                                    <a  th:href="${queryParams != null and queryParams != ''}  ? '/internacoes?' + queryParams  : '/internacoes'" class="btn btn-outline-danger">
-                                        <i class="fa-duotone fa-solid fa-ban"></i> Cancelar
-                                    
+                                <!-- Botões -->
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{${queryParams != null and queryParams != ''} ?
+                                      '/internacoes?' + queryParams :
+                                      '/internacoes'}"
+                                       class="btn btn-light btn-modern d-flex align-items-center btn-sm gap-2"
+                                       data-bs-toggle="tooltip" title="Cancelar e voltar">
+                                        <i class="fa-duotone fa-solid fa-ban"></i>
+                                        <span class="d-none d-sm-inline">Cancelar</span>
                                     </a>
 
-									<button type="submit" class="btn btn-outline-sistema">
-										<i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
-									</button>
-								</div>
+                                    <button type="submit"
+                                            class="btn btn-primary btn-modern d-flex align-items-center btn-sm gap-2"
+                                            data-bs-toggle="tooltip" title="Salvar registro">
+                                        <i class="fa-duotone fa-solid fa-floppy-disk"></i>
+                                        <span class="d-none d-sm-inline">Salvar</span>
+                                    </button>
+                                </div>
 							</div>
 
 
@@ -99,38 +95,38 @@
                                     <label class="form-label text-muted fw-medium">
                                         Reincidente?
                                     </label>
-                                    
-                                    <div class="d-flex gap-2">
-                                        
-                                        <!-- SIM -->
-                                        <input
-                                                type="radio"
-                                                class="btn-check"
-                                                th:field="*{reicidente}"
-                                                id="reicidenteSim"
-                                                value="true"
-                                                autocomplete="off">
-                                        
-                                        <label class="btn btn-outline-danger rounded-pill px-3"
-                                               for="reicidenteSim"><i class="fa-duotone fa-solid fa-face-pouting fs-6"></i>
-                                            Sim
-                                        </label>
-                                        
-                                        <!-- NÃO -->
-                                        <input
-                                                type="radio"
-                                                class="btn-check"
-                                                th:field="*{reicidente}"
-                                                id="reicidenteNao"
-                                                value="false"
-                                                autocomplete="off">
-                                        
-                                        <label class="btn btn-outline-success rounded-pill px-3"
-                                               for="reicidenteNao"> <i class="fa-duotone fa-solid fa-face-grin-beam fs-6"></i>
-                                            Não
-                                        </label>
-                                    
-                                    </div>
+                                        <div class="d-flex gap-2 mt-1">
+                                            <!-- SIM -->
+                                            <input
+                                                    type="radio"
+                                                    class="btn-check"
+                                                    th:field="*{reicidente}"
+                                                    id="reicidenteSim"
+                                                    value="true"
+                                                    autocomplete="off">
+
+                                            <label class="btn btn-outline-danger btn-modern d-flex align-items-center btn-sm gap-2"
+                                                   for="reicidenteSim">
+                                                <i class="fa-duotone fa-solid fa-face-pouting"></i>
+                                                <span class="d-none d-sm-inline">Sim</span>
+                                            </label>
+
+                                            <!-- NÃO -->
+                                            <input
+                                                    type="radio"
+                                                    class="btn-check"
+                                                    th:field="*{reicidente}"
+                                                    id="reicidenteNao"
+                                                    value="false"
+                                                    autocomplete="off">
+
+                                            <label class="btn btn-outline-success btn-modern d-flex align-items-center btn-sm gap-2"
+                                                   for="reicidenteNao">
+                                                <i class="fa-duotone fa-solid fa-face-grin-beam"></i>
+                                                <span class="d-none d-sm-inline">Não</span>
+                                            </label>
+                                        </div>
+
                                 
                                 </div>
                                 
@@ -155,22 +151,23 @@
                                            <div class="col-md-10">
                                                <div class="row">
                                                    <div class="col-md-6 mb-2">
-                                                       <div class="input-group">
-                                                           <span class="input-group-text label-fixa">Nome</span>
-                                                           <input  id="nomeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       <div class="detalhe-item">
+                                                           <span class="detalhe-label">Nome</span>
+                                                           <span class="detalhe-valor" id="detalheNome"></span>
                                                        </div>
+
                                                    </div>
                                                    <div class="col-md-2 mb-2">
-                                                       <div class="input-group">
-                                                           <span class="input-group-text label-fixa">Idade</span>
-                                                           <input  id="idadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       <div class="detalhe-item">
+                                                           <span class="detalhe-label">Idade</span>
+                                                           <span class="detalhe-valor" id="detalheIdade"></span>
                                                        </div>
                                                    
                                                    </div>
                                                    <div class="col-md-4 mb-2">
-                                                       <div class="input-group">
-                                                           <span class="input-group-text label-fixa">Cidade</span>
-                                                           <input  id="cidadeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       <div class="detalhe-item">
+                                                           <span class="detalhe-label">Cidade</span>
+                                                           <span class="detalhe-valor" id="detalheCidade"></span>
                                                        </div>
                                                    
                                                    </div>
@@ -178,9 +175,9 @@
                                                
                                                <div class="row">
                                                    <div class="col-md-12 mb-2">
-                                                       <div class="input-group">
-                                                           <span class="input-group-text label-fixa">Mãe</span>
-                                                           <input  id="maeAdolescente" type="text" class="form-control fw-bolder fs-6"  disabled>
+                                                       <div class="detalhe-item">
+                                                           <span class="detalhe-label">Mãe</span>
+                                                           <span class="detalhe-valor" id="detalheMae"></span>
                                                        </div>
                                                    
                                                    </div>
@@ -449,85 +446,79 @@
 		</div>
 		<!-- FIM DO CARD -->
         <script>
-            
             document.addEventListener("DOMContentLoaded", function () {
-                
+
                 const select = document.getElementById('adolescenteSelect');
-                
                 if (!select) return;
-                
+
                 select.addEventListener('change', async function () {
-                    
+
                     try {
-                        
                         const id = this.value;
-                        
                         if (!id) return;
-                        
-                        // 🔥 MOSTRA LOADING
+
                         mostrarLoading();
-                        
                         console.log("Selecionado:", id);
-                        
+
                         const response = await fetch('/adolescentes/buscaAdolescente/' + id);
-                        
-                        if (!response.ok) {
-                            throw new Error("Erro ao buscar adolescente");
-                        }
-                        
+                        if (!response.ok) throw new Error("Erro ao buscar adolescente");
+
                         const adolescente = await response.json();
-                        
                         console.log(adolescente);
-                        
+
+                        // Mostra o card
                         const card = document.getElementById('cardAdolescente');
-                        
-                        if (card) {
-                            card.classList.remove('d-none');
-                        }
-                        
+                        if (card) card.classList.remove('d-none');
+
+                        // ========== INPUTS (form) ==========
                         const nome = document.getElementById('nomeAdolescente');
                         if (nome) nome.value = adolescente.nome || '-';
-                        
+
                         const idade = document.getElementById('idadeAdolescente');
                         if (idade) idade.value = adolescente.idade || '-';
-                        
+
                         const mae = document.getElementById('maeAdolescente');
                         if (mae) mae.value = adolescente.mae || '-';
-                        
+
                         const cidade = document.getElementById('cidadeAdolescente');
-                        
                         if (cidade) {
                             cidade.value =
-                                    (adolescente.cidadeNascimento || '-') +
-                                    '/' +
-                                    (adolescente.ufNascimento || '-');
+                                (adolescente.cidadeNascimento || '-') +
+                                '/' +
+                                (adolescente.ufNascimento || '-');
                         }
-                        
+
                         const foto = document.getElementById('fotoAdolescente');
-                        
-                        if (foto) {
-                            foto.src = adolescente.fotoRegistro || '/img/sem-foto.png';
+                        if (foto) foto.src = adolescente.fotoRegistro || '/img/sem-foto.png';
+
+                        // ========== SPANS DE DETALHE ==========
+                        const detalheNome = document.getElementById('detalheNome');
+                        if (detalheNome) detalheNome.textContent = adolescente.nome || '-';
+
+                        const detalheIdade = document.getElementById('detalheIdade');
+                        if (detalheIdade) detalheIdade.textContent = adolescente.idade || '-';
+
+                        const detalheMae = document.getElementById('detalheMae');
+                        if (detalheMae) detalheMae.textContent = adolescente.mae || '-';
+
+                        const detalheCidade = document.getElementById('detalheCidade');
+                        if (detalheCidade) {
+                            detalheCidade.textContent =
+                                (adolescente.cidadeNascimento || '-') +
+                                '/' +
+                                (adolescente.ufNascimento || '-');
                         }
-                        
+
                     } catch (e) {
-                        
                         console.error(e);
-                        
                     } finally {
-                        
-                        // 🔥 ESCONDE LOADING
                         const overlay = document.getElementById("loadingOverlay");
-                        
-                        if (overlay) {
-                            overlay.style.display = "none";
-                        }
-                        
+                        if (overlay) overlay.style.display = "none";
                     }
-                    
+
                 });
-                
+
             });
-        
         </script>
         
         <script>

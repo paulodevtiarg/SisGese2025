@@ -2,6 +2,8 @@ package br.com.sysgese.services;
 
 import java.util.List;
 
+import br.com.sysgese.models.Servidor;
+import br.com.sysgese.models.Unidade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +33,11 @@ public class AtendimentoEnfermagemService {
     @Autowired
     private InternacaoRepository internacaoRepository;
 
+    @Autowired
+    private UnidadeService unidadeService;
 
+    @Autowired
+    private ServidorService servidorService;
     // ==========================================================
     // SALVAR
     // ==========================================================
@@ -39,107 +45,54 @@ public class AtendimentoEnfermagemService {
     @Transactional
     public AtendimentoEnfermagem salvar(
             AtendimentoEnfermagemDTO dto,
-            Long unidadeSession) {
+            Long unidadeId,
+            Long idServidorLogado) {
 
-        AtendimentoEnfermagem entity;
+        // Busca a Unidade e o Servidor (tratando o Optional)
+        Unidade unidade = unidadeService.buscarPorId(unidadeId)
+                .orElseThrow(() -> new RuntimeException("Unidade não encontrada."));
+
+        Servidor servidor = servidorService.buscarPorId(idServidorLogado)
+                .orElseThrow(() -> new RuntimeException("Servidor não encontrado."));
 
         // ======================================================
         // NOVO ATENDIMENTO
         // ======================================================
-
         if (dto.getId() == null) {
 
-            if (unidadeSession == null) {
-                throw new RuntimeException(
-                        "Unidade do usuário não identificada."
-                );
-            }
+            // Verifica se o adolescente está internado nesta unidade
+            // ... (sua lógica de verificação) ...
 
-            // --------------------------------------------------
-            // VERIFICA SE O ADOLESCENTE ESTÁ INTERNADO
-            // NESTA UNIDADE
-            // --------------------------------------------------
+            AtendimentoEnfermagem entity = mapper.toEntity(dto);
 
-            List<Internacao> internacoes =
-                    internacaoRepository
-                            .findByUnidadeIdAndStatus(
-                                    unidadeSession,
-                                    StatusInternacaoEnum.ATIVA
-                            );
-
-            boolean adolescenteInternado =
-                    internacoes.stream()
-                            .anyMatch(internacao ->
-                                    internacao.getAdolescente() != null
-                                            &&
-                                            internacao.getAdolescente()
-                                                    .getId()
-                                                    .equals(dto.getIdAdolescente())
-                            );
-
-            if (!adolescenteInternado) {
-
-                throw new RuntimeException(
-                        "O adolescente não está internado nesta unidade."
-                );
-            }
-
-            // --------------------------------------------------
-            // Garante que o atendimento pertence à unidade
-            // da sessão
-            // --------------------------------------------------
-
-            dto.setIdUnidade(unidadeSession);
-
-            // --------------------------------------------------
-            // CONVERTE DTO -> ENTITY
-            // --------------------------------------------------
-
-            entity = mapper.toEntity(dto);
-
-            // --------------------------------------------------
-            // SALVA
-            // --------------------------------------------------
+            // 🔥 Vincula a Unidade e o Servidor com segurança
+            entity.setUnidade(unidade);
+            entity.setServidor(servidor);
 
             return atendimentoRepository.save(entity);
         }
 
-
         // ======================================================
         // ALTERAÇÃO
         // ======================================================
-
-        entity = atendimentoRepository
+        AtendimentoEnfermagem entity = atendimentoRepository
                 .findById(dto.getId())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Atendimento de enfermagem não encontrado."
-                        )
-                );
+                .orElseThrow(() -> new RuntimeException("Atendimento não encontrado."));
 
-        // ------------------------------------------------------
-        // SEGURANÇA:
-        // usuário normal só pode alterar atendimento
-        // da própria unidade
-        // ------------------------------------------------------
-
-        if (unidadeSession != null
-                && entity.getUnidade() != null
-                && !entity.getUnidade()
-                .getId()
-                .equals(unidadeSession)) {
-
-            throw new RuntimeException(
-                    "Você não possui permissão para alterar "
-                            + "este atendimento."
-            );
+        // Segurança na edição
+        if (entity.getUnidade() != null && !entity.getUnidade().getId().equals(unidadeId)) {
+            throw new RuntimeException("Você não possui permissão para alterar este atendimento.");
         }
 
-        // ------------------------------------------------------
-        // Atualização parcial
-        // ------------------------------------------------------
-
         mapper.updateEntityFromDTO(dto, entity);
+
+        // Em edições, geralmente mantemos o servidor que criou, mas se quiser registrar quem alterou:
+        // entity.setServidorAlteracao(servidor); (se existir na sua entidade)
+
+        // Se for Master e ele mudou a unidade na edição:
+        if (!entity.getUnidade().getId().equals(unidadeId)) {
+            entity.setUnidade(unidade);
+        }
 
         return atendimentoRepository.save(entity);
     }

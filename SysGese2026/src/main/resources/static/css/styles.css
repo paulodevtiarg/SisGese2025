@@ -231,7 +231,7 @@
 /*FOTO-DETALHE*/
 .foto-3x4-container-dt {
     width: 100%;
-    height: 100%;
+
     margin: 0 auto;
     border: 1px solid #dee2e6;
     border-radius: 8px;
@@ -251,7 +251,7 @@
 
 .foto-wrapper-dt {
     width: 100%;
-     height: 95%;
+
     aspect-ratio: 3 / 4;
     overflow: hidden;
     border-radius: 6px;
@@ -402,3 +402,35 @@
 .foto-adolescente-card:hover {
     transform: scale(1.02);
 }
+
+.foto-3x4-container-dt-at {
+    width: 100%;
+    height: 100%; /* 🔥 Força a altura a preencher todo o espaço da coluna */
+    margin: 0 auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 8px; /* Reduzi o padding para a foto ficar maior */
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex; /* Garante que o filho preencha o espaço */
+    flex-direction: column;
+}
+
+.foto-wrapper-dt-at {
+    width: 100%;
+    height: 100%; /* 🔥 Ocupa todo o espaço interno */
+    flex-grow: 1; /* 🔥 Faz o wrapper crescer */
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+}
+
+.foto-3x4-img-dt-at {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* A imagem preenche o container, cortando as bordas se precisar */
+    object-position: center; /* Foca no centro da imagem */
+    display: block;
+}
+
