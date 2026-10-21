@@ -220,8 +220,6 @@ public class Adolescente {
     private List<Endereco> enderecos;
 
     
-    
-    
     public Boolean getStatus() {
 		return status;
 	}

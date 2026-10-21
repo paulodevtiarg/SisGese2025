@@ -149,8 +149,12 @@ public class InternacaoService {
         }
 
         // outros filtros
+        spec = spec.and(InternacaoSpecification.nomeAdolescente(filtro.getFiltroNomeAdolescente()));
+        spec = spec.and(InternacaoSpecification.cidadeAdolescente(filtro.getFiltroCidadeAdolescente()));
+
+/*
         spec = spec.and(InternacaoSpecification.nomeAdolescente(filtro.getNomeAdolescente()));
-        spec = spec.and(InternacaoSpecification.cidadeAdolescente(filtro.getCidadeAdolescente()));
+        spec = spec.and(InternacaoSpecification.cidadeAdolescente(filtro.getCidadeAdolescente())); */
 
         if (filtro.getTipoMedida() != null) {
             spec = spec.and((root, query, cb) ->
@@ -168,6 +172,15 @@ public class InternacaoService {
                     cb.equal(root.get("status"), filtro.getFiltroStatus())
             );
         }
+
+        System.out.println("=== DEBUG BUSCA ===");
+        System.out.println("filtroNomeAdolescente: [" + filtro.getFiltroNomeAdolescente() + "]");
+        System.out.println("filtroCidadeAdolescente: [" + filtro.getFiltroCidadeAdolescente() + "]");
+        System.out.println("filtroStatus: [" + filtro.getFiltroStatus() + "]");
+        System.out.println("filtroUnidadeId: [" + filtro.getFiltroUnidadeId() + "]");
+        System.out.println("isMaster: " + isMaster);
+        System.out.println("unidadeSession: " + unidadeSession);
+        System.out.println("SPEC FINAL: " + spec);
 
         return internacaoRepository.findAll(spec, pageable);
     }

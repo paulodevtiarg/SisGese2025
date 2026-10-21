@@ -63,9 +63,7 @@ public String index(
         Model model) {
 
 	boolean isMaster = (Boolean) session.getAttribute("isMaster");         
-
     Lotacao lotacaoAtiva = (Lotacao) session.getAttribute("lotacaoUsuarioLogado");
-    
     Long unidadeFiltro;
 
     if (isMaster) {
@@ -86,19 +84,16 @@ public String index(
 
     Page<Internacao> pagina = internacaoService.buscarComFiltro(filtro, unidadeFiltro, isMaster, pageable);
 
+    Page<InternacaoDTO> internacaoDTO = pagina.map(internacaoMapper::toDTO);
 
-
-    Page<InternacaoDTO> paginaDTO = pagina.map(internacaoMapper::toDTO);
-
-    model.addAttribute("pagina", paginaDTO);
-    model.addAttribute("lista", paginaDTO.getContent());
+    model.addAttribute("internacoes", internacaoDTO);
+    model.addAttribute("lista", internacaoDTO.getContent());
 
     if (isMaster) {
         model.addAttribute("unidades", unidadeService.listarTodas());
     }
 
     model.addAttribute("lotacaoUsuarioLogado", lotacaoAtiva );
-
     model.addAttribute("isMaster", isMaster);
     model.addAttribute("size", size);
     model.addAttribute("queryParams", urlUtils.internacaoQuery(filtro, page));

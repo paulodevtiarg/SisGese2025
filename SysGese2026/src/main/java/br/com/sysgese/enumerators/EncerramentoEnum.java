@@ -1,7 +1,7 @@
 package br.com.sysgese.enumerators;
 
 public enum EncerramentoEnum {
-    RESOLVIDO("RESOLVIDO"),
+    RESOLVIDO("Resolvido"),
     EM_OBSERVACAO("Em Observação"),
     NECESSITA_ACOMPANHAMENTO("Necessita Acompanhamento"),
     ENCAMINHADO("Encaminhado"),

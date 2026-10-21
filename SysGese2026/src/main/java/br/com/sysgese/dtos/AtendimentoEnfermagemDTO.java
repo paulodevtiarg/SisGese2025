@@ -1,10 +1,7 @@
 package br.com.sysgese.dtos;
 
 import br.com.sysgese.enumerators.*;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
@@ -41,10 +38,9 @@ public class AtendimentoEnfermagemDTO {
 
     private Integer frequenciaRespiratoria;
 
-    @NumberFormat(pattern = "#,##0.00")
-    @Digits(integer = 2, fraction = 2, message = "Temperatura deve ter no máximo 2 dígitos inteiros e 2 casas decimais (ex: 36.50)")
-    @DecimalMin(value = "30.0", message = "Temperatura muito baixa para um ser vivo")
-    @DecimalMax(value = "45.0", message = "Temperatura muito alta para um ser vivo")
+    @Digits(integer = 2, fraction = 2, message = "Temperatura inválida")
+    @DecimalMin(value = "30.0", message = "Temperatura muito baixa")
+    @DecimalMax(value = "45.0", message = "Temperatura muito alta")
     private BigDecimal temperatura;
 
 
@@ -65,24 +61,25 @@ public class AtendimentoEnfermagemDTO {
     private BigDecimal saturacaoO2;
 
 
-
     @Digits(integer = 3, fraction = 1, message = "Glicemia deve ter até 3 dígitos inteiros e 1 casa decimal")
     @DecimalMin(value = "0.0", message = "Glicemia deve ser ≥ 0 mg/dL")
     @DecimalMax(value = "999.9", message = "Glicemia deve ser ≤ 999.9 mg/dL")  // Limite do DECIMAL(5,1)
     @NumberFormat(pattern = "#,##0.0")
     private BigDecimal glicemiaCapilar;
-
+    @NotNull(message = "Estado geral  é obrigatório")
     private EstadoEnum estadoGeral;
 
     private String estadoGeralOutros;
-
+    @NotNull(message = "Consciência Geral é obrigatório")
     private ConscienciaEnum consciencia;
 
     private String conscienciaOutros;
 
+
+    @NotNull(message = "Dor é obrigatório")
     private Boolean dor;
 
-    private Integer dorEscala;
+    private Integer dorEscala = 0;;
 
     private String dorLocal;
 

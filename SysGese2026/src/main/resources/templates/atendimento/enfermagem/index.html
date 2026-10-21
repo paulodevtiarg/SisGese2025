@@ -10,7 +10,6 @@
 <body>
 <div layout:fragment="content">
 
-
     <div class="container-fluid p-2">
         <div class="row">
             <div class="col-12">
@@ -30,115 +29,70 @@
                     </ol>
                 </nav>
             </div>
+
+            <div class="col-12" th:replace="~{fragments/componentes :: alertas}"></div>
+
             <div class="col-12">
-                <!-- Mensagens de erro e de ok -->
-                <div class="alert alert-success alert-dismissible fade show auto-close mb-3"
-                     id="successAlert"
-                     role="alert" th:if="${msgOk}">
-                    <i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
-                        th:text="${msgOk}"></span>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert"
-                            type="button"></button>
-                </div>
 
-                <!-- Mensagem de Erro -->
-                <div class="alert alert-danger alert-dismissible fade show auto-close mb-3"
-                     id="errorAlert"
-                     role="alert" th:if="${msgErro}">
-                    <i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
-                        th:text="${msgErro}"></span>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert"
-                            type="button"></button>
-                </div>
-            </div>
-            <div class="col-12" style="margin-top: -15px;">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center fs-6 fw-semibold text-uppercase">
-
-                        <h6 class="mb-0 text-secondary">Atendimentos</h6>
-
-                        <!-- TEM PERMISSÃO + TEM QUERY PARAMS -->
-                        <a th:if="${(isMaster or podeIncluirAtendimentoEnfermagem)
-            and queryParams != null
-            and queryParams != ''}"
-                           th:href="@{'/atendimentos/enfermagem/novo?' + ${queryParams}}"
-                           class="btn btn-outline-sistema"
-                           data-bs-toggle="tooltip"
-                           title="Novo Atendimento de Enfermagem">
-
-                            <i class="fa-duotone fa-plus"></i> Novo
-                        </a>
-
-
-                        <!-- TEM PERMISSÃO + NÃO TEM QUERY PARAMS -->
-                        <a th:if="${(isMaster or podeIncluirAtendimentoEnfermagem)
-            and (queryParams == null or queryParams == '')}"
-                           th:href="@{/atendimentos/enfermagem/novo}"
-                           class="btn btn-outline-sistema"
-                           data-bs-toggle="tooltip"
-                           title="Novo Atendimento de Enfermagem">
-
-                            <i class="fa-duotone fa-plus"></i> Novo
-                        </a>
-
-
-                        <!-- NÃO TEM PERMISSÃO -->
-                        <a th:if="${!isMaster and !podeIncluirAtendimentoEnfermagem}"
-                           href="#"
-                           class="btn btn-outline-sistema  opacity-50"
-                           data-bs-toggle="tooltip"
-                           title="Sem permissão para incluir Atendimento de Enfermagem">
-
-                            <i class="fa-duotone fa-plus"></i> Novo
-                        </a>
-
-
-                    </div>
+                    <div class="card">
+                        <div th:replace="~{fragments/componentes :: cardHeader(
+                                'Atendimentos de Enfermagem',
+                                'Gerencie os atendimentos',
+                                'user-nurse',
+                                '/atendimentos/enfermagem/novo',
+                                'Enfermagem',
+                                ${isMaster or podeIncluirAtendimentoEnfermagem},
+                                ${queryParams}
+                            )}"></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12">
-                                <form class="mb-3" method="get" th:action="@{/atendimentos/enfermagem}">
+                                <form class="filter-box mb-2" method="get" th:action="@{/atendimentos/enfermagem}">
                                     <input name="unidadeId" th:value="${unidadeId}" type="hidden">
-                                    <div class="row g-2">
-                                        <div class="col-md-4 input-group-sm">
-                                            <label class="form-label fw-semibold">Nome do Adolescente</label>
-                                            <input class="form-control" name="filtroNomeAdolescente" placeholder="Digite para buscar" th:value="${filtro.filtroNomeAdolescente}" type="text">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold text-secondary">Nome do Adolescente</label>
+                                            <div class="input-group input-group-modern">
+                                                <span class="input-group-text"><i class="fa-duotone fa-solid fa-user"></i></span>
+                                                <input type="text" name="filtroNomeAdolescente" th:value="${filtro.filtroNomeAdolescente}"
+                                                       class="form-control" placeholder="Digite para buscar">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold text-secondary">Cidade do Adolescente</label>
+                                            <div class="input-group input-group-modern">
+                                                <span class="input-group-text"><i class="fa-duotone fa-solid fa-location-dot"></i></span>
+                                                <input type="text" name="filtroCidadeAdolescente" th:value="${filtro.filtroCidadeAdolescente}"
+                                                       class="form-control" placeholder="Digite para buscar">
+                                            </div>
                                         </div>
 
-                                        <div class="col-md-4 input-group-sm">
-                                            <label class="form-label fw-semibold">Cidade do Adolescente</label>
-                                            <input class="form-control" name="filtroCidadeAdolescente" placeholder="Digite para buscar"  th:value="${filtro.filtroCidadeAdolescente}" type="text">
-                                        </div>
-
-                                        <div class="col-md-1 input-group-sm">
-                                            <label class="form-label fw-semibold">Linhas</label> <select
-                                                class="form-select" name="size">
-                                            <option th:selected="${filtro.size == 10}" value="10">10</option>
-                                            <option th:selected="${filtro.size == 15}" value="15">15</option>
-                                            <option th:selected="${filtro.size == 20}" value="20">20</option>
-                                            <option th:selected="${filtro.size == 25}" value="25">25</option>
-                                            <option th:selected="${filtro.size == 30}" value="30">30</option>
-                                        </select>
-                                        </div>
-                                        <div class="col-md-2 input-group-sm" th:if="${isMaster}">
-                                            <label class="form-label fw-semibold">Unidade</label>
-                                            <select  class="form-select" name="filtroUnidadeId">
-                                                <option value="">Todas</option>
-
-                                                <option th:each="u : ${unidades}"
-                                                        th:selected="${u.id == filtro.filtroUnidadeId}"
-                                                        th:text="${u.nome}"
-                                                        th:value="${u.id}">
-                                                </option>
+                                        <div class="col-md-1">
+                                            <label class="form-label small fw-semibold text-secondary">Linhas</label>
+                                            <select name="size" class="form-select form-control-modern">
+                                                <option value="10" th:selected="${filtro.size == 10}">10</option>
+                                                <option value="15" th:selected="${filtro.size == 15}">15</option>
+                                                <option value="20" th:selected="${filtro.size == 20}">20</option>
+                                                <option value="25" th:selected="${filtro.size == 25}">25</option>
+                                                <option value="30" th:selected="${filtro.size == 30}">30</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2 input-group-sm" th:if="${!isMaster}">
-                                            <label class="form-label fw-semibold">Unidade</label>
-                                            <input class="form-control" disabled th:value="${lotacaoUsuarioLogado.unidade.nome}" type="text">
+
+                                        <div class="col-md-2" th:if="${isMaster}">
+                                            <label class="form-label small fw-semibold text-secondary">Unidade</label>
+                                            <select name="filtroUnidadeId" class="form-select form-control-modern">
+                                                <option value="">Todas</option>
+                                                <option th:each="u : ${unidades}" th:value="${u.id}"
+                                                        th:text="${u.nome}"
+                                                        th:selected="${u.id == filtro.filtroUnidadeId}"></option>
+                                            </select>
                                         </div>
-                                        <div class="col-md-1 d-flex align-items-end input-group-sm">
-                                            <div th:replace="fragments/botoesBusca :: btnBuscar('Aplicar Filtros')"></div>
+                                        <div class="col-md-2" th:if="${!isMaster}">
+                                            <label class="form-label small fw-semibold text-secondary">Unidade</label>
+                                            <input type="text" class="form-control form-control-modern"
+                                                   th:value="${lotacaoUsuarioLogado.unidade.nome}" disabled>
                                         </div>
+                                        <div th:replace="~{fragments/componentes :: botoesFiltro('/atendimentos/enfermagem', 'col-md-2')}"></div>
                                     </div>
 
 
@@ -148,11 +102,10 @@
                             </div>
                             <div class="col-12">
                                 <div class="d-none d-md-block">
-                                    <table class="table table-striped table-bordered align-middle">
-                                        <thead class="table-dark"
-                                               style="--bs-table-bg: #0c174a; --bs-table-border-color: #0e2583;">
+                                    <table class="table table-modern align-middle mb-0">
+                                        <thead>
                                         <tr>
-                                            <th class="text-center" style="width: 10%;">Foto</th>
+                                            <th class="text-center" style="width: 80px;">Foto</th>
                                             <th>Dados</th>
                                             <th>Unidade Cadastro</th>
                                             <th>Unidade Internação</th>
@@ -161,121 +114,134 @@
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        <tr th:if="${#lists.isEmpty(lista)}">
+                                            <td colspan="6"> <!-- Mudei de 8 para 6, pois sua tabela tem 6 colunas -->
+                                                <div th:replace="~{fragments/componentes :: emptyState('Nenhum atendimento encontrado com os filtros atuais.')}"></div>
+                                            </td>
+                                        </tr>
                                         <tr th:each="atendimento : ${lista}">
 
-                                            <td class="text-center" style="width: 10%;"><img
-                                                    class="foto-tabela"
-                                                    th:if="${atendimento.fotoRegistro != null}"
-                                                    th:src="${atendimento.fotoRegistro}">
-                                                <img class="foto-tabela"
-                                                     src="/img/sem-foto.png"
-                                                     th:if="${atendimento.fotoRegistro == null}"></td>
+                                            <td class="text-center">
+                                                <div class="avatar-wrapper">
+                                                    <img th:if="${atendimento.fotoRegistro != null}"
+                                                         th:src="${atendimento.fotoRegistro}"
+                                                         class="avatar-img" alt="Foto">
+                                                    <div th:if="${atendimento.fotoRegistro == null}" class="avatar-fallback">
+                                                        <i class="fa-duotone fa-solid fa-user"></i>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
 
 
                                             <td>
-                                                <div class="fw-semibold"
-                                                     th:text="${atendimento.nome}"></div>
-                                                <small
-                                                        class="text-muted d-block"> Natural: <span
-                                                        th:text="${atendimento.cidadeNascimento}"></span> / <span
-                                                        th:text="${atendimento.ufNascimento}"></span> • <span
-                                                        th:text="${atendimento.idade}"></span> anos
-                                                </small> <small class="text-muted d-block"> Mãe: <span
-                                                    th:text="${atendimento.mae}"></span>
-                                            </small>
+                                                <div class="fw-semibold text-dark" th:text="${atendimento.nome}"></div>
+
+                                                <small  class="text-muted d-block"> Natural:
+                                                    <i class="fa-duotone fa-solid fa-location-dot me-1"></i>
+                                                    <span th:text="${atendimento.cidadeNascimento}"></span>/<span th:text="${atendimento.ufNascimento}"></span>
+                                                    <i class="fa-duotone fa-solid fa-cake-candles me-1"></i>
+                                                    <span th:text="${atendimento.idade}"></span> anos
+                                                    &bull;
+
+                                                </small>
+                                                <small class="text-muted d-block text-truncate" style="max-width: 320px;">
+                                                    <i class="fa-duotone fa-solid fa-user-group me-1"></i>
+                                                    Mãe: <span th:text="${atendimento.mae}"></span>
+                                                 </small>
+
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-soft-primary"
+                                                      th:text="${atendimento.unidadeCadastroNome}">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-soft-primary"
+                                                      th:text="${atendimento.unidadeNome}">
+                                                </span>
                                             </td>
 
-                                            <td th:text="${atendimento.unidadeCadastroNome}"></td>
-                                            <td th:text="${atendimento.unidadeNome}"></td>
                                             <td th:text="${atendimento.ultimoAtendimento != null ? #temporals.format(atendimento.ultimoAtendimento, 'dd/MM/yyyy') : '-'}"></td>
 
                                             <td class="text-center text-nowrap">
-
-
-                                                <a class="btn btn-primary" th:href="@{/atendimento/enfermagem/adolescente/{id}(id=${atendimento.adolescenteId})}">
-
+                                                <a class="btn btn-info btn-modern btn-sm" th:href="@{/atendimento/enfermagem/adolescente/{id}(id=${atendimento.adolescenteId})}">
                                                     <i class="fa-duotone fa-solid fa-clipboard-medical"></i>
                                                     <span th:text="${atendimento.quantidadeAtendimentos}"></span>
                                                     <span th:text="${atendimento.quantidadeAtendimentos == 1  ? ' atendimento' : ' atendimentos'}">  </span>
-
                                                 </a>
 
-
                                             </td>
+
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="d-block d-md-none">
+                                    <!-- Empty state (fora do each) -->
+                                    <div th:if="${#lists.isEmpty(lista)}">
+                                        <div th:replace="~{fragments/componentes :: emptyState('Nenhum atendimento encontrado com os filtros atuais.')}"></div>
+                                    </div>
 
-                                    <div class="card mb-3 shadow-sm"
-                                         th:each="atendimento : ${lista}">
+                                    <div class="card card-mobile-modern mb-3" th:each="atendimento : ${lista}">
 
-                                        <div class="card-body">
+                                        <div class="card-body p-3">
+
 
                                             <div class="d-flex gap-3">
 
                                                 <!-- FOTO -->
-                                                <img class="foto-card-mobile"
-                                                     th:if="${atendimento.fotoRegistro != null}"
-                                                     th:src="${atendimento.fotoRegistro}"> <img
-                                                    class="foto-card-mobile"
-                                                    src="/img/sem-foto.png"
-                                                    th:if="${atendimento.fotoRegistro == null}">
-
-                                                <!-- DADOS -->
-                                                <div class="flex-grow-1">
-
-                                                    <!-- NOME -->
-                                                    <div class="fw-bold">
-                                                        <span th:text="${atendimento.nome}"></span>
+                                                <!-- FOTO + STATUS DOT -->
+                                                <div class="avatar-wrapper avatar-wrapper-lg">
+                                                    <img th:if="${atendimento.fotoRegistro != null}"
+                                                         th:src="${atendimento.fotoRegistro}"
+                                                         class="avatar-img" alt="Foto">
+                                                    <div th:if="${atendimento.fotoRegistro == null}" class="avatar-fallback">
+                                                        <i class="fa-duotone fa-solid fa-user"></i>
                                                     </div>
 
+                                                </div>
+                                                <!-- DADOS -->
+                                                <div class="flex-grow-1 min-w-0">
+
+                                                    <!-- NOME -->
+                                                    <div class="fw-bold text-dark text-truncate" th:text="${atendimento.nome}"></div>
+
                                                     <!-- INFO BASICA -->
-                                                    <small class="text-muted d-block"> <span
-                                                            th:text="${atendimento.idade}"></span> anos •
-                                                        <span
-                                                                th:text="${atendimento.cidadeNascimento}"></span> /
-                                                        <span
-                                                                th:text="${atendimento.ufNascimento}"></span>
+
+                                                    <small class="text-muted d-block">
+                                                        <i class="fa-duotone fa-solid fa-cake-candles me-1"></i>
+                                                        <span th:text="${atendimento.idade}"></span> anos
+                                                        &bull;
+                                                        <i class="fa-duotone fa-solid fa-location-dot me-1"></i>
+                                                        <span th:text="${atendimento.cidadeNascimento}"></span>/<span th:text="${atendimento.ufNascimento}"></span>
                                                     </small>
 
-                                                    <!-- MAE -->
-                                                    <small class="text-muted d-block"> Mãe: <span
-                                                            th:text="${atendimento.mae}"></span>
+                                                    <small class="text-muted d-block text-truncate">
+                                                        <i class="fa-duotone fa-solid fa-user-group me-1"></i>
+                                                        Mãe: <span th:text="${atendimento.mae}"></span>
                                                     </small>
 
-                                                    <!-- UNIDADES -->
-                                                    <small class="text-muted d-block"> Cadastro: <span
-                                                            th:text="${atendimento.unidadeCadastroNome}"></span>
-                                                    </small>
-                                                    <small class="text-muted d-block"> Internação: <span
+                                                    <small class="text-muted d-block text-truncate"> Internação: <span class="badge badge-soft-primary"
                                                         th:text="${atendimento.unidadeNome}"></span>
                                                     </small>
-                                                    <small class="text-muted d-block"> Último Atendimento: <span th:text="${atendimento.ultimoAtendimento != null ? #temporals.format(atendimento.ultimoAtendimento, 'dd/MM/yyyy') : '-'}"></span>
+                                                    <small class="text-muted d-block text-truncate"> Último Atendimento: <span th:text="${atendimento.ultimoAtendimento != null ? #temporals.format(atendimento.ultimoAtendimento, 'dd/MM/yyyy') : '-'}"></span>
                                                     </small>
-
-
-
-
-
                                                 </div>
 
                                             </div>
 
                                             <!-- AÇÕES -->
-                                            <div class="d-flex justify-content-end gap-2 mt-3">
-
-
-                                                <a class="btn btn-outline-sistema btn-sm" th:href="@{/atendimento/enfermagem/adolescente/{id}(id=${atendimento.adolescenteId})}">
+                                            <div class="d-flex justify-content-end gap-2 mt-3 pt-3 border-top">
+                                                <a class="btn btn-info btn-modern btn-sm" th:href="@{/atendimento/enfermagem/adolescente/{id}(id=${atendimento.adolescenteId})}">
 
                                                     <i class="fa-duotone fa-solid fa-clipboard-medical"></i>
                                                     <span th:text="${atendimento.quantidadeAtendimentos}"></span>
                                                     <span th:text="${atendimento.quantidadeAtendimentos == 1  ? ' atendimento' : ' atendimentos'}">  </span>
 
                                                 </a>
-
-
 
                                             </div>
 
@@ -290,45 +256,68 @@
                         </div>
 
                     </div>
-                    <div class="card-footer d-flex justify-content-end">
+                        <div class="card-footer card-footer-modern d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                            <!-- Info à esquerda -->
+                            <small class="text-muted">
+                                Página <strong th:text="${pagina.number + 1}"></strong>
+                                de <strong th:text="${pagina.totalPages}"></strong>
+                                &bull;
+                                <span th:text="${pagina.totalElements}"></span> registro(s)
+                            </small>
 
-                        <nav aria-label="Paginação">
-                            <ul class="pagination mb-0">
+                            <!-- Paginação à direita -->
+                            <nav aria-label="Paginação">
+                                <ul class="pagination pagination-modern mb-0">
 
-                                <!-- Anterior -->
-                                <li class="page-item"
-                                    th:classappend="${pagina.first} ? 'disabled'">
+                                    <!-- Primeira -->
+                                    <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, 0)}}"
+                                           data-bs-toggle="tooltip" title="Primeira página">
+                                            <i class="fa-duotone fa-solid fa-angles-left"></i>
+                                        </a>
+                                    </li>
 
-                                    <a class="page-link"
-                                       th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, pagina.number - 1)}}">
-                                        Anterior
-                                    </a>
-                                </li>
+                                    <!-- Anterior -->
+                                    <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, pagina.number - 1)}}"
+                                           data-bs-toggle="tooltip" title="Anterior">
+                                            <i class="fa-duotone fa-solid fa-chevron-left"></i>
+                                        </a>
+                                    </li>
 
-                                <!-- Números -->
-                                <li class="page-item"
-                                    th:classappend="${i == pagina.number} ? 'active'"
-                                    th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}">
+                                    <!-- Números -->
+                                    <th:block th:if="${pagina.totalPages > 0}">
+                                        <li th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
+                                            class="page-item"
+                                            th:classappend="${i == pagina.number} ? 'active'">
+                                            <a class="page-link"
+                                               th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, i)}}"
+                                               th:text="${i + 1}"></a>
+                                        </li>
+                                    </th:block>
 
-                                    <a class="page-link"
-                                       th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, i)}}"
-                                       th:text="${i + 1}">
-                                    </a>
-                                </li>
+                                    <!-- Próxima -->
+                                    <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, pagina.number + 1)}}"
+                                           data-bs-toggle="tooltip" title="Próxima">
+                                            <i class="fa-duotone fa-solid fa-chevron-right"></i>
+                                        </a>
+                                    </li>
 
-                                <!-- Próxima -->
-                                <li class="page-item"
-                                    th:classappend="${pagina.last} ? 'disabled'">
+                                    <!-- Última -->
+                                    <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, pagina.totalPages - 1)}}"
+                                           data-bs-toggle="tooltip" title="Última página">
+                                            <i class="fa-duotone fa-solid fa-angles-right"></i>
+                                        </a>
+                                    </li>
 
-                                    <a class="page-link"
-                                       th:href="@{'/atendimentos/enfermagem?' + ${@urlUtils.atendimentoEnfermagemQuery(filtro, pagina.number + 1)}}">
-                                        Próxima
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </nav>
-
+                                </ul>
+                            </nav>
                     </div>
 
                 </div>

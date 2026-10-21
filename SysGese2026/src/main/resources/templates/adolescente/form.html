@@ -11,8 +11,6 @@
 
 <body>
 	<div layout:fragment="content">
-
-
 		<div class="container-fluid p-2">
 			<div class="row">
 				<div class="col-12">
@@ -36,27 +34,7 @@
 						</ol>
 					</nav>
 				</div>
-				<div class="col-12">
-					<!-- Mensagens de erro e de ok -->
-					<div th:if="${msgOk}"
-						class="alert alert-success alert-dismissible fade show"
-						role="alert" id="successAlert">
-						<i class="fa-duotone fa-solid fa-thumbs-up me-2"></i> <span
-							th:text="${msgOk}"></span>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"
-							aria-label="Close"></button>
-					</div>
-
-					<!-- Mensagem de Erro -->
-					<div th:if="${msgErro}"
-						class="alert alert-danger alert-dismissible fade show"
-						role="alert" id="errorAlert">
-						<i class="fa-duotone fa-solid fa-triangle-exclamation me-2"></i> <span
-							th:text="${msgErro}"></span>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"
-							aria-label="Close"></button>
-					</div>
-				</div>
+				<div class="col-12" th:replace="~{fragments/componentes :: alertas}"></div>
 				<div class="col-12">
 
 					<form th:action="@{/adolescentes/salvar}"
@@ -65,25 +43,37 @@
 						<input type="hidden" th:field="*{fotoRegistro}">
 						<div class="card">
 
-							<div
-								class="card-header d-flex justify-content-between align-items-center fs-4 pr-custom-text fw-semibold text-uppercase">
+							<div class="card-header card-header-modern d-flex justify-content-between align-items-center">
 
-								<h5 class="mb-0 text-secondary">Novo Registro</h5>
-
-								<div class="d-flex gap-2">
-									<a
-										th:href="@{${queryParams != null and queryParams != ''} ? 
-              '/adolescentes?' + queryParams : 
-              '/adolescentes'}"
-										class="btn btn-outline-danger"> <i
-										class="fa-duotone fa-solid fa-ban"></i> Cancelar
-									</a>
-
-									<button type="submit" class="btn btn-outline-sistema">
-										<i class="fa-duotone fa-solid fa-floppy-disk"></i> SALVAR
-									</button>
+								<!-- Título com ícone -->
+								<div class="d-flex align-items-center gap-2">
+									<div class="header-icon">
+										<i class="fa-duotone fa-solid fa-user-plus"></i>
+									</div>
+									<div>
+										<h5 class="mb-0 fw-semibold">Novo Registro</h5>
+										<small class="text-muted">Preencha os dados do adolescente</small>
+									</div>
 								</div>
 
+								<!-- Botões -->
+								<div class="d-flex gap-2">
+									<a th:href="@{${queryParams != null and queryParams != ''} ?
+              '/adolescentes?' + queryParams :
+              '/adolescentes'}"
+									   class="btn btn-light btn-modern d-flex align-items-center btn-sm gap-2"
+									   data-bs-toggle="tooltip" title="Cancelar e voltar">
+										<i class="fa-duotone fa-solid fa-ban"></i>
+										<span class="d-none d-sm-inline">Cancelar</span>
+									</a>
+
+									<button type="submit"
+									        class="btn btn-primary btn-modern d-flex align-items-center btn-sm gap-2"
+									        data-bs-toggle="tooltip" title="Salvar registro">
+										<i class="fa-duotone fa-solid fa-floppy-disk"></i>
+										<span class="d-none d-sm-inline">Salvar</span>
+									</button>
+								</div>
 							</div>
 
 
@@ -409,7 +399,7 @@
 
 
 															<div class="col-md-3">
-																<label for="nivelEscolaridade"
+																<label
 																	class="form-label fw-semibold text-secondary">
 																	Nível Escolaridade </label> <select class="form-select"
 																	th:field="*{nivelEscolaridade}">
@@ -419,7 +409,7 @@
 																</select>
 															</div>
 															<div class="col-md-3">
-																<label for="nivelEscolaridade"
+																<label
 																	class="form-label fw-semibold text-secondary">
 																	Ano Escolaridade </label> <select class="form-select"
 																	th:field="*{anoEscolaridade}">
@@ -599,7 +589,7 @@
 													<div class="col-md-6">
 														<div class="row">
 															<div class="col-md-12">
-																<label for="pai" class="form-label text-muted fw-medium">Pai</label>
+																<label class="form-label text-muted fw-medium">Pai</label>
 																<input type="text" th:field="*{pai}"
 																	class="form-control" placeholder="Digite o nome do Pai">
 
@@ -609,7 +599,7 @@
 														</div>
 														<div class="row mt-3">
 															<div class="col-md-12">
-																<label for="mae" class="form-label text-muted fw-medium">Mãe</label>
+																<label class="form-label text-muted fw-medium">Mãe</label>
 																<input type="text" th:field="*{mae}"
 																	class="form-control" placeholder="Digite o nome da mãe">
 
@@ -632,7 +622,7 @@
 														</div>
 														<div class="row mt-3">
 															<div class="col-md-12">
-																<label for="parentescoResponsavel"
+																<label
 																	class="form-label text-muted fw-medium">Parentesco
 																	do Responsável</label> <input type="text"
 																	th:field="*{parentescoResponsavel}"
@@ -658,7 +648,7 @@
 												<div class="row">
 
 													<div class="col-md-2">
-														<label for="estatura"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Estatura </label> <select class="form-select"
 															th:field="*{estatura}">
@@ -668,7 +658,7 @@
 														</select>
 													</div>
 													<div class="col-md-2">
-														<label for="sobrancelha"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Sobrancelhas </label> <select class="form-select"
 															th:field="*{sobrancelha}">
@@ -679,7 +669,7 @@
 													</div>
 
 													<div class="col-md-2">
-														<label for="nariz"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Nariz </label> <select class="form-select" th:field="*{nariz}">
 															<option value="">Selecione</option>
@@ -691,7 +681,7 @@
 													<div class="col-md-2">
 														<label for="orelha"
 															class="form-label fw-semibold text-secondary">
-															Orelha </label> <select class="form-select" th:field="*{orelha}">
+															Orelha </label> <select class="form-select" th:field="*{orelha}" id="orelha">
 															<option value="">Selecione</option>
 															<option th:each="ore : ${orelhas}" th:value="${ore}"
 																th:text="${ore.descricao}"></option>
@@ -699,7 +689,7 @@
 													</div>
 
 													<div class="col-md-2">
-														<label for="pescoco"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Pescoço </label> <select class="form-select"
 															th:field="*{pescoco}">
@@ -710,7 +700,7 @@
 													</div>
 
 													<div class="col-md-2">
-														<label for="rosto"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Rosto </label> <select class="form-select" th:field="*{rosto}">
 															<option value="">Selecione</option>
@@ -723,7 +713,7 @@
 
 												<div class="row mt-3">
 													<div class="col-md-2">
-														<label for="olhos"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Olhos </label> <select class="form-select" th:field="*{olhos}">
 															<option value="">Selecione</option>
@@ -733,7 +723,7 @@
 													</div>
 
 													<div class="col-md-2">
-														<label for="corOlhos"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Cor dos Olhos </label> <select class="form-select"
 															th:field="*{corOlhos}">
@@ -744,7 +734,7 @@
 													</div>
 
 													<div class="col-md-2">
-														<label for="cabelo"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Cabelos </label> <select class="form-select" th:field="*{cabelo}">
 															<option value="">Selecione</option>
@@ -754,7 +744,7 @@
 													</div>
 
 													<div class="col-md-2">
-														<label for="biofisico"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Biofisico </label> <select class="form-select"
 															th:field="*{biofisico}">
@@ -790,7 +780,7 @@
 													</div>
 
 													<div class="col-md-2">
-														<label for="religiao"
+														<label
 															class="form-label fw-semibold text-secondary">
 															Religião </label> <select class="form-select"
 															th:field="*{religiao}">
