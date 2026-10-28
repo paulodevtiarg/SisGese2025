@@ -143,6 +143,35 @@
 
 </div>
 
+<!-- ===== Botões de Ação (Histórico de Atendimentos) ===== -->
+<div th:fragment="acoesHistorico(idAtendimento, encerramento, urlDetalhes, urlEditar)" class="btn-group-actions">
+
+    <!-- Botão de Detalhes (Sempre visível) -->
+    <a th:href="${urlDetalhes}"
+       class="btn-icon btn-icon-info" data-bs-toggle="tooltip" title="Detalhes do Atendimento">
+        <i class="fa-duotone fa-solid fa-eye"></i>
+    </a>
+
+    <!-- Botão de Editar (Regras de permissão) -->
+    <th:block th:with="podeEditar=${encerramento?.name() == 'EM_OBSERVACAO' or encerramento?.name() == 'NECESSITA_REAVALIACAO'}">
+
+        <!-- Se pode editar (Em Observação ou Necessita Reavaliação) -->
+        <a th:if="${podeEditar}"
+           th:href="${urlEditar}"
+           class="btn-icon btn-icon-warning" data-bs-toggle="tooltip" title="Finalizar / Editar Atendimento">
+            <i class="fa-duotone fa-solid fa-pen-to-square"></i>
+        </a>
+
+        <!-- Se NÃO pode editar (Resolvido, Encaminhado, Necessita Acompanhamento) -->
+        <button th:if="${!podeEditar}" class="btn-icon btn-icon-warning" disabled
+                data-bs-toggle="tooltip" title="Atendimento já finalizado ou em acompanhamento. Não pode ser editado.">
+            <i class="fa-duotone fa-solid fa-pen-to-square"></i>
+        </button>
+
+    </th:block>
+
+</div>
+
 
 </body>
 </html>

@@ -433,4 +433,27 @@
     object-position: center; /* Foca no centro da imagem */
     display: block;
 }
+/* Deixa os campos do modoConduta legíveis */
+.modo-conduta input:disabled,
+.modo-conduta select:disabled,
+.modo-conduta textarea:disabled {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+    opacity: 1 !important;
+    cursor: not-allowed;
+}
+.modo-conduta input[readonly] {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+    opacity: 1 !important;
+}
 
+.campos-bloqueados {
+    pointer-events: none; /* Bloqueia o clique e digitação */
+    opacity: 0.7;         /* Deixa com o visual apagado para indicar que está bloqueado */
+}
+.campos-bloqueados input,
+.campos-bloqueados select,
+.campos-bloqueados textarea {
+    background-color: #e9ecef !important; /* Fundo cinza de campo desabilitado */
+}

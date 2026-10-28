@@ -1,18 +1,19 @@
 package br.com.sysgese.mappers;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 import br.com.sysgese.dtos.AtendimentoEnfermagemDTO;
 import br.com.sysgese.models.AtendimentoEnfermagem;
 
+import br.com.sysgese.dtos.PrescricaoMedicamentoDTO;
+import br.com.sysgese.models.PrescricaoMedicamento;
+
 @Mapper(componentModel = "spring")
 public interface AtendimentoEnfermagemMapper {
+
 
     // ==========================================================
     // ENTITY -> DTO
@@ -21,66 +22,82 @@ public interface AtendimentoEnfermagemMapper {
     @Mapping(source = "adolescente.id", target = "idAdolescente")
     @Mapping(source = "unidade.id", target = "idUnidade")
     @Mapping(source = "servidor.id", target = "idServidor")
-
     @Mapping(source = "adolescente.nome", target = "nomeAdolescente")
     @Mapping(source = "adolescente.cidadeNascimento", target = "cidadeAdolescente")
     @Mapping(source = "adolescente.ufNascimento", target = "ufAdolescente")
     @Mapping(source = "adolescente.fotoRegistro", target = "fotoAdolescente")
     @Mapping(source = "adolescente.mae", target = "maeDoAdolescente")
     @Mapping(source = "adolescente.idade", target = "idadeAdolescente")
-
     @Mapping(source = "unidade.nome", target = "nomeUnidade")
     @Mapping(source = "unidade.nome", target = "nomeUnidadeInternacao")
-    @Mapping(source = "adolescente.unidadeCadastro.nome",
-            target = "nomeUnidadeCadastro")
+    @Mapping(source = "adolescente.unidadeCadastro.nome", target = "nomeUnidadeCadastro")
+    AtendimentoEnfermagemDTO toDTO(AtendimentoEnfermagem entity);
 
-    AtendimentoEnfermagemDTO toDTO(
-            AtendimentoEnfermagem entity
-    );
-
-    List<AtendimentoEnfermagemDTO> toDTOList(
-            List<AtendimentoEnfermagem> entities
-    );
-
+    List<AtendimentoEnfermagemDTO> toDTOList(List<AtendimentoEnfermagem> entities);
 
     // ==========================================================
-    // DTO -> ENTITY
+    // MAPPER DA PRESCRIÇÃO
+    // ==========================================================
+    PrescricaoMedicamento toEntity(PrescricaoMedicamentoDTO dto);
+    PrescricaoMedicamentoDTO toDTO(PrescricaoMedicamento entity);
+
+    // ==========================================================
+    // DTO -> ENTITY (NOVO)
     // ==========================================================
 
     @Mapping(target = "id", ignore = true)
-
     @Mapping(target = "adolescente.id", source = "idAdolescente")
     @Mapping(target = "unidade.id", source = "idUnidade")
     @Mapping(target = "servidor.id", source = "idServidor")
+    @Mapping(target = "prescricoes", ignore = true) // 🔥 Ignora para fazer manualmente
+    AtendimentoEnfermagem toEntity(AtendimentoEnfermagemDTO dto);
 
-    AtendimentoEnfermagem toEntity(
-            AtendimentoEnfermagemDTO dto
-    );
 
+    // 🔥 O PULO DO GATO: Monta a lista de prescrições manualmente
+    @AfterMapping
+    default void linkPrescricoes(AtendimentoEnfermagemDTO dto, @MappingTarget AtendimentoEnfermagem entity) {
+        if (dto.getPrescricoes() != null && !dto.getPrescricoes().isEmpty()) {
+
+            List<PrescricaoMedicamento> listaEntity = new ArrayList<>();
+
+            for (PrescricaoMedicamentoDTO pDto : dto.getPrescricoes()) {
+                PrescricaoMedicamento pEntity = toEntity(pDto); // Converte usando o método acima
+                pEntity.setAtendimento(entity); // Amarra o pai
+                listaEntity.add(pEntity);
+            }
+
+            entity.setPrescricoes(listaEntity);
+        }
+    }
+    List<PrescricaoMedicamento> toEntityList(List<PrescricaoMedicamentoDTO> dtos);
 
     // ==========================================================
     // UPDATE PARCIAL
     // ==========================================================
 
-    @BeanMapping(
-            nullValuePropertyMappingStrategy =
-                    NullValuePropertyMappingStrategy.IGNORE
-    )
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-
-    /*
-     * Os vínculos não serão alterados durante uma edição.
-     *
-     * O adolescente, unidade e servidor pertencem
-     * ao atendimento original.
-     */
-
     @Mapping(target = "adolescente", ignore = true)
     @Mapping(target = "unidade", ignore = true)
     @Mapping(target = "servidor", ignore = true)
+    @Mapping(target = "prescricoes", ignore = true) // 🔥 Ignora para fazer manualmente
+    void updateEntityFromDTO(AtendimentoEnfermagemDTO dto, @MappingTarget AtendimentoEnfermagem entity);
 
-    void updateEntityFromDTO(
-            AtendimentoEnfermagemDTO dto,
-            @MappingTarget AtendimentoEnfermagem entity
-    );
+    @AfterMapping
+    default void linkPrescricoesUpdate(AtendimentoEnfermagemDTO dto, @MappingTarget AtendimentoEnfermagem entity) {
+        if (dto.getPrescricoes() != null && !dto.getPrescricoes().isEmpty()) {
+
+            List<PrescricaoMedicamento> listaEntity = new ArrayList<>();
+
+            for (PrescricaoMedicamentoDTO pDto : dto.getPrescricoes()) {
+                PrescricaoMedicamento pEntity = toEntity(pDto);
+                pEntity.setAtendimento(entity);
+                listaEntity.add(pEntity);
+            }
+
+            // Limpa a lista antiga e adiciona a nova
+            entity.getPrescricoes().clear();
+            entity.getPrescricoes().addAll(listaEntity);
+        }
+    }
 }

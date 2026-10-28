@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="ATENDIMENTO_ENFERMAGEM")
@@ -95,37 +97,39 @@ public class AtendimentoEnfermagem {
     @Column(name = "CONDUTA_OUTROS")
     private String condutaOutros;
 
-    @Column(name = "MEDICAMENTO")
-    private String medicamento;
+
+    @OneToMany(mappedBy = "atendimento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PrescricaoMedicamento> prescricoes = new ArrayList<>();
+
+    // Método auxiliar para salvar
+    public void adicionarPrescricao(PrescricaoMedicamento prescricao) {
+        prescricoes.add(prescricao);
+        prescricao.setAtendimento(this);
+    }
 
 
+    // 1. O Tipo Principal (Interno, Externo ou Outros)
     @Enumerated(EnumType.STRING)
-    @Column(name = "TIPO_DOSE")
-    private TipoDoseEnum tipoDose;
+    @Column(name = "TIPO_ENCAMINHAMENTO")
+    private EncaminhamentoEnum tipoEncaminhamento;
 
-    @Column(name = "TIPO_DOSE_OUTROS")
-    private String tipoDoseOutros;
-
+    // 2. As opções caso ele tenha escolhido Interno
     @Enumerated(EnumType.STRING)
-    @Column(name = "VIA")
-    private ViaAdmEnum via;
+    @Column(name = "ENCAMINHAMENTO_INTERNO")
+    private EncaminhamentoInternoEnum encaminhamentoInterno;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "HORARIO")
-    private HorarioEnum horario;
-
-    @Column(name = "HORARIO_OUTROS")
-    private String horarioOutros;
-
+    // 3. As opções caso ele tenha escolhido Externo (que você já tem)
     @Enumerated(EnumType.STRING)
     @Column(name = "ENCAMINHAMENTO_EXTERNO")
-    private EncaminhamentoEnum encaminhamentoExterno;
+    private EncaminhamentoExternoEnum encaminhamentoExterno;
 
-    @Column(name = "ENCAMINHAMENTO_OUTROS")
+    // 4. O texto livre caso ele tenha escolhido "Outros" em qualquer um dos casos
+    @Column(name = "ENCAMINHAMENTO_OUTROS", length = 255)
     private String encaminhamentoOutros;
 
+    // Na Entidade
     @Enumerated(EnumType.STRING)
-    @Column(name = "ENCERRAMENTO")
+    @Column(name = "ENCERRAMENTO", nullable = false)
     private EncerramentoEnum encerramento;
 
     @Column(name = "OBSERVACOES")
@@ -323,59 +327,35 @@ public class AtendimentoEnfermagem {
         this.condutaOutros = condutaOutros;
     }
 
-    public String getMedicamento() {
-        return medicamento;
+    public List<PrescricaoMedicamento> getPrescricoes() {
+        return prescricoes;
     }
 
-    public void setMedicamento(String medicamento) {
-        this.medicamento = medicamento;
+    public void setPrescricoes(List<PrescricaoMedicamento> prescricoes) {
+        this.prescricoes = prescricoes;
     }
 
-    public TipoDoseEnum getTipoDose() {
-        return tipoDose;
+    public EncaminhamentoEnum getTipoEncaminhamento() {
+        return tipoEncaminhamento;
     }
 
-    public void setTipoDose(TipoDoseEnum tipoDose) {
-        this.tipoDose = tipoDose;
+    public void setTipoEncaminhamento(EncaminhamentoEnum tipoEncaminhamento) {
+        this.tipoEncaminhamento = tipoEncaminhamento;
     }
 
-    public String getTipoDoseOutros() {
-        return tipoDoseOutros;
+    public EncaminhamentoInternoEnum getEncaminhamentoInterno() {
+        return encaminhamentoInterno;
     }
 
-    public void setTipoDoseOutros(String tipoDoseOutros) {
-        this.tipoDoseOutros = tipoDoseOutros;
+    public void setEncaminhamentoInterno(EncaminhamentoInternoEnum encaminhamentoInterno) {
+        this.encaminhamentoInterno = encaminhamentoInterno;
     }
 
-    public ViaAdmEnum getVia() {
-        return via;
-    }
-
-    public void setVia(ViaAdmEnum via) {
-        this.via = via;
-    }
-
-    public HorarioEnum getHorario() {
-        return horario;
-    }
-
-    public void setHorario(HorarioEnum horario) {
-        this.horario = horario;
-    }
-
-    public String getHorarioOutros() {
-        return horarioOutros;
-    }
-
-    public void setHorarioOutros(String horarioOutros) {
-        this.horarioOutros = horarioOutros;
-    }
-
-    public EncaminhamentoEnum getEncaminhamentoExterno() {
+    public EncaminhamentoExternoEnum getEncaminhamentoExterno() {
         return encaminhamentoExterno;
     }
 
-    public void setEncaminhamentoExterno(EncaminhamentoEnum encaminhamentoExterno) {
+    public void setEncaminhamentoExterno(EncaminhamentoExternoEnum encaminhamentoExterno) {
         this.encaminhamentoExterno = encaminhamentoExterno;
     }
 
@@ -408,5 +388,6 @@ public class AtendimentoEnfermagem {
         this.data = LocalDate.now();
         this.hora = LocalTime.now();
     }
+
 
 }

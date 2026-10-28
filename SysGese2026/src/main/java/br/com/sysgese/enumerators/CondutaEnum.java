@@ -11,8 +11,7 @@ public enum CondutaEnum {
     OBSERVACAO("Observação"),
     REAVALIACAO("Reavaliação"),
     COMUNICACAO_EQUIPE_MEDICA("Comunicação à equipe médica"),
-    ENCAMINHAMENTO_ATENDIMENTO_MEDICO("Encaminhamento para Atendimento Médico"),
-    ENCAMINHAMENTO_EXTERNO("Encaminhamento Externo"),
+    ENCAMINHAMENTO("Encaminhamento"), // 🔥 Agora é genérico
     OUTROS("Outros");
 
     private final String descricao;

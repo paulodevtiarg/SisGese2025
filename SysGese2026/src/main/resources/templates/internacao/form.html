@@ -90,7 +90,7 @@
                                         </select>
                                         
                                 </div>
-                                <div class="col-md-3" id="campoReincidente">
+                                <div class="col-md-3 d-none" id="campoReincidente">
                                     
                                     <label class="form-label text-muted fw-medium">
                                         Reincidente?
@@ -448,29 +448,36 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
 
-                const select = document.getElementById('adolescenteSelect');
-                if (!select) return;
+                // =========================================================
+                // 1. LÓGICA DO ADOLESCENTE (BUSCA E CARD)
+                // =========================================================
+                const selectAdolescente = document.getElementById('adolescenteSelect');
+                const cardAdolescente = document.getElementById('cardAdolescente');
+                const campoReincidente = document.getElementById('campoReincidente');
 
-                select.addEventListener('change', async function () {
+                async function carregarAdolescente(id) {
+                    // Se o card não existir na tela, nem tenta fazer nada
+                    if (!cardAdolescente) return;
+
+                    if (!id) {
+                        cardAdolescente.classList.add('d-none');
+                        if (campoReincidente) campoReincidente.classList.add('d-none');
+                        return;
+                    }
+
+                    mostrarLoading();
 
                     try {
-                        const id = this.value;
-                        if (!id) return;
-
-                        mostrarLoading();
-                        console.log("Selecionado:", id);
-
                         const response = await fetch('/adolescentes/buscaAdolescente/' + id);
                         if (!response.ok) throw new Error("Erro ao buscar adolescente");
 
                         const adolescente = await response.json();
-                        console.log(adolescente);
 
-                        // Mostra o card
-                        const card = document.getElementById('cardAdolescente');
-                        if (card) card.classList.remove('d-none');
+                        // Mostra o card e o reincidente
+                        cardAdolescente.classList.remove('d-none');
+                        if (campoReincidente) campoReincidente.classList.remove('d-none');
 
-                        // ========== INPUTS (form) ==========
+                        // Preenche os dados (Inputs)
                         const nome = document.getElementById('nomeAdolescente');
                         if (nome) nome.value = adolescente.nome || '-';
 
@@ -482,16 +489,13 @@
 
                         const cidade = document.getElementById('cidadeAdolescente');
                         if (cidade) {
-                            cidade.value =
-                                (adolescente.cidadeNascimento || '-') +
-                                '/' +
-                                (adolescente.ufNascimento || '-');
+                            cidade.value = (adolescente.cidadeNascimento || '-') + '/' + (adolescente.ufNascimento || '-');
                         }
 
                         const foto = document.getElementById('fotoAdolescente');
                         if (foto) foto.src = adolescente.fotoRegistro || '/img/sem-foto.png';
 
-                        // ========== SPANS DE DETALHE ==========
+                        // Preenche os dados (Spans)
                         const detalheNome = document.getElementById('detalheNome');
                         if (detalheNome) detalheNome.textContent = adolescente.nome || '-';
 
@@ -503,154 +507,73 @@
 
                         const detalheCidade = document.getElementById('detalheCidade');
                         if (detalheCidade) {
-                            detalheCidade.textContent =
-                                (adolescente.cidadeNascimento || '-') +
-                                '/' +
-                                (adolescente.ufNascimento || '-');
+                            detalheCidade.textContent = (adolescente.cidadeNascimento || '-') + '/' + (adolescente.ufNascimento || '-');
                         }
 
                     } catch (e) {
-                        console.error(e);
+                        console.error("Erro ao carregar adolescente:", e);
+                        cardAdolescente.classList.add('d-none');
+                        if (campoReincidente) campoReincidente.classList.add('d-none');
                     } finally {
-                        const overlay = document.getElementById("loadingOverlay");
-                        if (overlay) overlay.style.display = "none";
+                        esconderLoading();
                     }
+                }
 
-                });
+                // Listener do Select
+                if (selectAdolescente) {
+                    if (selectAdolescente.value) {
+                        carregarAdolescente(selectAdolescente.value);
+                    }
+                    selectAdolescente.addEventListener('change', function () {
+                        carregarAdolescente(this.value);
+                    });
+                }
+
+                // =========================================================
+                // 2. LÓGICA DE PROCEDÊNCIA (OUTROS E TRANSFERÊNCIA)
+                // =========================================================
+                const selectProcedencia = document.getElementById('procedencia');
+                const campoOutros = document.getElementById('campoProcedenciaOutros');
+                const campoTransferencia = document.getElementById('campoProcedenciaTransferencia');
+                const colProcedencia = document.getElementById('colProcedencia');
+
+                function controlarProcedencia() {
+                    if (!selectProcedencia || !campoOutros || !campoTransferencia || !colProcedencia) return;
+
+                    const procedencia = selectProcedencia.value;
+
+                    // Reset
+                    campoOutros.classList.add('d-none');
+                    campoTransferencia.classList.add('d-none');
+                    colProcedencia.classList.remove('col-md-3');
+                    colProcedencia.classList.add('col-md-6');
+
+                    if (procedencia === 'OUTROS') {
+                        campoOutros.classList.remove('d-none');
+                        colProcedencia.classList.remove('col-md-6');
+                        colProcedencia.classList.add('col-md-3');
+                    } else if (procedencia === 'TRANSF_UNIDADE') {
+                        campoTransferencia.classList.remove('d-none');
+                        colProcedencia.classList.remove('col-md-6');
+                        colProcedencia.classList.add('col-md-3');
+                    }
+                }
+
+                if (selectProcedencia) {
+                    selectProcedencia.addEventListener('change', controlarProcedencia);
+                    controlarProcedencia(); // Executa ao carregar
+                }
 
             });
         </script>
         
-        <script>
-            
-            function controlarProcedencia() {
-                
-                const procedencia =
-                        document.getElementById('procedencia').value;
-                
-                const campoOutros =
-                        document.getElementById('campoProcedenciaOutros');
-                
-                const campoTransferencia =
-                        document.getElementById('campoProcedenciaTransferencia');
-                
-                const colProcedencia =
-                        document.getElementById('colProcedencia');
-                
-                // RESET
-                campoOutros.classList.add('d-none');
-                campoTransferencia.classList.add('d-none');
-                
-                // volta para col-md-6
-                colProcedencia.classList.remove('col-md-3');
-                colProcedencia.classList.add('col-md-6');
-                
-                // OUTROS
-                if (procedencia === 'OUTROS') {
-                    
-                    campoOutros.classList.remove('d-none');
-                    
-                    colProcedencia.classList.remove('col-md-6');
-                    colProcedencia.classList.add('col-md-3');
-                }
-                
-                // TRANSFERÊNCIA
-                if (procedencia === 'TRANSF_UNIDADE') {
-                    
-                    campoTransferencia.classList.remove('d-none');
-                    
-                    colProcedencia.classList.remove('col-md-6');
-                    colProcedencia.classList.add('col-md-3');
-                }
-            }
-            
-            document.getElementById('procedencia')
-                    .addEventListener('change', controlarProcedencia);
-            
-            document.addEventListener('DOMContentLoaded', controlarProcedencia);
-        
-        </script>
-        <script>
-            
-            function controlarReincidente() {
-                
-                const adolescente =
-                        document.getElementById('adolescenteSelect').value;
-                
-                const campoReincidente =
-                        document.getElementById('campoReincidente');
-                
-                if (adolescente && adolescente.trim() !== '') {
-                    
-                    campoReincidente.classList.remove('d-none');
-                    
-                } else {
-                    
-                    campoReincidente.classList.add('d-none');
-                    
-                    // limpa seleção ao ocultar
-                    document.getElementById('reicidenteSim').checked = false;
-                    document.getElementById('reicidenteNao').checked = false;
-                }
-            }
-            
-            // alteração do select
-            document.getElementById('adolescenteSelect')
-                    .addEventListener('change', controlarReincidente);
-            
-            // executa ao carregar
-            document.addEventListener('DOMContentLoaded', controlarReincidente);
-        
-        </script>
+
+
         
         
         
         
-        <script>
-            document.addEventListener("DOMContentLoaded", async function () {
-                
-                const select = document.getElementById('adolescenteSelect');
-                const card = document.getElementById('cardAdolescente');
-                
-                if (!select || !select.value) return;
-                
-                try {
-                    
-                    const response = await fetch('/adolescentes/buscaAdolescente/' + select.value);
-                    
-                    if (!response.ok) {
-                        throw new Error("Erro ao buscar adolescente");
-                    }
-                    
-                    const adolescente = await response.json();
-                    
-                    card.classList.remove('d-none');
-                    
-                    document.getElementById('nomeAdolescente').value =
-                            adolescente.nome || '-';
-                    
-                    document.getElementById('idadeAdolescente').value =
-                            adolescente.idade || '-';
-                    
-                    document.getElementById('maeAdolescente').value =
-                            adolescente.mae || '-';
-                    
-                    document.getElementById('cidadeAdolescente').value =
-                            (adolescente.cidadeNascimento || '-') +
-                            '/' +
-                            (adolescente.ufNascimento || '-');
-                    
-                    document.getElementById('fotoAdolescente').src =
-                            adolescente.fotoRegistro || '/img/sem-foto.png';
-                    
-                } catch (e) {
-                    
-                    console.error(e);
-                    
-                }
-                
-            });
-        </script>
+
 	</div>
  
 </body>

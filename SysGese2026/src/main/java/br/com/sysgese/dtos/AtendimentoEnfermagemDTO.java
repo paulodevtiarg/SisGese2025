@@ -1,12 +1,18 @@
 package br.com.sysgese.dtos;
 
 import br.com.sysgese.enumerators.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AtendimentoEnfermagemDTO {
 
@@ -87,22 +93,19 @@ public class AtendimentoEnfermagemDTO {
 
     private String condutaOutros;
 
-    private String medicamento;
+    // No AtendimentoEnfermagemDTO
+    @Valid // 🔥 Isso diz: "Valide os itens da lista, se houver"
+    private List<PrescricaoMedicamentoDTO> prescricoes = new ArrayList<>();
 
-    private TipoDoseEnum tipoDose;
 
-    private String tipoDoseOutros;
-
-    private ViaAdmEnum via;
-
-    private HorarioEnum horario;
-
-    private String horarioOutros;
-
-    private EncaminhamentoEnum encaminhamentoExterno;
-
+    private EncaminhamentoEnum tipoEncaminhamento;
+    private EncaminhamentoInternoEnum encaminhamentoInterno;
+    private EncaminhamentoExternoEnum encaminhamentoExterno;
     private String encaminhamentoOutros;
 
+
+    // No DTO
+    @NotNull(message = "O encerramento é obrigatório")
     private EncerramentoEnum encerramento;
 
     private String observacoes;
@@ -125,6 +128,13 @@ public class AtendimentoEnfermagemDTO {
     private String nomeUnidadeInternacao;
     private String nomeUnidadeCadastro;
     private Integer idadeAdolescente;
+    private String filtroSituacaoInternacao;
+
+    private boolean temPendencia;
+
+    public boolean isTemPendencia() { return temPendencia; }
+    public void setTemPendencia(boolean temPendencia) { this.temPendencia = temPendencia; }
+
 
 
     public Long getId() {
@@ -319,59 +329,13 @@ public class AtendimentoEnfermagemDTO {
         this.condutaOutros = condutaOutros;
     }
 
-    public String getMedicamento() {
-        return medicamento;
-    }
 
-    public void setMedicamento(String medicamento) {
-        this.medicamento = medicamento;
-    }
 
-    public TipoDoseEnum getTipoDose() {
-        return tipoDose;
-    }
-
-    public void setTipoDose(TipoDoseEnum tipoDose) {
-        this.tipoDose = tipoDose;
-    }
-
-    public String getTipoDoseOutros() {
-        return tipoDoseOutros;
-    }
-
-    public void setTipoDoseOutros(String tipoDoseOutros) {
-        this.tipoDoseOutros = tipoDoseOutros;
-    }
-
-    public ViaAdmEnum getVia() {
-        return via;
-    }
-
-    public void setVia(ViaAdmEnum via) {
-        this.via = via;
-    }
-
-    public HorarioEnum getHorario() {
-        return horario;
-    }
-
-    public void setHorario(HorarioEnum horario) {
-        this.horario = horario;
-    }
-
-    public String getHorarioOutros() {
-        return horarioOutros;
-    }
-
-    public void setHorarioOutros(String horarioOutros) {
-        this.horarioOutros = horarioOutros;
-    }
-
-    public EncaminhamentoEnum getEncaminhamentoExterno() {
+    public EncaminhamentoExternoEnum getEncaminhamentoExterno() {
         return encaminhamentoExterno;
     }
 
-    public void setEncaminhamentoExterno(EncaminhamentoEnum encaminhamentoExterno) {
+    public void setEncaminhamentoExterno(EncaminhamentoExternoEnum encaminhamentoExterno) {
         this.encaminhamentoExterno = encaminhamentoExterno;
     }
 
@@ -489,6 +453,22 @@ public class AtendimentoEnfermagemDTO {
         this.nomeUnidadeInternacao = nomeUnidadeInternacao;
     }
 
+    public EncaminhamentoEnum getTipoEncaminhamento() {
+        return tipoEncaminhamento;
+    }
+
+    public void setTipoEncaminhamento(EncaminhamentoEnum tipoEncaminhamento) {
+        this.tipoEncaminhamento = tipoEncaminhamento;
+    }
+
+    public EncaminhamentoInternoEnum getEncaminhamentoInterno() {
+        return encaminhamentoInterno;
+    }
+
+    public void setEncaminhamentoInterno(EncaminhamentoInternoEnum encaminhamentoInterno) {
+        this.encaminhamentoInterno = encaminhamentoInterno;
+    }
+
     public String getNomeUnidadeCadastro() {
         return nomeUnidadeCadastro;
     }
@@ -503,5 +483,21 @@ public class AtendimentoEnfermagemDTO {
 
     public void setIdadeAdolescente(Integer idadeAdolescente) {
         this.idadeAdolescente = idadeAdolescente;
+    }
+
+    public List<PrescricaoMedicamentoDTO> getPrescricoes() {
+        return prescricoes;
+    }
+
+    public void setPrescricoes(List<PrescricaoMedicamentoDTO> prescricoes) {
+        this.prescricoes = prescricoes;
+    }
+
+    public String getFiltroSituacaoInternacao() {
+        return filtroSituacaoInternacao;
+    }
+
+    public void setFiltroSituacaoInternacao(String filtroSituacaoInternacao) {
+        this.filtroSituacaoInternacao = filtroSituacaoInternacao;
     }
 }

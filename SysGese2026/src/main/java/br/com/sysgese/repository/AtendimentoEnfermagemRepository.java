@@ -28,6 +28,14 @@ public interface AtendimentoEnfermagemRepository
     );
 
 
+    @Query("""
+    SELECT a FROM AtendimentoEnfermagem a
+    WHERE a.adolescente.id = :adolescenteId
+    AND a.encerramento IN ('EM_OBSERVACAO', 'NECESSITA_ACOMPANHAMENTO', 'NECESSITA_REAVALIACAO')
+    ORDER BY a.data DESC, a.hora DESC
+""")
+    List<AtendimentoEnfermagem> buscarAtendimentosPendentesPorAdolescente(@Param("adolescenteId") Long adolescenteId);
+
     // ==========================================================
     // ATENDIMENTOS POR UNIDADE
     // ==========================================================
@@ -35,7 +43,18 @@ public interface AtendimentoEnfermagemRepository
     List<AtendimentoEnfermagem> findByUnidadeIdOrderByDataDescHoraDesc(
             Long unidadeId
     );
-
+    @Query("""
+    SELECT a FROM AtendimentoEnfermagem a
+    WHERE a.adolescente.id = :adolescenteId
+    AND a.encerramento IN ('EM_OBSERVACAO', 'NECESSITA_ACOMPANHAMENTO', 'NECESSITA_REAVALIACAO')
+    AND (:isMaster = true OR a.unidade.id = :unidadeId)
+    ORDER BY a.data DESC, a.hora DESC
+""")
+    List<AtendimentoEnfermagem> buscarAtendimentosPendentes(
+            @Param("adolescenteId") Long adolescenteId,
+            @Param("unidadeId") Long unidadeId,
+            @Param("isMaster") boolean isMaster
+    );
 
     // ==========================================================
     // ATENDIMENTOS POR SERVIDOR
@@ -200,88 +219,43 @@ public interface AtendimentoEnfermagemRepository
     );
 
 
-    @Query(
-            value = """
-            SELECT new br.com.sysgese.dtos.AtendimentoEnfermagemResumoDTO(
-                a.adolescente.id,
-                a.adolescente.nome,
-                a.adolescente.cidadeNascimento,
-                a.adolescente.ufNascimento,
-                a.adolescente.fotoRegistro,
-                a.adolescente.mae,
-                a.unidade.nome,
-                a.adolescente.unidadeCadastro.nome,
-                a.adolescente.dataNascimento,
-                COUNT(a.id), max(a.data)
-            )
-            FROM AtendimentoEnfermagem a
-            WHERE
-                (:unidadeId IS NULL OR a.unidade.id = :unidadeId)
 
-                AND (
-                    :nome IS NULL
-                    OR :nome = ''
-                    OR LOWER(a.adolescente.nome)
-                        LIKE LOWER(CONCAT('%', :nome, '%'))
-                )
 
-                AND (
-                    :cidade IS NULL
-                    OR :cidade = ''
-                    OR EXISTS (
-                        SELECT e.id
-                        FROM Endereco e
-                        WHERE e MEMBER OF a.adolescente.enderecos
-                          AND e.ativo = true
-                          AND LOWER(e.cidade)
-                              LIKE LOWER(CONCAT('%', :cidade, '%'))
-                    )
-                )
+    Page<AtendimentoEnfermagem> findByAdolescenteId(Long adolescenteId, Pageable pageable);
 
-            GROUP BY
-                a.adolescente.id,
-                a.adolescente.nome,
-                a.adolescente.cidadeNascimento,
-                a.adolescente.ufNascimento,
-                a.adolescente.fotoRegistro,
-                a.adolescente.mae,
-                a.unidade.nome,
-                a.adolescente.unidadeCadastro.nome,
-                a.adolescente.dataNascimento
-
-            ORDER BY MAX(a.data) DESC, MAX(a.hora) DESC
-        """,
-            countQuery = """
-            SELECT COUNT(DISTINCT a.adolescente.id)
-            FROM AtendimentoEnfermagem a
-            WHERE
-                (:unidadeId IS NULL OR a.unidade.id = :unidadeId)
-
-                AND (
-                    :nome IS NULL
-                    OR :nome = ''
-                    OR LOWER(a.adolescente.nome)
-                        LIKE LOWER(CONCAT('%', :nome, '%'))
-                )
-
-                AND (
-                    :cidade IS NULL
-                    OR :cidade = ''
-                    OR EXISTS (
-                        SELECT e.id
-                        FROM Endereco e
-                        WHERE e MEMBER OF a.adolescente.enderecos
-                          AND e.ativo = true
-                          AND LOWER(e.cidade)
-                              LIKE LOWER(CONCAT('%', :cidade, '%'))
-                    )
-                )
-        """
-    )
+    // Se for Master (ou não tiver unidade), busca todos. Se não, busca da unidade.
+    Page<AtendimentoEnfermagem> findByAdolescenteIdAndUnidadeId(Long adolescenteId, Long unidadeId, Pageable pageable);
+    @Query("""
+    SELECT ae.adolescente.id, a.nome, a.cidadeNascimento, a.ufNascimento, a.fotoRegistro, a.mae, 
+           u.nome, uc.nome, a.dataNascimento, count(ae.id), max(ae.data)
+    FROM AtendimentoEnfermagem ae
+    JOIN ae.adolescente a
+    JOIN a.unidadeCadastro uc
+    JOIN ae.unidade u
+    WHERE (:unidadeId IS NULL OR ae.unidade.id = :unidadeId)
+      AND (:filtroNome IS NULL OR :filtroNome = '' OR LOWER(a.nome) LIKE LOWER(CONCAT('%', :filtroNome, '%')))
+      AND (:filtroCidade IS NULL OR :filtroCidade = '' OR EXISTS (
+          SELECT 1 FROM Endereco e WHERE e.adolescente = a AND e.ativo = true AND LOWER(e.cidade) LIKE LOWER(CONCAT('%', :filtroCidade, '%'))
+      ))
+      AND (
+          (:buscaAtiva = true AND EXISTS (
+              SELECT 1 FROM Internacao i WHERE i.adolescente = a AND i.unidade.id = ae.unidade.id AND i.status = :statusAtiva
+          ))
+          OR 
+          (:buscaAtiva = false AND NOT EXISTS (
+              SELECT 1 FROM Internacao i WHERE i.adolescente = a AND i.unidade.id = ae.unidade.id AND i.status = :statusAtiva
+          ))
+      )
+    GROUP BY ae.adolescente.id, a.nome, a.cidadeNascimento, a.ufNascimento, a.fotoRegistro, a.mae, 
+             u.nome, uc.nome, a.dataNascimento
+    ORDER BY max(ae.data) DESC, max(ae.hora) DESC
+""")
     Page<AtendimentoEnfermagemResumoDTO> buscarResumoPorAdolescente(
             @Param("unidadeId") Long unidadeId,
-            @Param("nome") String nome,
-            @Param("cidade") String cidade,
+            @Param("filtroNome") String filtroNome,
+            @Param("filtroCidade") String filtroCidade,
+            @Param("buscaAtiva") boolean buscaAtiva,
+            @Param("statusAtiva") StatusInternacaoEnum statusAtiva,
             Pageable pageable
     );
 }

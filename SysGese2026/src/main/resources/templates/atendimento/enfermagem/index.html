@@ -167,12 +167,39 @@
                                             <td th:text="${atendimento.ultimoAtendimento != null ? #temporals.format(atendimento.ultimoAtendimento, 'dd/MM/yyyy') : '-'}"></td>
 
                                             <td class="text-center text-nowrap">
-                                                <a class="btn btn-info btn-modern btn-sm" th:href="@{/atendimento/enfermagem/adolescente/{id}(id=${atendimento.adolescenteId})}">
-                                                    <i class="fa-duotone fa-solid fa-clipboard-medical"></i>
-                                                    <span th:text="${atendimento.quantidadeAtendimentos}"></span>
-                                                    <span th:text="${atendimento.quantidadeAtendimentos == 1  ? ' atendimento' : ' atendimentos'}">  </span>
-                                                </a>
+                                                <div class="d-flex justify-content-center gap-2">
 
+                                                    <!-- Botão 1: Histórico Completo (Azul) -->
+                                                    <a class="btn btn-primary btn-sm d-flex align-items-center gap-1"
+                                                       th:href="@{/atendimentos/enfermagem/todos/{id}(id=${atendimento.adolescenteId})}"
+                                                       data-bs-toggle="tooltip" title="Ver todos os atendimentos">
+                                                        <i class="fa-duotone fa-solid fa-clipboard-medical"></i>
+                                                        <span th:text="${atendimento.quantidadeAtendimentos}"></span>
+                                                    </a>
+
+                                                    <!-- Botão 2: Pendentes -->
+                                                    <!-- Botão 2: Pendentes (Vermelho) -->
+                                                    <button th:if="${atendimento.quantidadePendentes > 0}"
+                                                            type="button"
+                                                            class="btn btn-danger btn-sm d-flex align-items-center gap-1"
+                                                            th:attr="data-id=${atendimento.adolescenteId}, data-nome=${atendimento.nome}"
+                                                            onclick="abrirModalPendentes(this)"
+                                                            data-bs-toggle="tooltip" title="Atenção: Existem atendimentos pendentes">
+                                                        <i class="fa-duotone fa-solid fa-triangle-exclamation"></i>
+                                                        <span th:text="${atendimento.quantidadePendentes}"></span>
+                                                    </button>
+
+                                                    <!-- Se NÃO tiver pendência (Cinza e Desabilitado) -->
+                                                    <button th:if="${atendimento.quantidadePendentes == 0}"
+                                                            type="button"
+                                                            class="btn btn-secondary btn-sm d-flex align-items-center gap-1 disabled"
+                                                            data-bs-toggle="tooltip" title="Não há atendimentos pendentes"
+                                                            style="pointer-events: auto;">
+                                                        <i class="fa-duotone fa-solid fa-check"></i>
+                                                        <span>0</span>
+                                                    </button>
+
+                                                </div>
                                             </td>
 
                                         </tr>
@@ -189,7 +216,6 @@
 
                                         <div class="card-body p-3">
 
-
                                             <div class="d-flex gap-3">
 
                                                 <!-- FOTO -->
@@ -201,8 +227,8 @@
                                                     <div th:if="${atendimento.fotoRegistro == null}" class="avatar-fallback">
                                                         <i class="fa-duotone fa-solid fa-user"></i>
                                                     </div>
-
                                                 </div>
+
                                                 <!-- DADOS -->
                                                 <div class="flex-grow-1 min-w-0">
 
@@ -210,7 +236,6 @@
                                                     <div class="fw-bold text-dark text-truncate" th:text="${atendimento.nome}"></div>
 
                                                     <!-- INFO BASICA -->
-
                                                     <small class="text-muted d-block">
                                                         <i class="fa-duotone fa-solid fa-cake-candles me-1"></i>
                                                         <span th:text="${atendimento.idade}"></span> anos
@@ -224,24 +249,48 @@
                                                         Mãe: <span th:text="${atendimento.mae}"></span>
                                                     </small>
 
-                                                    <small class="text-muted d-block text-truncate"> Internação: <span class="badge badge-soft-primary"
-                                                        th:text="${atendimento.unidadeNome}"></span>
+                                                    <small class="text-muted d-block text-truncate">
+                                                        Internação: <span class="badge badge-soft-primary"
+                                                                          th:text="${atendimento.unidadeNome}"></span>
                                                     </small>
-                                                    <small class="text-muted d-block text-truncate"> Último Atendimento: <span th:text="${atendimento.ultimoAtendimento != null ? #temporals.format(atendimento.ultimoAtendimento, 'dd/MM/yyyy') : '-'}"></span>
+                                                    <small class="text-muted d-block text-truncate">
+                                                        Último Atendimento: <span th:text="${atendimento.ultimoAtendimento != null ? #temporals.format(atendimento.ultimoAtendimento, 'dd/MM/yyyy') : '-'}"></span>
                                                     </small>
                                                 </div>
 
                                             </div>
 
-                                            <!-- AÇÕES -->
+                                            <!-- AÇÕES (Padrão Desktop) -->
                                             <div class="d-flex justify-content-end gap-2 mt-3 pt-3 border-top">
-                                                <a class="btn btn-info btn-modern btn-sm" th:href="@{/atendimento/enfermagem/adolescente/{id}(id=${atendimento.adolescenteId})}">
 
+                                                <!-- Botão 1: Histórico Completo (Azul) -->
+                                                <a class="btn btn-primary btn-modern btn-sm d-flex align-items-center gap-1"
+                                                   th:href="@{/atendimentos/enfermagem/todos/{id}(id=${atendimento.adolescenteId})}"
+                                                   data-bs-toggle="tooltip" title="Ver todos os atendimentos">
                                                     <i class="fa-duotone fa-solid fa-clipboard-medical"></i>
                                                     <span th:text="${atendimento.quantidadeAtendimentos}"></span>
-                                                    <span th:text="${atendimento.quantidadeAtendimentos == 1  ? ' atendimento' : ' atendimentos'}">  </span>
-
                                                 </a>
+
+                                                <!-- Botão 2: Pendentes (Vermelho) - Se tiver pendência -->
+                                                <button th:if="${atendimento.quantidadePendentes > 0}"
+                                                        type="button"
+                                                        class="btn btn-danger btn-modern btn-sm d-flex align-items-center gap-1"
+                                                        th:attr="data-id=${atendimento.adolescenteId}, data-nome=${atendimento.nome}"
+                                                        onclick="abrirModalPendentes(this)"
+                                                        data-bs-toggle="tooltip" title="Atenção: Existem atendimentos pendentes">
+                                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                                    <span th:text="${atendimento.quantidadePendentes}"></span>
+                                                </button>
+
+                                                <!-- Botão 2.1: Sem Pendentes (Cinza) - Se não tiver pendência -->
+                                                <button th:if="${atendimento.quantidadePendentes == 0}"
+                                                        type="button"
+                                                        class="btn btn-secondary btn-modern btn-sm d-flex align-items-center gap-1 disabled"
+                                                        style="pointer-events: auto;"
+                                                        data-bs-toggle="tooltip" title="Não há atendimentos pendentes">
+                                                    <i class="fa-solid fa-check"></i>
+                                                    <span>0</span>
+                                                </button>
 
                                             </div>
 
@@ -326,7 +375,71 @@
         </div>
 
     </div>
+    <!-- Modal de Atendimentos -->
 
+    <!-- Modal de Pendências -->
+    <div class="modal fade" id="modalPendentes" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Pendências de <span id="modalNomeAdolescente"></span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="listaPendentesModal">
+                        <p class="text-center text-muted">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function abrirModalPendentes(botao) {
+            // 🔥 Pega os dados de forma segura direto do HTML
+            const adolescenteId = botao.getAttribute('data-id');
+            const nomeAdolescente = botao.getAttribute('data-nome');
+
+            document.getElementById('modalNomeAdolescente').textContent = nomeAdolescente;
+            const modal = new bootstrap.Modal(document.getElementById('modalPendentes'));
+            modal.show();
+
+            const container = document.getElementById('listaPendentesModal');
+            container.innerHTML = '<p class="text-center text-muted">Carregando...</p>';
+
+            try {
+                const response = await fetch('/atendimentos/enfermagem/pendentes/' + adolescenteId);
+                const atendimentos = await response.json();
+
+                if (atendimentos.length === 0) {
+                    container.innerHTML = '<p class="text-center text-success">Nenhuma pendência encontrada.</p>';
+                    return;
+                }
+
+                let html = '<ul class="list-group">';
+                atendimentos.forEach(a => {
+                    html += `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Data:</strong> ${a.data} às ${a.hora} <br>
+                        <span class="badge bg-warning text-dark">${a.encerramento}</span>
+                    </div>
+                    <a href="/atendimentos/conduta/${a.id}" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-check"></i> Finalizar
+                    </a>
+                </li>
+                `;
+                });
+                html += '</ul>';
+                container.innerHTML = html;
+
+            } catch (error) {
+                container.innerHTML = '<p class="text-center text-danger">Erro ao carregar pendências.</p>';
+            }
+        }
+    </script>
 </div>
 
 
