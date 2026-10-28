@@ -35,7 +35,7 @@
 				</div>
 				<div class="col-12" th:replace="~{fragments/componentes :: alertas}"></div>
 				<div class="col-12">
-					<form th:action="@{/atendimentos/enfermagem/salvar}" th:object="${atendimento}" method="post">
+					<form th:action="@{/atendimentos/enfermagem/salvar}" th:object="${atendimento}" method="post" id="formAtendimento" >
 						<!-- Dentro do form, junto com os outros hidden -->
 						<input type="hidden" th:field="*{idServidor}">
 						<input type="hidden" th:if="${!usuarioMaster}" th:field="*{idUnidade}"/>
@@ -48,11 +48,19 @@
 								<!-- Título com ícone -->
 								<div class="d-flex align-items-center gap-2">
 									<div class="header-icon">
-										<i class="fa-duotone fa-solid fa-user-nurse-hair-long"></i>
+										<i class="fa-duotone fa-solid"
+										   th:classappend="${modoConduta} ? 'fa-clipboard-check' : 'fa-user-nurse-hair-long'"></i>
 									</div>
 									<div>
-										<h5 class="mb-0 fw-semibold">Novo Atendimento</h5>
-										<small class="text-muted">Preencha os dados do atendimento</small>
+										<!-- Se for modoConduta, mostra "Finalizando", senão mostra "Novo" -->
+										<h5 class="mb-0 fw-semibold"
+										    th:text="${modoConduta} ? 'Finalizando o Atendimento' : 'Novo Atendimento'">
+										</h5>
+
+										<!-- Subtítulo muda também -->
+										<small class="text-muted"
+										       th:text="${modoConduta} ? 'Complete a conduta e o encerramento abaixo' : 'Preencha os dados do atendimento'">
+										</small>
 									</div>
 								</div>
 
@@ -72,7 +80,7 @@
 
 							</div> <!--fim do header -->
 							<div class="card-body">
-								<div class="row">
+								<div class="row" th:if="${!(modoConduta ?: false)}">
 									<div class="col-md-6 input-group-sm">
 										<label class="form-label fw-semibold">Adolescente para Atendimento</label>
 										<select id="adolescenteSelect" class="form-select mt-1"
@@ -86,428 +94,503 @@
 
 									</div>
 								</div> <!--primeira row do body -->
-								<div class="row">
-									<div id="cardAdolescente" class="card mt-3 d-none">
-										<div class="card-body">
-											<div class="row">
-												<div class="col-md-2 d-flex ">
-													<div class="foto-3x4-container-dt-at w-100">
-														<div  class="foto-wrapper-dt-at">
-															<img id="fotoAdolescente"  class="foto-3x4-img-dt-at" alt="Foto do Adolescente">
+								<input type="hidden" th:field="*{id}">
+								<input type="hidden" id="adolescenteIdHidden" th:value="*{idAdolescente}">
+								<div th:classappend="${modoConduta} ? 'campos-bloqueados' : ''">
+
+									<div class="row">
+											<div id="cardAdolescente" class="card mt-3 d-none">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-md-2 d-flex ">
+															<div class="foto-3x4-container-dt-at w-100">
+																<div  class="foto-wrapper-dt-at">
+																	<img id="fotoAdolescente"  class="foto-3x4-img-dt-at" alt="Foto do Adolescente">
+																</div>
+
+															</div>
+
 														</div>
+														<div class="col-md-10">
+															<div class="row">
+
+																<div class="col-md-4 mb-2">
+																	<div class="detalhe-item">
+																		<span class="detalhe-label">Nome</span>
+																		<span class="detalhe-valor" id="nomeAdolescente"></span>
+																	</div>
+
+																</div>
+																<div class="col-md-4 mb-2">
+																	<div class="detalhe-item">
+																		<span class="detalhe-label">Mãe</span>
+																		<span class="detalhe-valor" id="maeAdolescente"></span>
+																	</div>
+
+																</div>
+
+
+																<div class="col-md-1 mb-2">
+																	<div class="detalhe-item">
+																		<span class="detalhe-label">Idade</span>
+																		<span class="detalhe-valor" id="idadeAdolescente"></span>
+																	</div>
+
+																</div>
+
+																<div class="col-md-3 mb-2">
+																	<div class="detalhe-item">
+																		<span class="detalhe-label">Cidade do Adolescente</span>
+																		<span class="detalhe-valor" id="cidadeAdolescente"></span>
+																	</div>
+
+																</div>
+															</div>
+
+															<div class="row">
+																<div class="col-md-3 mb-2">
+																	<!-- envia valor quando select estiver disabled -->
+																	<input type="hidden"
+																		   th:if="${!usuarioMaster}"
+																		   th:field="*{idUnidade}"/>
+																	<label   class="form-label fw-semibold text-secondary">  Unidade para Internação * </label>
+																	<select class="form-select"
+																			th:field="*{idUnidade}"   th:classappend="${#fields.hasErrors('idUnidade')} ? 'is-invalid' : ''"
+																			th:disabled="${!usuarioMaster}">
+
+																		<option value="">Selecione</option>
+
+																		<option th:each="u : ${unidades}"
+																				th:value="${u.id}"
+																				th:text="${u.nome}">
+																		</option>
+
+																	</select>
+
+																	<div class="invalid-feedback d-block"
+																		 style="min-height: 20px;"
+																		 th:if="${#fields.hasErrors('idUnidade')}"
+																		 th:errors="*{idUnidade}">
+
+																	</div>
+																</div>
+																<div class="col-md-9 mb-2" id="colMotivoAtendimento">
+																	<label for="motivoAtendimento"  class="form-label fw-semibold text-secondary">Motivo do Atendimento * </label>
+																	<select class="form-select" th:field="*{motivoAtendimento}" id="motivoAtendimento"
+																			th:classappend="${#fields.hasErrors('motivoAtendimento')} ? 'is-invalid' : ''">
+																		<option value="">Selecione</option>
+																		<option th:each="g : ${motivoAtendimentos}" th:value="${g}" th:text="${g.descricao}"></option>
+
+																	</select>
+
+																	<div class="invalid-feedback d-block"
+																		 style="min-height: 20px;"
+																		 th:if="${#fields.hasErrors('motivoAtendimento')}"
+																		 th:errors="*{motivoAtendimento}"></div>
+																</div>
+																<div class="col-md-5 mb-2 d-none" id="campoMotivoOutros">
+
+																	<label for="motivoOutros"
+																		   class="form-label fw-semibold text-secondary">
+																		Informe o Motivo *
+																	</label>
+
+																	<input type="text"
+																		   class="form-control"
+																		   th:field="*{motivoOutros}"
+																		   id="motivoOutros"
+																		   maxlength="50"
+																		   disabled placeholder="Digite MOTIVO caso nao tenha a opção ao lado">
+
+																</div>
+															</div>
+
+															<div class="row">
+																<div class="col-md-2">
+																	<label for="paSistolica" class="form-label text-muted fw-medium">Pressao Sistólica</label>
+																	<input type="text" class="form-control" th:field="*{paSistolica}" id="paSistolica" placeholder="Ex.: 120" maxlength="3"
+																		   inputmode="numeric"> <small class="text-muted d-block"
+																									   style="font-size: 0.60rem; line-height: 1;">
+																	mmHg
+																</small>
+
+																</div>
+																<div class="col-md-2">
+																	<label for="paDiastolica" class="form-label text-muted fw-medium">Pressao Diastólica</label>
+																	<input type="text" class="form-control" th:field="*{paDiastolica}" id="paDiastolica" placeholder="Ex.: 80" maxlength="3"
+																		   inputmode="numeric"> <small class="text-muted d-block"
+																									   style="font-size: 0.60rem; line-height: 1;">
+																	mmHg
+																</small>
+
+																</div>
+																<div class="col-md-2">
+																	<label for="frequenciaCardiaca" class="form-label text-muted fw-medium">Frequência Cardiáca</label>
+																	<input type="text" class="form-control" th:field="*{frequenciaCardiaca}" id="frequenciaCardiaca" placeholder="Ex.: 80" maxlength="3"
+																		   inputmode="numeric">  <small class="text-muted d-block"
+																										style="font-size: 0.65rem; line-height: 1; ">
+																	bpm
+																</small>
+
+																</div>
+																<div class="col-md-2">
+																	<label for="frequenciaRespiratoria" class="form-label text-muted fw-medium">Frequência Respiratória</label>
+																	<input type="text" class="form-control" th:field="*{frequenciaRespiratoria}" id="frequenciaRespiratoria" placeholder="Ex.: 18" maxlength="3"
+																		   inputmode="numeric"> <small class="text-muted d-block"
+																									   style="font-size: 0.65rem; line-height: 1;">
+																	irpm
+																</small>
+
+																</div>
+																<div class="col-md-2">
+																	<label for="temperatura" class="form-label text-muted fw-medium">Temperatura</label>
+																	<input type="number" step="0.1" class="form-control" th:field="*{temperatura}" id="temperatura" placeholder="Ex.: 36.5"> <small class="text-muted d-block"
+																									   style="font-size: 0.65rem; line-height: 1;">
+																	ºC
+																</small>
+
+																</div>
+																<div class="col-md-2">
+																	<label for="saturacaoO2" class="form-label text-muted fw-medium">Saturação O²</label>
+																	<input type="text" class="form-control" th:field="*{saturacaoO2}" id="saturacaoO2" placeholder="Ex.: 98" maxlength="3"
+																		   inputmode="numeric"> <small class="text-muted d-block"
+																									   style="font-size: 0.65rem; line-height: 1;">
+																	%
+																</small>
+
+																</div>
+															</div>
+
+															<div class="row mt-1">
+
+																<!-- GLICEMIA CAPILAR -->
+																<div class="col-md-2 mb-2"  id="colGlicemia">
+
+																	<label for="glicemiaCapilar"
+																		   class="form-label fw-semibold text-secondary">
+																		Glicemia Capilar
+																	</label>
+
+																	<input type="text"
+																		   class="form-control somente-decimal"
+																		   th:field="*{glicemiaCapilar}"
+																		   id="glicemiaCapilar"
+																		   inputmode="decimal"
+																		   data-casas="1"
+																		   data-inteiros="3"
+																		   placeholder="Ex.: 95,0"
+																		   th:classappend="${#fields.hasErrors('glicemiaCapilar')} ? 'is-invalid' : ''">
+
+																	<small class="text-muted d-block"
+																		   style="font-size: 0.60rem; line-height: 1;">
+																		mg/dL
+																	</small>
+
+																	<div class="invalid-feedback d-block"
+																		 th:if="${#fields.hasErrors('glicemiaCapilar')}"
+																		 th:errors="*{glicemiaCapilar}">
+																	</div>
+
+																</div>
+
+
+																<!-- ESTADO GERAL -->
+																<div class="col-md-5 mb-2"
+																	 id="colEstadoGeral">
+
+																	<label for="estadoGeral"
+																		   class="form-label fw-semibold text-secondary">
+																		Estado Geral *
+																	</label>
+
+																	<select class="form-select"
+																			th:field="*{estadoGeral}"
+																			id="estadoGeral"
+																			th:classappend="${#fields.hasErrors('estadoGeral')} ? 'is-invalid' : ''">
+
+																		<option value="">Selecione</option>
+
+																		<option th:each="e : ${estadosGerais}"
+																				th:value="${e}"
+																				th:text="${e.descricao}">
+																		</option>
+
+																	</select>
+
+																	<div class="invalid-feedback d-block"
+																		 style="min-height: 20px;"
+																		 th:if="${#fields.hasErrors('estadoGeral')}"
+																		 th:errors="*{estadoGeral}">
+																	</div>
+
+																</div>
+
+
+																<!-- ESTADO GERAL - OUTROS -->
+																<div class="col-md-3 mb-2 d-none"
+																	 id="campoEstadoGeralOutros">
+
+																	<label for="estadoGeralOutros"
+																		   class="form-label fw-semibold text-secondary">
+																		Informe o Estado Geral *
+																	</label>
+
+																	<input type="text"
+																		   class="form-control"
+																		   th:field="*{estadoGeralOutros}"
+																		   id="estadoGeralOutros"
+																		   maxlength="50"
+																		   disabled
+																		   placeholder="Descreva o estado geral">
+
+																	<div class="invalid-feedback d-block"
+																		 th:if="${#fields.hasErrors('estadoGeralOutros')}"
+																		 th:errors="*{estadoGeralOutros}">
+																	</div>
+
+																</div>
+
+																<!-- ESTADO GERAL -->
+																<div class="col-md-5 mb-2"
+																	 id="colConsciencia">
+
+																	<label for="consciencia"
+																		   class="form-label fw-semibold text-secondary">
+																		Consciencia Geral *
+																	</label>
+
+																	<select class="form-select"
+																			th:field="*{consciencia}"
+																			id="consciencia"
+																			th:classappend="${#fields.hasErrors('consciencia')} ? 'is-invalid' : ''">
+
+																		<option value="">Selecione</option>
+
+																		<option th:each="e : ${conciencias}"
+																				th:value="${e}"
+																				th:text="${e.descricao}">
+																		</option>
+
+																	</select>
+
+																	<div class="invalid-feedback d-block"
+																		 style="min-height: 20px;"
+																		 th:if="${#fields.hasErrors('consciencia')}"
+																		 th:errors="*{consciencia}">
+																	</div>
+
+																</div>
+																<div class="col-md-3 mb-2 d-none"
+																	 id="campoConcienciaOutros">
+
+																	<label for="conscienciaOutros"
+																		   class="form-label fw-semibold text-secondary">
+																		Informe a Consciência Geral *
+																	</label>
+
+																	<input type="text"
+																		   class="form-control"
+																		   th:field="*{conscienciaOutros}"
+																		   id="conscienciaOutros"
+																		   maxlength="50"
+																		   disabled
+																		   placeholder="Descreva a Consciência">
+
+																	<div class="invalid-feedback d-block"
+																		 th:if="${#fields.hasErrors('conscienciaOutros')}"
+																		 th:errors="*{conscienciaOutros}">
+																	</div>
+
+																</div>
+
+															</div>
+
+														</div>
+													</div>
+
+													<!--Row Abaixo da foto -->
+													<div class="row mt-2">
+
+															<div class="col-md-2 mb-2">
+																<label for="dor" class="form-label fw-semibold text-secondary">Dor *</label>
+																<select id="dor" class="form-select" th:field="*{dor}" th:classappend="${#fields.hasErrors('dor')} ? 'is-invalid' : ''">
+																	<option value="">Selecione</option>
+																	<option value="true">SIM</option>
+																	<option value="false">NÃO</option>
+																</select>
+																<div class="invalid-feedback d-block" th:if="${#fields.hasErrors('dor')}" th:errors="*{dor}"></div>
+															</div>
+
+															<div class="col-md-2 mb-2">
+																<label for="dorEscala" class="form-label fw-semibold text-secondary">
+																	Escala de dor: <span id="valorDorEscala">0</span>/10
+																</label>
+																<input type="range"
+																	   id="dorEscala"
+																	   class="form-range form-control"
+																	   th:field="*{dorEscala}"
+																	   min="0"
+																	   max="10"
+																	   step="1"
+																	   disabled>
+
+															</div>
+
+															<div class="col-md-8 mb-2">
+																<label for="dorLocal" class="form-label fw-semibold text-secondary">
+																	Local da dor
+																</label>
+																<input type="text"
+																	   id="dorLocal"
+																	   class="form-control"
+																	   th:field="*{dorLocal}"
+																	   maxlength="50"
+																	   disabled
+																	   placeholder="Descreva o local da dor">
+															</div>
 
 													</div>
 
 												</div>
-												<div class="col-md-10">
-													<div class="row">
-
-														<div class="col-md-4 mb-2">
-															<div class="detalhe-item">
-																<span class="detalhe-label">Nome</span>
-																<span class="detalhe-valor" id="nomeAdolescente"></span>
-															</div>
-
-														</div>
-														<div class="col-md-4 mb-2">
-															<div class="detalhe-item">
-																<span class="detalhe-label">Mãe</span>
-																<span class="detalhe-valor" id="maeAdolescente"></span>
-															</div>
-
-														</div>
 
 
-														<div class="col-md-1 mb-2">
-															<div class="detalhe-item">
-																<span class="detalhe-label">Idade</span>
-																<span class="detalhe-valor" id="idadeAdolescente"></span>
-															</div>
-
-														</div>
-
-														<div class="col-md-3 mb-2">
-															<div class="detalhe-item">
-																<span class="detalhe-label">Cidade do Adolescente</span>
-																<span class="detalhe-valor" id="cidadeAdolescente"></span>
-															</div>
-
-														</div>
-													</div>
-
-													<div class="row">
-														<div class="col-md-3 mb-2">
-															<!-- envia valor quando select estiver disabled -->
-															<input type="hidden"
-															       th:if="${!usuarioMaster}"
-															       th:field="*{idUnidade}"/>
-															<label   class="form-label fw-semibold text-secondary">  Unidade para Internação * </label>
-															<select class="form-select"
-															        th:field="*{idUnidade}"   th:classappend="${#fields.hasErrors('idUnidade')} ? 'is-invalid' : ''"
-															        th:disabled="${!usuarioMaster}">
-
-																<option value="">Selecione</option>
-
-																<option th:each="u : ${unidades}"
-																        th:value="${u.id}"
-																        th:text="${u.nome}">
-																</option>
-
-															</select>
-
-															<div class="invalid-feedback d-block"
-															     style="min-height: 20px;"
-															     th:if="${#fields.hasErrors('idUnidade')}"
-															     th:errors="*{idUnidade}">
-
-															</div>
-														</div>
-														<div class="col-md-9 mb-2" id="colMotivoAtendimento">
-															<label for="motivoAtendimento"  class="form-label fw-semibold text-secondary">Motivo do Atendimento * </label>
-															<select class="form-select" th:field="*{motivoAtendimento}" id="motivoAtendimento"
-															        th:classappend="${#fields.hasErrors('motivoAtendimento')} ? 'is-invalid' : ''">
-																<option value="">Selecione</option>
-																<option th:each="g : ${motivoAtendimentos}" th:value="${g}" th:text="${g.descricao}"></option>
-
-															</select>
-
-															<div class="invalid-feedback d-block"
-															     style="min-height: 20px;"
-															     th:if="${#fields.hasErrors('motivoAtendimento')}"
-															     th:errors="*{motivoAtendimento}"></div>
-														</div>
-														<div class="col-md-5 mb-2 d-none" id="campoMotivoOutros">
-
-															<label for="motivoOutros"
-															       class="form-label fw-semibold text-secondary">
-																Informe o Motivo *
-															</label>
-
-															<input type="text"
-															       class="form-control"
-															       th:field="*{motivoOutros}"
-															       id="motivoOutros"
-															       maxlength="50"
-															       disabled placeholder="Digite MOTIVO caso nao tenha a opção ao lado">
-
-														</div>
-													</div>
-
-													<div class="row">
-														<div class="col-md-2">
-															<label for="paSistolica" class="form-label text-muted fw-medium">Pressao Sistólica</label>
-															<input type="text" class="form-control" th:field="*{paSistolica}" id="paSistolica" placeholder="Ex.: 120" maxlength="3"
-															       inputmode="numeric"> <small class="text-muted d-block"
-															                                   style="font-size: 0.60rem; line-height: 1;">
-															mmHg
-														</small>
-
-														</div>
-														<div class="col-md-2">
-															<label for="paDiastolica" class="form-label text-muted fw-medium">Pressao Diastólica</label>
-															<input type="text" class="form-control" th:field="*{paDiastolica}" id="paDiastolica" placeholder="Ex.: 80" maxlength="3"
-															       inputmode="numeric"> <small class="text-muted d-block"
-															                                   style="font-size: 0.60rem; line-height: 1;">
-															mmHg
-														</small>
-
-														</div>
-														<div class="col-md-2">
-															<label for="frequenciaCardiaca" class="form-label text-muted fw-medium">Frequência Cardiáca</label>
-															<input type="text" class="form-control" th:field="*{frequenciaCardiaca}" id="frequenciaCardiaca" placeholder="Ex.: 80" maxlength="3"
-															       inputmode="numeric">  <small class="text-muted d-block"
-															                                    style="font-size: 0.65rem; line-height: 1; ">
-															bpm
-														</small>
-
-														</div>
-														<div class="col-md-2">
-															<label for="frequenciaRespiratoria" class="form-label text-muted fw-medium">Frequência Respiratória</label>
-															<input type="text" class="form-control" th:field="*{frequenciaRespiratoria}" id="frequenciaRespiratoria" placeholder="Ex.: 18" maxlength="3"
-															       inputmode="numeric"> <small class="text-muted d-block"
-															                                   style="font-size: 0.65rem; line-height: 1;">
-															irpm
-														</small>
-
-														</div>
-														<div class="col-md-2">
-															<label for="temperatura" class="form-label text-muted fw-medium">Temperatura</label>
-															<input type="number" step="0.1" class="form-control" th:field="*{temperatura}" id="temperatura" placeholder="Ex.: 36.5"> <small class="text-muted d-block"
-															                                   style="font-size: 0.65rem; line-height: 1;">
-															ºC
-														</small>
-
-														</div>
-														<div class="col-md-2">
-															<label for="saturacaoO2" class="form-label text-muted fw-medium">Saturação O²</label>
-															<input type="text" class="form-control" th:field="*{saturacaoO2}" id="saturacaoO2" placeholder="Ex.: 98" maxlength="3"
-															       inputmode="numeric"> <small class="text-muted d-block"
-															                                   style="font-size: 0.65rem; line-height: 1;">
-															%
-														</small>
-
-														</div>
-													</div>
-
-													<div class="row mt-1">
-
-														<!-- GLICEMIA CAPILAR -->
-														<div class="col-md-2 mb-2"  id="colGlicemia">
-
-															<label for="glicemiaCapilar"
-															       class="form-label fw-semibold text-secondary">
-																Glicemia Capilar
-															</label>
-
-															<input type="text"
-															       class="form-control somente-decimal"
-															       th:field="*{glicemiaCapilar}"
-															       id="glicemiaCapilar"
-															       inputmode="decimal"
-															       data-casas="1"
-															       data-inteiros="3"
-															       placeholder="Ex.: 95,0"
-															       th:classappend="${#fields.hasErrors('glicemiaCapilar')} ? 'is-invalid' : ''">
-
-															<small class="text-muted d-block"
-															       style="font-size: 0.60rem; line-height: 1;">
-																mg/dL
-															</small>
-
-															<div class="invalid-feedback d-block"
-															     th:if="${#fields.hasErrors('glicemiaCapilar')}"
-															     th:errors="*{glicemiaCapilar}">
-															</div>
-
-														</div>
-
-
-														<!-- ESTADO GERAL -->
-														<div class="col-md-5 mb-2"
-														     id="colEstadoGeral">
-
-															<label for="estadoGeral"
-															       class="form-label fw-semibold text-secondary">
-																Estado Geral *
-															</label>
-
-															<select class="form-select"
-															        th:field="*{estadoGeral}"
-															        id="estadoGeral"
-															        th:classappend="${#fields.hasErrors('estadoGeral')} ? 'is-invalid' : ''">
-
-																<option value="">Selecione</option>
-
-																<option th:each="e : ${estadosGerais}"
-																        th:value="${e}"
-																        th:text="${e.descricao}">
-																</option>
-
-															</select>
-
-															<div class="invalid-feedback d-block"
-															     style="min-height: 20px;"
-															     th:if="${#fields.hasErrors('estadoGeral')}"
-															     th:errors="*{estadoGeral}">
-															</div>
-
-														</div>
-
-
-														<!-- ESTADO GERAL - OUTROS -->
-														<div class="col-md-3 mb-2 d-none"
-														     id="campoEstadoGeralOutros">
-
-															<label for="estadoGeralOutros"
-															       class="form-label fw-semibold text-secondary">
-																Informe o Estado Geral *
-															</label>
-
-															<input type="text"
-															       class="form-control"
-															       th:field="*{estadoGeralOutros}"
-															       id="estadoGeralOutros"
-															       maxlength="50"
-															       disabled
-															       placeholder="Descreva o estado geral">
-
-															<div class="invalid-feedback d-block"
-															     th:if="${#fields.hasErrors('estadoGeralOutros')}"
-															     th:errors="*{estadoGeralOutros}">
-															</div>
-
-														</div>
-
-														<!-- ESTADO GERAL -->
-														<div class="col-md-5 mb-2"
-														     id="colConsciencia">
-
-															<label for="consciencia"
-															       class="form-label fw-semibold text-secondary">
-																Consciencia Geral *
-															</label>
-
-															<select class="form-select"
-															        th:field="*{consciencia}"
-															        id="consciencia"
-															        th:classappend="${#fields.hasErrors('consciencia')} ? 'is-invalid' : ''">
-
-																<option value="">Selecione</option>
-
-																<option th:each="e : ${conciencias}"
-																        th:value="${e}"
-																        th:text="${e.descricao}">
-																</option>
-
-															</select>
-
-															<div class="invalid-feedback d-block"
-															     style="min-height: 20px;"
-															     th:if="${#fields.hasErrors('consciencia')}"
-															     th:errors="*{consciencia}">
-															</div>
-
-														</div>
-														<div class="col-md-3 mb-2 d-none"
-														     id="campoConcienciaOutros">
-
-															<label for="conscienciaOutros"
-															       class="form-label fw-semibold text-secondary">
-																Informe a Consciência Geral *
-															</label>
-
-															<input type="text"
-															       class="form-control"
-															       th:field="*{conscienciaOutros}"
-															       id="conscienciaOutros"
-															       maxlength="50"
-															       disabled
-															       placeholder="Descreva a Consciência">
-
-															<div class="invalid-feedback d-block"
-															     th:if="${#fields.hasErrors('conscienciaOutros')}"
-															     th:errors="*{conscienciaOutros}">
-															</div>
-
-														</div>
-
-													</div>
-
-												</div>
 											</div>
 
-											<!--Row Abaixo da foto -->
-											<div class="row mt-2">
-												<div class="row mt-2">
-													<div class="col-md-2 mb-2">
-														<label for="dor" class="form-label fw-semibold text-secondary">Dor *</label>
-														<select id="dor" class="form-select" th:field="*{dor}" th:classappend="${#fields.hasErrors('dor')} ? 'is-invalid' : ''">
-															<option value="">Selecione</option>
-															<option value="true">SIM</option>
-															<option value="false">NÃO</option>
-														</select>
-														<div class="invalid-feedback d-block" th:if="${#fields.hasErrors('dor')}" th:errors="*{dor}"></div>
-													</div>
-
-													<div class="col-md-2 mb-2">
-														<label for="dorEscala" class="form-label fw-semibold text-secondary">
-															Escala de dor: <span id="valorDorEscala">0</span>/10
-														</label>
-														<input type="range"
-														       id="dorEscala"
-														       class="form-range form-control"
-														       th:field="*{dorEscala}"
-														       min="0"
-														       max="10"
-														       step="1"
-														       disabled>
-
-													</div>
-
-													<div class="col-md-4 mb-2">
-														<label for="dorLocal" class="form-label fw-semibold text-secondary">
-															Local da dor
-														</label>
-														<input type="text"
-														       id="dorLocal"
-														       class="form-control"
-														       th:field="*{dorLocal}"
-														       maxlength="50"
-														       disabled
-														       placeholder="Descreva o local da dor">
-													</div>
-												</div>
-											</div>
-
-										</div>
-
-
-									</div>
-
-								</div><!-- segunda row do body -->
-								<div class="row">
-									<div class="accordion mt-4 d-none" id="accordionConduta">
-										<div class="accordion-item">
-											<h2 class="accordion-header">
-												<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConduta">
-													<i class="fa-duotone fa-solid fa-notes-medical me-2"></i> Definir Conduta do Atendimento (Opcional agora)
-												</button>
-											</h2>
-											<div id="collapseConduta" class="accordion-collapse collapse" data-bs-parent="#accordionConduta">
-												<div class="accordion-body">
-													<!-- AQUI VÃO OS CAMPOS DA CONDUTA -->
-													<div class="row">
-														<div class="col-md-4 mb-3">
-															<label class="form-label fw-semibold text-secondary">Conduta *</label>
-															<select class="form-select" th:field="*{conduta}" id="selectConduta">
-																<option value="">Selecione...</option>
-																<option th:each="c : ${condutas}" th:value="${c}" th:text="${c.descricao}"></option>
-															</select>
-														</div>
-														<div class="col-md-8 mb-2">
-															<label for="condutaOutros" class="form-label fw-semibold text-secondary">
-																Defina a conduta
-															</label>
-															<input type="text"
-															       id="condutaOutros"
-															       class="form-control"
-															       th:field="*{condutaOutros}"
-															       maxlength="50"
-															       disabled
-															       placeholder="Descreva a conduta aplicada">
-														</div>
-														<!-- Outros campos condicionais (Medicamento, Encaminhamento, etc) -->
-													</div>
-													<div class="row">
-														<!-- ENCAMINHAMENTO EXTERNO (Coluna Principal) -->
-														<div class="col-md-4 mb-3">
-															<label class="form-label fw-semibold text-secondary">Encaminhamento *</label>
-															<select class="form-select" th:field="*{encaminhamentoExterno}" id="encExterno" disabled>
-																<option value="">Selecione...</option>
-																<option th:each="e : ${encamisExterno}" th:value="${e}" th:text="${e.descricao}"></option>
-															</select>
-														</div>
-														<!-- ENCAMINHAMENTO OUTROS (Coluna de Texto) -->
-														<div class="col-md-8 mb-3">
-															<label for="encaminhamentoOutros" class="form-label fw-semibold text-secondary">
-																Descreva o Encaminhamento
-															</label>
-															<input type="text"
-															       id="encaminhamentoOutros"
-															       class="form-control"
-															       th:field="*{encaminhamentoOutros}"
-															       maxlength="50"
-															       disabled
-															       placeholder="Descreva o encaminhamento externo">
-														</div>
-													</div>
-
-													<!-- Encerramento e Obs -->
-												</div>
-											</div>
-										</div>
-									</div>
+										</div><!-- segunda row do body -->
 								</div>
+									<div class="row">
+										<div class="accordion mt-4" id="accordionConduta" th:classappend="${(modoConduta ?: false)} ? '' : 'd-none'">>
+											<div class="accordion-item">
+												<h2 class="accordion-header">
+													<button class="accordion-button"
+															th:classappend="${modoConduta} ? 'text-danger fw-bold' : ''"
+															type="button" data-bs-toggle="collapse" data-bs-target="#collapseConduta">
+														<i class="fa-duotone fa-solid fa-notes-medical me-2"></i>
+														<span th:if="${modoConduta}">⚠️ ATENÇÃO: Atendimento sem Conduta/Encerramento. Preencha abaixo.</span>
+														<span th:unless="${modoConduta}">Conduta e Encerramento do Atendimento</span>
+													</button>
+												</h2>
+												<div id="collapseConduta" class="accordion-collapse collapse show" data-bs-parent="#accordionConduta">
+													<div class="accordion-body">
+														<!-- AQUI VÃO OS CAMPOS DA CONDUTA -->
+														<div class="row">
+															<div class="col-md-3 mb-2">
+																<label class="form-label fw-semibold text-secondary">Conduta *</label>
+																<select class="form-select" th:field="*{conduta}" id="selectConduta">
+																	<option value="">Selecione...</option>
+																	<option th:each="c : ${condutas}" th:value="${c}" th:text="${c.descricao}"></option>
+																</select>
+															</div>
+															<div class="col-md-9 mb-2">
+																<label for="condutaOutros" class="form-label fw-semibold text-secondary">
+																	Defina a conduta
+																</label>
+																<input type="text"
+																	   id="condutaOutros"
+																	   class="form-control"
+																	   th:field="*{condutaOutros}"
+																	   maxlength="50"
+																	   disabled
+																	   placeholder="Descreva a conduta aplicada">
+															</div>
+															<!-- Outros campos condicionais (Medicamento, Encaminhamento, etc) -->
+														</div>
+														<!-- ========================================== -->
+														<!-- BLOCO DE MEDICAÇÃO (Só aparece se escolher ADMINISTRACAO_MEDICAMENTO) -->
+														<!-- ========================================== -->
+														<div class="row mt-3 d-none" id="colMedicamento">
+															<div class="col-12">
+																<h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">Prescrição de Medicamentos</h6>
+																<!-- 🔥 MENSAGEM DE ALERTA (Começa escondida) -->
+																<div id="alertaMedicamento" class="alert alert-warning py-2 px-3 mb-3 d-none" role="alert">
+																	<i class="fa-solid fa-triangle-exclamation me-1"></i>
+																	<strong>Atenção:</strong> Preencha todos os campos obrigatórios (*) dos medicamentos antes de salvar.
+																</div>
+
+																<!-- Onde as linhas de medicamentos vão aparecer -->
+																<div id="containerPrescricoes"></div>
+
+																<!-- Botão para adicionar nova linha -->
+																<button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="adicionarPrescricao()">
+																	<i class="fa-solid fa-plus"></i> Adicionar Medicamento
+																</button>
+															</div>
+														</div>
+
+
+
+														<div class="row mt-3">
+															<!-- 1. TIPO DE ENCAMINHAMENTO (Principal) -->
+															<div class="col-12">
+																<h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">Detalhes do Encaminhamentos</h6>
+															</div>
+															<div class="col-md-3 mb-2">
+																<label class="form-label fw-semibold text-secondary">Tipo de Encaminhamento *</label>
+																<select class="form-select" th:field="*{tipoEncaminhamento}" id="selectTipoEncaminhamento">
+																	<option value="">Selecione...</option>
+																	<option th:each="e : ${tiposEncaminhamento}" th:value="${e}" th:text="${e.descricao}"></option>
+																</select>
+															</div>
+
+															<!-- 2. SELECT INTERNO -->
+															<div class="col-md-3 mb-2 d-none" id="colEncaminhamentoInterno">
+																<label class="form-label fw-semibold text-secondary">Encaminhamento Interno *</label>
+																<select class="form-select" th:field="*{encaminhamentoInterno}" id="encInterno" disabled>
+																	<option value="">Selecione...</option>
+																	<option th:each="e : ${encaminhamentosInternos}" th:value="${e}" th:text="${e.descricao}"></option>
+																</select>
+															</div>
+
+															<!-- 3. SELECT EXTERNO -->
+															<div class="col-md-3 mb-2 d-none" id="colEncaminhamentoExterno">
+																<label class="form-label fw-semibold text-secondary">Encaminhamento Externo *</label>
+																<select class="form-select" th:field="*{encaminhamentoExterno}" id="encExterno" disabled>
+																	<option value="">Selecione...</option>
+																	<option th:each="e : ${encaminhamentosExternos}" th:value="${e}" th:text="${e.descricao}"></option>
+																</select>
+															</div>
+
+															<!-- 4. CAMPO DE TEXTO PARA "OUTROS" -->
+															<div class="col-md-6 mb-2 d-none" id="colEncaminhamentoOutros">
+																<label for="encaminhamentoOutros" class="form-label fw-semibold text-secondary">
+																	Descreva o Encaminhamento
+																</label>
+																<input type="text" id="encaminhamentoOutros" class="form-control"
+																	   th:field="*{encaminhamentoOutros}" maxlength="50" disabled
+																	   placeholder="Descreva o encaminhamento">
+															</div>
+														</div>
+
+														<!-- Encerramento e Obs
+														TO-DO: Decidir regra de negocio: se o usuario encerrar como finalizado os campos encaminhamentos
+														nao podem ser encaminhamentos, pois nao faz sentido eu encaminhar e finalizar, o campo
+														de encerramento tem que ser ENCAMINHANDO
+
+														-->
+														<div class="row">
+															<div class="col-md-3 mb-2">
+																<label class="form-label fw-semibold text-secondary">Encerramento do Atendimento *</label>
+																<select class="form-select" th:field="*{encerramento}" th:classappend="${#fields.hasErrors('encerramento')} ? 'is-invalid' : ''">
+																	<option value="">Selecione...</option>
+																	<option th:each="e : ${encerramentos}" th:value="${e}" th:text="${e.descricao}"></option>
+																</select>
+																<div class="invalid-feedback d-block" th:if="${#fields.hasErrors('encerramento')}" th:errors="*{encerramento}"></div>
+															</div>
+															<div class="col-mb-8 mb-2">
+																<label class="form-label fw-semibold text-secondary">Observações</label>
+																<input type="text"
+
+																	   class="form-control"
+																	   th:field="*{observacoes}"
+																	   maxlength="255"
+																	   placeholder="Observações do Atendimento">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+									    </div>
+							    	</div>
 							</div> <!--fim do card body -->
 
 						</div><!--fim do card -->
@@ -520,432 +603,332 @@
 			</div><!-- primeira row do fluid -->
 
 		</div><!--fim do container fluid -->
+
+		<!--TEMPLATE DE MEDICAMENTOS -->
+		<template id="templatePrescricao">
+			<div class="row mb-3 border-bottom pb-3 prescricao-item align-items-end">
+				<div class="col-md-3">
+					<label class="form-label fw-semibold text-secondary">Medicamento *</label>
+					<input type="text" class="form-control" name="prescricoes[INDEX].medicamento" placeholder="Nome da medicação" required>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label fw-semibold text-secondary">Dose *</label>
+					<input type="number" step="0.01" class="form-control" name="prescricoes[INDEX].dose" placeholder="Ex: 500" required>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label fw-semibold text-secondary">Tipo Dose *</label>
+					<!-- 🔥 Adicionado a classe selectTipoDose -->
+					<select class="form-select selectTipoDose" name="prescricoes[INDEX].tipoDose" required>
+						<option value="">Selecione...</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label fw-semibold text-secondary">Via *</label>
+					<!-- 🔥 Adicionado a classe selectVia -->
+					<select class="form-select selectVia" name="prescricoes[INDEX].via" required>
+						<option value="">Selecione...</option>
+					</select>
+
+				</div>
+				<div class="col-md-2">
+					<label class="form-label fw-semibold text-secondary">Horário *</label>
+					<!-- 🔥 Adicionado a classe selectHorario -->
+					<select class="form-select selectHorario" name="prescricoes[INDEX].horario" required>
+						<option value="">Selecione...</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger w-100" onclick="removerPrescricao(this)" title="Remover">
+						<i class="fa-solid fa-trash"></i>
+					</button>
+				</div>
+			</div>
+		</template>
+		<!-- SELETORES OCULTOS PARA O SCRIPT CLONAR AS OPÇÕES -->
+		<div style="display: none;">
+			<select id="espelhoTipoDose">
+				<option th:each="t : ${tiposDose}" th:value="${t}" th:text="${t.descricao}"></option>
+			</select>
+			<select id="espelhoVia">
+				<option th:each="v : ${viasAdm}" th:value="${v}" th:text="${v.descricao}"></option>
+			</select>
+			<select id="espelhoHorario">
+				<option th:each="h : ${horarios}" th:value="${h}" th:text="${h.descricao}"></option>
+			</select>
+		</div>
 		<script>
 			document.addEventListener('DOMContentLoaded', function () {
+
+				// =========================================================
+				// 1. LÓGICA DO ADOLESCENTE (BUSCA E CARD)
+				// =========================================================
+				const selectAdolescente = document.getElementById('adolescenteSelect');
+				const adolescenteIdHidden = document.getElementById('adolescenteIdHidden');
+				const cardAdolescente = document.getElementById('cardAdolescente');
+				const accordionConduta = document.getElementById('accordionConduta');
+
+				async function carregarAdolescente(id) {
+					if (!cardAdolescente) return;
+
+					if (!id) {
+						cardAdolescente.classList.add('d-none');
+						// 🔥 Esconde o acordeon se não tiver adolescente selecionado
+						if (accordionConduta) {
+							accordionConduta.classList.add('d-none');
+						}
+						return;
+					}
+
+					mostrarLoading();
+
+					try {
+						const response = await fetch('/adolescentes/buscaAdolescente/' + id);
+						if (!response.ok) throw new Error("Erro ao buscar adolescente");
+
+						const adolescente = await response.json();
+
+						cardAdolescente.classList.remove('d-none');
+						// 🔥 MOSTRA O ACORDEON QUANDO O ADOLESCENTE FOR CARREGADO COM SUCESSO
+						if (accordionConduta) {
+							accordionConduta.classList.remove('d-none');
+						}
+
+						if (document.getElementById('nomeAdolescente')) document.getElementById('nomeAdolescente').textContent = adolescente.nome || '-';
+						if (document.getElementById('idadeAdolescente')) document.getElementById('idadeAdolescente').textContent = adolescente.idade || '-';
+						if (document.getElementById('maeAdolescente')) document.getElementById('maeAdolescente').textContent = adolescente.mae || '-';
+						if (document.getElementById('cidadeAdolescente')) document.getElementById('cidadeAdolescente').textContent = (adolescente.cidadeNascimento || '-') + '/' + (adolescente.ufNascimento || '-');
+						if (document.getElementById('fotoAdolescente')) document.getElementById('fotoAdolescente').src = adolescente.fotoRegistro || '/img/sem-foto.png';
+
+					} catch (e) {
+						console.error(e);
+						cardAdolescente.classList.add('d-none');
+
+						// Se der erro, esconde o acordeon também
+						if (accordionConduta) {
+							accordionConduta.classList.add('d-none');
+						}
+					} finally {
+						esconderLoading();
+					}
+				}
+
+				// Executa ao carregar a página
+				if (adolescenteIdHidden && adolescenteIdHidden.value) {
+					carregarAdolescente(adolescenteIdHidden.value);
+				} else if (selectAdolescente && selectAdolescente.value) {
+					carregarAdolescente(selectAdolescente.value);
+				}
+
+				if (selectAdolescente) {
+					selectAdolescente.addEventListener('change', function () {
+						carregarAdolescente(this.value);
+					});
+				}
+
+				// =========================================================
+				// 2. LÓGICA DE DOR
+				// =========================================================
 				const dor = document.getElementById('dor');
 				const escala = document.getElementById('dorEscala');
 				const valorEscala = document.getElementById('valorDorEscala');
 				const local = document.getElementById('dorLocal');
 
 				function atualizarCamposDor() {
+					if (!dor || !escala || !local) return;
 					const temDor = dor.value === 'true';
 					escala.disabled = !temDor;
 					local.disabled = !temDor;
-
 					if (!temDor) {
 						escala.value = '0';
 						local.value = '';
 					}
-
 					valorEscala.textContent = escala.value;
 				}
 
+				if (dor) {
+					dor.addEventListener('change', atualizarCamposDor);
+					escala.addEventListener('input', function () {
+						valorEscala.textContent = escala.value;
+					});
+					atualizarCamposDor();
+				}
 
-				dor.addEventListener('change', atualizarCamposDor);
-				escala.addEventListener('input', function () {
-					valorEscala.textContent = escala.value;
-				});
-
-				atualizarCamposDor();
-				// ==========================================
-				// LÓGICA DE CONDUTA E ENCAMINHAMENTO
-				// ==========================================
+				// =========================================================
+				// 3. LÓGICA DE CONDUTA, ENCAMINHAMENTO E MEDICAMENTO
+				// =========================================================
 				const selectConduta = document.getElementById('selectConduta');
 				const inputCondutaOutros = document.getElementById('condutaOutros');
 
-				const selectEncExterno = document.getElementById('encExterno');
-				const inputEncaminhamentoOutros = document.getElementById('encaminhamentoOutros');
+				// Encaminhamento
+				const selectTipo = document.getElementById('selectTipoEncaminhamento');
+				const colInterno = document.getElementById('colEncaminhamentoInterno');
+				const selectInterno = document.getElementById('encInterno');
+				const colExterno = document.getElementById('colEncaminhamentoExterno');
+				const selectExterno = document.getElementById('encExterno');
+				const colOutros = document.getElementById('colEncaminhamentoOutros');
+				const inputOutros = document.getElementById('encaminhamentoOutros');
 
-				function atualizarCampoConduta() {
+				// Medicamento
+				const colMedicamento = document.getElementById('colMedicamento');
+				const containerPrescricoes = document.getElementById('containerPrescricoes');
+				let prescricaoIndex = 0;
+
+				function limparEncaminhamento() {
+					if (!colInterno) return;
+					colInterno.classList.add('d-none');
+					selectInterno.disabled = true; selectInterno.value = '';
+
+					colExterno.classList.add('d-none');
+					selectExterno.disabled = true; selectExterno.value = '';
+
+					colOutros.classList.add('d-none');
+					inputOutros.disabled = true; inputOutros.value = '';
+				}
+
+				function atualizarTipoEncaminhamento() {
+					if (!selectTipo) return;
+					const tipo = selectTipo.value;
+
+					colInterno.classList.add('d-none');
+					selectInterno.disabled = true;
+					colExterno.classList.add('d-none');
+					selectExterno.disabled = true;
+					colOutros.classList.add('d-none');
+					inputOutros.disabled = true;
+
+					if (tipo === 'INTERNO') {
+						colInterno.classList.remove('d-none');
+						selectInterno.disabled = false;
+					} else if (tipo === 'EXTERNO') {
+						colExterno.classList.remove('d-none');
+						selectExterno.disabled = false;
+					} else if (tipo === 'OUTROS') {
+						colOutros.classList.remove('d-none');
+						inputOutros.disabled = false;
+					}
+					verificarOutrosSubcategoria();
+				}
+
+				function verificarOutrosSubcategoria() {
+					if (!selectTipo) return;
+					const tipo = selectTipo.value;
+					const isInternoOutro = (tipo === 'INTERNO' && selectInterno.value === 'OUTROS');
+					const isExternoOutro = (tipo === 'EXTERNO' && selectExterno.value === 'OUTRO_EXTERNO');
+
+					if (isInternoOutro || isExternoOutro) {
+						colOutros.classList.remove('d-none');
+						inputOutros.disabled = false;
+					} else {
+						colOutros.classList.add('d-none');
+						inputOutros.disabled = true;
+						inputOutros.value = '';
+					}
+				}
+
+				function atualizarCamposConduta() {
 					if (!selectConduta) return;
+					const conduta = selectConduta.value;
 
-					// 1. Lógica do campo "Outros" da Conduta
-					const isCondutaOutros = selectConduta.value === 'OUTROS';
+					// A. Conduta Outros
+					const isCondutaOutros = conduta === 'OUTROS';
 					inputCondutaOutros.disabled = !isCondutaOutros;
 					if (!isCondutaOutros) inputCondutaOutros.value = '';
 
-					// 2. Lógica do Encaminhamento Externo
-					const isEncaminhamentoExterno = selectConduta.value === 'ENCAMINHAMENTO_EXTERNO';
-
-					// Se for encaminhamento externo, habilita o select. Se não, desabilita e limpa.
-					selectEncExterno.disabled = !isEncaminhamentoExterno;
-
-					if (!isEncaminhamentoExterno) {
-						selectEncExterno.value = ''; // Limpa a seleção
+					// B. Encaminhamento
+					const isEncaminhamento = conduta === 'ENCAMINHAMENTO';
+					if (selectTipo) {
+						selectTipo.disabled = !isEncaminhamento;
+						if (!isEncaminhamento) selectTipo.value = '';
 					}
+					if (!isEncaminhamento) limparEncaminhamento();
+					else atualizarTipoEncaminhamento();
 
-					// 3. Atualiza o campo de texto "Outros" do Encaminhamento
-					atualizarCampoEncaminhamentoOutros();
-				}
-
-				function atualizarCampoEncaminhamentoOutros() {
-					if (!selectEncExterno) return;
-
-					// ATENÇÃO: Confirme se no seu Enum é 'OUTRO' ou 'OUTROS'
-					const isEncOutros = selectEncExterno.value === 'OUTRO';
-
-					// Só habilita se o encaminhamento externo estiver ativo E a opção for OUTRO
-					const deveHabilitar = (!selectEncExterno.disabled && isEncOutros);
-
-					inputEncaminhamentoOutros.disabled = !deveHabilitar;
-
-					if (!deveHabilitar) {
-						inputEncaminhamentoOutros.value = '';
+					// C. Medicamento
+					const isMedicamento = conduta === 'ADMINISTRACAO_MEDICAMENTO';
+					if (isMedicamento) {
+						colMedicamento.classList.remove('d-none');
+					} else {
+						colMedicamento.classList.add('d-none');
+						containerPrescricoes.innerHTML = ''; // Limpa as linhas adicionadas
+						prescricaoIndex = 0;
 					}
 				}
 
-				// Listeners
-				if (selectConduta) {
-					selectConduta.addEventListener('change', atualizarCampoConduta);
-					atualizarCampoConduta(); // Executa ao carregar (útil no erro de validação)
+				if (selectConduta) selectConduta.addEventListener('change', atualizarCamposConduta);
+				if (selectTipo) selectTipo.addEventListener('change', atualizarTipoEncaminhamento);
+				if (selectInterno) selectInterno.addEventListener('change', verificarOutrosSubcategoria);
+				if (selectExterno) selectExterno.addEventListener('change', verificarOutrosSubcategoria);
+
+				// =========================================================
+				// 4. FUNÇÕES DE ADICIONAR/REMOVER MEDICAMENTOS (TEMPLATE)
+				// =========================================================
+				window.adicionarPrescricao = function() {
+					const template = document.getElementById('templatePrescricao').innerHTML;
+					const html = template.replace(/INDEX/g, prescricaoIndex);
+
+					const div = document.createElement('div');
+					div.innerHTML = html.trim();
+					const item = div.firstElementChild;
+
+					const espelhoTipoDose = document.getElementById('espelhoTipoDose');
+					const espelhoVia = document.getElementById('espelhoVia');
+					const espelhoHorario = document.getElementById('espelhoHorario');
+
+					const selectTipoDoseItem = item.querySelector('.selectTipoDose');
+					const selectViaItem = item.querySelector('.selectVia');
+					const selectHorarioItem = item.querySelector('.selectHorario');
+
+					if (espelhoTipoDose && selectTipoDoseItem) selectTipoDoseItem.innerHTML += espelhoTipoDose.innerHTML;
+					if (espelhoVia && selectViaItem) selectViaItem.innerHTML += espelhoVia.innerHTML;
+					if (espelhoHorario && selectHorarioItem) selectHorarioItem.innerHTML += espelhoHorario.innerHTML;
+
+					containerPrescricoes.appendChild(item);
+					prescricaoIndex++;
+				};
+
+				window.removerPrescricao = function(btn) {
+					btn.closest('.prescricao-item').remove();
+				};
+
+				// =========================================================
+				// 5. CARREGAMENTO INICIAL DA CONDUTA
+				// =========================================================
+				if (selectConduta && selectConduta.value) {
+					atualizarCamposConduta();
 				}
 
-				if (selectEncExterno) {
-					selectEncExterno.addEventListener('change', atualizarCampoEncaminhamentoOutros);
-					atualizarCampoEncaminhamentoOutros(); // Executa ao carregar
+				// =========================================================
+				// 6. VALIDAÇÃO DE MEDICAMENTOS (Alerta Amarelo)
+				// =========================================================
+				const formAtendimento = document.getElementById('formAtendimento');
+
+				if (formAtendimento) {
+					formAtendimento.addEventListener('invalid', function (e) {
+						if (e.target.closest('#containerPrescricoes')) {
+							const alerta = document.getElementById('alertaMedicamento');
+							if (alerta) {
+								alerta.classList.remove('d-none');
+								alerta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+							}
+							e.target.setCustomValidity("Preencha os campos do medicamento.");
+						}
+					}, true);
+
+					formAtendimento.addEventListener('input', function (e) {
+						if (e.target.closest('#containerPrescricoes')) {
+							e.target.setCustomValidity("");
+							const alerta = document.getElementById('alertaMedicamento');
+							if (alerta) alerta.classList.add('d-none');
+						}
+					});
+
+					formAtendimento.addEventListener('submit', function () {
+						const alerta = document.getElementById('alertaMedicamento');
+						if (alerta) alerta.classList.add('d-none');
+					});
 				}
-
-
-
 
 			});
-		</script>
-		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-
-				configurarMotivoAtendimento();
-				configurarEstadoGeralEConsciencia();
-
-			});
-
-			const escala = document.getElementById('dorEscala');
-			document.getElementById('valorDorEscala').textContent = escala.value;
-
-			function configurarMotivoAtendimento() {
-
-				const selectMotivo =
-						document.getElementById("motivoAtendimento");
-
-				const colunaMotivo =
-						document.getElementById("colMotivoAtendimento");
-
-				const campoMotivoOutros =
-						document.getElementById("campoMotivoOutros");
-
-				const inputMotivoOutros =
-						document.getElementById("motivoOutros");
-
-
-				if (
-						!selectMotivo ||
-						!colunaMotivo ||
-						!campoMotivoOutros ||
-						!inputMotivoOutros
-				) {
-					return;
-				}
-
-
-				function atualizarMotivoOutros(limpar = false) {
-
-					const selecionouOutros =
-							selectMotivo.value === "OUTROS";
-
-
-					if (selecionouOutros) {
-
-						/*
-                         * MOTIVO ATENDIMENTO
-                         * col-md-8 -> col-md-3
-                         */
-						colunaMotivo.classList.remove("col-md-9");
-						colunaMotivo.classList.add("col-md-4");
-
-
-						/*
-                         * MOTIVO OUTROS
-                         * mostra col-md-5
-                         */
-						campoMotivoOutros.classList.remove("d-none");
-
-						inputMotivoOutros.disabled = false;
-						inputMotivoOutros.required = true;
-
-					} else {
-
-						/*
-                         * MOTIVO ATENDIMENTO
-                         * volta para col-md-8
-                         */
-						colunaMotivo.classList.remove("col-md-4");
-						colunaMotivo.classList.add("col-md-9");
-
-
-						/*
-                         * MOTIVO OUTROS
-                         * oculta novamente
-                         */
-						campoMotivoOutros.classList.add("d-none");
-
-						inputMotivoOutros.disabled = true;
-						inputMotivoOutros.required = false;
-
-
-						if (limpar) {
-							inputMotivoOutros.value = "";
-						}
-
-					}
-
-				}
-
-
-				/*
-                 * Quando o usuário altera o motivo
-                 */
-				selectMotivo.addEventListener("change", function () {
-
-					atualizarMotivoOutros(true);
-
-				});
-
-
-				/*
-                 * Estado inicial
-                 *
-                 * Importante para edição ou retorno de validação
-                 * do Thymeleaf.
-                 */
-				atualizarMotivoOutros(false);
-
-			}
-			function configurarEstadoGeralEConsciencia() {
-
-				const selectEstado =
-						document.getElementById("estadoGeral");
-
-				const colunaEstado =
-						document.getElementById("colEstadoGeral");
-
-				const campoEstadoOutros =
-						document.getElementById("campoEstadoGeralOutros");
-
-				const inputEstadoOutros =
-						document.getElementById("estadoGeralOutros");
-
-
-				const selectConsciencia =
-						document.getElementById("consciencia");
-
-				const colunaConsciencia =
-						document.getElementById("colConsciencia");
-
-				const campoConscienciaOutros =
-						document.getElementById("campoConcienciaOutros");
-
-				const inputConscienciaOutros =
-						document.getElementById("conscienciaOutros");
-
-
-				if (
-						!selectEstado ||
-						!colunaEstado ||
-						!campoEstadoOutros ||
-						!inputEstadoOutros ||
-						!selectConsciencia ||
-						!colunaConsciencia ||
-						!campoConscienciaOutros ||
-						!inputConscienciaOutros
-				) {
-					return;
-				}
-
-
-				/*
-                 * Remove qualquer col-md anterior
-                 * e coloca a nova largura.
-                 */
-				function definirColuna(elemento, tamanho) {
-
-					for (let i = 1; i <= 12; i++) {
-						elemento.classList.remove("col-md-" + i);
-					}
-
-					elemento.classList.add("col-md-" + tamanho);
-				}
-
-
-				function atualizarLinha(limparEstado = false,
-				                        limparConsciencia = false) {
-
-					const estadoOutros =
-							selectEstado.value === "OUTROS";
-
-					const conscienciaOutros =
-							selectConsciencia.value === "OUTROS";
-
-
-					/*
-                     * ============================================
-                     * MOSTRAR / ESCONDER ESTADO OUTROS
-                     * ============================================
-                     */
-
-					if (estadoOutros) {
-
-						campoEstadoOutros.classList.remove("d-none");
-
-						inputEstadoOutros.disabled = false;
-						inputEstadoOutros.required = true;
-
-					} else {
-
-						campoEstadoOutros.classList.add("d-none");
-
-						inputEstadoOutros.disabled = true;
-						inputEstadoOutros.required = false;
-
-						if (limparEstado) {
-							inputEstadoOutros.value = "";
-						}
-					}
-
-
-					/*
-                     * ============================================
-                     * MOSTRAR / ESCONDER CONSCIÊNCIA OUTROS
-                     * ============================================
-                     */
-
-					if (conscienciaOutros) {
-
-						campoConscienciaOutros.classList.remove("d-none");
-
-						inputConscienciaOutros.disabled = false;
-						inputConscienciaOutros.required = true;
-
-					} else {
-
-						campoConscienciaOutros.classList.add("d-none");
-
-						inputConscienciaOutros.disabled = true;
-						inputConscienciaOutros.required = false;
-
-						if (limparConsciencia) {
-							inputConscienciaOutros.value = "";
-						}
-					}
-
-
-					/*
-                     * ============================================
-                     * AJUSTE DO GRID
-                     * ============================================
-                     */
-
-
-					/*
-                     * NENHUM É OUTROS
-                     *
-                     * 2 + 5 + 5 = 12
-                     */
-					if (!estadoOutros && !conscienciaOutros) {
-
-						definirColuna(colunaEstado, 5);
-						definirColuna(colunaConsciencia, 5);
-
-					}
-
-
-					/*
-                     * SOMENTE ESTADO É OUTROS
-                     *
-                     * 2 + 3 + 4 + 3 = 12
-                     */
-					else if (estadoOutros && !conscienciaOutros) {
-
-						definirColuna(colunaEstado, 3);
-						definirColuna(campoEstadoOutros, 4);
-						definirColuna(colunaConsciencia, 3);
-
-					}
-
-
-					/*
-                     * SOMENTE CONSCIÊNCIA É OUTROS
-                     *
-                     * 2 + 3 + 3 + 4 = 12
-                     */
-					else if (!estadoOutros && conscienciaOutros) {
-
-						definirColuna(colunaEstado, 3);
-						definirColuna(colunaConsciencia, 3);
-						definirColuna(campoConscienciaOutros, 4);
-
-					}
-
-
-					/*
-                     * OS DOIS SÃO OUTROS
-                     *
-                     * 2 + 2 + 3 + 2 + 3 = 12
-                     */
-					else {
-
-						definirColuna(colunaEstado, 2);
-						definirColuna(campoEstadoOutros, 3);
-
-						definirColuna(colunaConsciencia, 2);
-						definirColuna(campoConscienciaOutros, 3);
-
-					}
-				}
-
-
-				/*
-                 * ============================================
-                 * EVENTO ESTADO GERAL
-                 * ============================================
-                 */
-
-				selectEstado.addEventListener("change", function () {
-
-					atualizarLinha(
-							true,
-							false
-					);
-
-				});
-
-
-				/*
-                 * ============================================
-                 * EVENTO CONSCIÊNCIA
-                 * ============================================
-                 */
-
-				selectConsciencia.addEventListener("change", function () {
-
-					atualizarLinha(
-							false,
-							true
-					);
-
-				});
-
-
-				/*
-                 * ============================================
-                 * ESTADO INICIAL
-                 * ============================================
-                 */
-
-				atualizarLinha(
-						false,
-						false
-				);
-
-			}
 		</script>
 	</div> <!--Fim do content -->
 

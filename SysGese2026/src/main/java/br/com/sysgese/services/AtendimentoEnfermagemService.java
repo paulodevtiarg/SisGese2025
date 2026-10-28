@@ -2,12 +2,12 @@ package br.com.sysgese.services;
 
 import java.util.List;
 
-import br.com.sysgese.models.Servidor;
-import br.com.sysgese.models.Unidade;
+import br.com.sysgese.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +15,6 @@ import br.com.sysgese.dtos.AtendimentoEnfermagemResumoDTO;
 import br.com.sysgese.dtos.AtendimentoEnfermagemDTO;
 import br.com.sysgese.enumerators.StatusInternacaoEnum;
 import br.com.sysgese.mappers.AtendimentoEnfermagemMapper;
-import br.com.sysgese.models.AtendimentoEnfermagem;
-import br.com.sysgese.models.Internacao;
 import br.com.sysgese.repository.AtendimentoEnfermagemRepository;
 import br.com.sysgese.repository.InternacaoRepository;
 import br.com.sysgese.specifications.AtendimentoEnfermagemSpecification;
@@ -38,6 +36,7 @@ public class AtendimentoEnfermagemService {
 
     @Autowired
     private ServidorService servidorService;
+
     // ==========================================================
     // SALVAR
     // ==========================================================
@@ -48,24 +47,28 @@ public class AtendimentoEnfermagemService {
             Long unidadeId,
             Long idServidorLogado) {
 
-        // Busca a Unidade e o Servidor (tratando o Optional)
-        Unidade unidade = unidadeService.buscarPorId(unidadeId)
-                .orElseThrow(() -> new RuntimeException("Unidade não encontrada."));
-
         Servidor servidor = servidorService.buscarPorId(idServidorLogado)
                 .orElseThrow(() -> new RuntimeException("Servidor não encontrado."));
+
+        Unidade unidade = unidadeService.buscarPorId(unidadeId)
+                .orElseThrow(() -> new RuntimeException("Unidade não encontrada."));
 
         // ======================================================
         // NOVO ATENDIMENTO
         // ======================================================
         if (dto.getId() == null) {
 
-            // Verifica se o adolescente está internado nesta unidade
-            // ... (sua lógica de verificação) ...
+            List<Internacao> internacoes = internacaoRepository.findByUnidadeIdAndStatus(
+                    unidadeId, StatusInternacaoEnum.ATIVA
+            );
+            boolean adolescenteInternado = internacoes.stream()
+                    .anyMatch(i -> i.getAdolescente() != null && i.getAdolescente().getId().equals(dto.getIdAdolescente()));
+
+            if (!adolescenteInternado) {
+                throw new RuntimeException("O adolescente não está internado nesta unidade.");
+            }
 
             AtendimentoEnfermagem entity = mapper.toEntity(dto);
-
-            // 🔥 Vincula a Unidade e o Servidor com segurança
             entity.setUnidade(unidade);
             entity.setServidor(servidor);
 
@@ -73,28 +76,67 @@ public class AtendimentoEnfermagemService {
         }
 
         // ======================================================
-        // ALTERAÇÃO
+        // ALTERAÇÃO (FINALIZAR CONDUTA)
         // ======================================================
         AtendimentoEnfermagem entity = atendimentoRepository
                 .findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Atendimento não encontrado."));
 
-        // Segurança na edição
+        // Segurança
         if (entity.getUnidade() != null && !entity.getUnidade().getId().equals(unidadeId)) {
             throw new RuntimeException("Você não possui permissão para alterar este atendimento.");
         }
 
-        mapper.updateEntityFromDTO(dto, entity);
+        // 🔥 AQUI ESTÁ A CHAVE: No modoConduta, o DTO só tem conduta, encerramento e observações.
+        // Nós atualizamos APENAS esses campos, sem tocar nos dados clínicos.
 
-        // Em edições, geralmente mantemos o servidor que criou, mas se quiser registrar quem alterou:
-        // entity.setServidorAlteracao(servidor); (se existir na sua entidade)
+        // Conduta
+        entity.setConduta(dto.getConduta());
+        entity.setCondutaOutros(dto.getCondutaOutros());
 
-        // Se for Master e ele mudou a unidade na edição:
-        if (!entity.getUnidade().getId().equals(unidadeId)) {
-            entity.setUnidade(unidade);
+        // Encaminhamento
+        entity.setTipoEncaminhamento(dto.getTipoEncaminhamento());
+        entity.setEncaminhamentoInterno(dto.getEncaminhamentoInterno());
+        entity.setEncaminhamentoExterno(dto.getEncaminhamentoExterno());
+        entity.setEncaminhamentoOutros(dto.getEncaminhamentoOutros());
+
+        // Encerramento
+        entity.setEncerramento(dto.getEncerramento());
+        entity.setObservacoes(dto.getObservacoes());
+
+        // 🔥 Atualiza a lista de prescrições APENAS se o DTO trouxer alguma coisa.
+        // Se o DTO vier com a lista vazia (modoConduta sem mexer), mantemos a lista antiga.
+        if (dto.getPrescricoes() != null && !dto.getPrescricoes().isEmpty()) {
+            // O Mapper tem a lógica de recriar a lista. Mas como estamos no modoConduta,
+            // o usuário pode ter adicionado medicamentos novos.
+            // Para simplificar, chamamos o mapper para a lista
+            List<PrescricaoMedicamento> novasPrescricoes = mapper.toEntityList(dto.getPrescricoes());
+            novasPrescricoes.forEach(p -> p.setAtendimento(entity));
+
+            entity.getPrescricoes().clear();
+            entity.getPrescricoes().addAll(novasPrescricoes);
         }
 
         return atendimentoRepository.save(entity);
+    }
+
+    // ==========================================================
+    // BUSCAR ATENDIMENTOS PENDENTES (Para o Modal do Index)
+    // ==========================================================
+
+    @Transactional(readOnly = true)
+    public List<AtendimentoEnfermagemDTO> buscarPendentes(
+            Long adolescenteId,
+            Long unidadeSession,
+            boolean isMaster) {
+
+        List<AtendimentoEnfermagem> pendentes = atendimentoRepository.buscarAtendimentosPendentes(
+                adolescenteId,
+                unidadeSession,
+                isMaster
+        );
+
+        return mapper.toDTOList(pendentes);
     }
 
 
@@ -109,10 +151,7 @@ public class AtendimentoEnfermagemService {
                 atendimentoRepository
                         .findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Atendimento de enfermagem "
-                                                + "não encontrado."
-                                )
+                                new RuntimeException("Atendimento de enfermagem não encontrado.")
                         );
 
         return mapper.toDTO(entity);
@@ -162,84 +201,34 @@ public class AtendimentoEnfermagemService {
         Specification<AtendimentoEnfermagem> spec =
                 Specification.allOf();
 
-
         // ======================================================
         // REGRA DE UNIDADE
         // ======================================================
-
         if (isMaster) {
-
-            // MASTER pode escolher a unidade
-
             if (filtro.getFiltroUnidadeId() != null) {
-
-                spec = spec.and(
-                        AtendimentoEnfermagemSpecification
-                                .unidade(
-                                        filtro.getFiltroUnidadeId()
-                                )
-                );
+                spec = spec.and(AtendimentoEnfermagemSpecification.unidade(filtro.getFiltroUnidadeId()));
             }
-
         } else {
-
-            // USUÁRIO NORMAL:
-            // somente sua própria unidade
-
-            spec = spec.and(
-                    AtendimentoEnfermagemSpecification
-                            .unidade(unidadeSession)
-            );
+            spec = spec.and(AtendimentoEnfermagemSpecification.unidade(unidadeSession));
         }
-
 
         // ======================================================
         // NOME DO ADOLESCENTE
         // ======================================================
-
         if (filtro.getFiltroNomeAdolescente() != null
                 && !filtro.getFiltroNomeAdolescente().isBlank()) {
-
-            spec = spec.and(
-                    AtendimentoEnfermagemSpecification
-                            .nomeAdolescente(
-                                    filtro.getFiltroNomeAdolescente()
-                            )
-            );
+            spec = spec.and(AtendimentoEnfermagemSpecification.nomeAdolescente(filtro.getFiltroNomeAdolescente()));
         }
-
 
         // ======================================================
         // CIDADE DO ADOLESCENTE
         // ======================================================
-
         if (filtro.getFiltroCidadeAdolescente() != null
                 && !filtro.getFiltroCidadeAdolescente().isBlank()) {
-
-            spec = spec.and(
-                    AtendimentoEnfermagemSpecification
-                            .cidadeAdolescente(
-                                    filtro.getFiltroCidadeAdolescente()
-                            )
-            );
+            spec = spec.and(AtendimentoEnfermagemSpecification.cidadeAdolescente(filtro.getFiltroCidadeAdolescente()));
         }
 
-
-        // ======================================================
-        // STATUS
-        // ======================================================
-
-        /*
-         * O atendimento não possui status próprio.
-         *
-         * Portanto, não aplicamos filtro de status aqui.
-         */
-
-
-        return atendimentoRepository.findAll(
-                spec,
-                pageable
-        );
+        return atendimentoRepository.findAll(spec, pageable);
     }
 
 
@@ -252,18 +241,8 @@ public class AtendimentoEnfermagemService {
             Long unidadeSession) {
 
         if (unidadeSession == null) {
-
-            throw new RuntimeException(
-                    "Unidade do usuário não identificada."
-            );
+            throw new RuntimeException("Unidade do usuário não identificada.");
         }
-
-        /*
-         * Reutilizamos exatamente o método que
-         * já existe no InternacaoRepository.
-         *
-         * Não alteramos absolutamente nada nele.
-         */
 
         return internacaoRepository
                 .findByUnidadeIdAndStatus(
@@ -282,9 +261,7 @@ public class AtendimentoEnfermagemService {
             Long adolescenteId,
             Long unidadeSession) {
 
-        if (adolescenteId == null
-                || unidadeSession == null) {
-
+        if (adolescenteId == null || unidadeSession == null) {
             return false;
         }
 
@@ -299,54 +276,76 @@ public class AtendimentoEnfermagemService {
                 .anyMatch(internacao ->
                         internacao.getAdolescente() != null
                                 &&
-                                internacao.getAdolescente()
-                                        .getId()
-                                        .equals(adolescenteId)
+                                internacao.getAdolescente().getId().equals(adolescenteId)
                 );
     }
 
     @Transactional(readOnly = true)
-    public Page<AtendimentoEnfermagemResumoDTO>
-    buscarResumoPorAdolescente(
+    public Page<AtendimentoEnfermagemResumoDTO> buscarResumoPorAdolescente(
             AtendimentoEnfermagemDTO filtro,
             Long unidadeSession,
             boolean isMaster,
             int page) {
+
         int size = filtro.getSize() != null ? filtro.getSize() : 10;
-        Pageable pageable =
-                PageRequest.of(
-                        page,
-                        size
-                );
+        Pageable pageable = PageRequest.of(page, size);
         Long unidadeId = null;
 
-        // ======================================================
         // REGRA DE UNIDADE
-        // ======================================================
-
         if (isMaster) {
-
-            // Master só filtra por unidade se tiver escolhido uma
             if (filtro.getFiltroUnidadeId() != null) {
                 unidadeId = filtro.getFiltroUnidadeId();
             }
-
         } else {
-
-            // Usuário normal sempre vê somente sua unidade
             unidadeId = unidadeSession;
         }
 
+        // 🔥 SITUAÇÃO DA INTERNAÇÃO (Padrão: ATIVA)
+        String situacao = filtro.getFiltroSituacaoInternacao();
+        boolean buscaAtiva = situacao == null || situacao.isBlank() || situacao.equalsIgnoreCase("ATIVA");
 
-        // ======================================================
         // BUSCA AGRUPADA POR ADOLESCENTE
-        // ======================================================
-
-        return atendimentoRepository.buscarResumoPorAdolescente(
+        Page<AtendimentoEnfermagemResumoDTO> pagina = atendimentoRepository.buscarResumoPorAdolescente(
                 unidadeId,
                 filtro.getFiltroNomeAdolescente(),
                 filtro.getFiltroCidadeAdolescente(),
+                buscaAtiva,
+                StatusInternacaoEnum.ATIVA,
                 pageable
         );
+
+        // Pós-processamento: Marca quem tem pendência
+        pagina.getContent().forEach(resumo -> {
+            List<AtendimentoEnfermagemDTO> pendentes = buscarPendentes(
+                    resumo.getAdolescenteId(),
+                    unidadeSession,
+                    isMaster
+            );
+
+            resumo.setQuantidadePendentes(pendentes.size());
+            resumo.setTemPendencia(!pendentes.isEmpty());
+        });
+
+        return pagina;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AtendimentoEnfermagemDTO> buscarHistoricoPorAdolescente(
+            Long adolescenteId,
+            Long unidadeSession,
+            boolean isMaster,
+            int page) {
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("data").descending().and(Sort.by("hora").descending()));
+
+        Page<AtendimentoEnfermagem> paginaEntity;
+
+        if (isMaster) {
+            paginaEntity = atendimentoRepository.findByAdolescenteId(adolescenteId, pageable);
+        } else {
+            paginaEntity = atendimentoRepository.findByAdolescenteIdAndUnidadeId(adolescenteId, unidadeSession, pageable);
+        }
+
+        return paginaEntity.map(mapper::toDTO);
     }
 }

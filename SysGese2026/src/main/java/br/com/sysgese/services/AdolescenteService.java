@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,6 +77,8 @@ public class AdolescenteService {
         this.cicatrizRepository = cicatrizRepository;
         this.mapper = mapper;
     }
+
+
 
     // ========================= BUSCA =========================
 
@@ -494,6 +498,11 @@ public class AdolescenteService {
 	    return repository.count();
 	}
 
+
+
+
+
+
     public List<AdolescenteDTO> buscarElegiveisParaInternacao(
             Long unidadeId,
             boolean isMaster
@@ -569,17 +578,37 @@ public class AdolescenteService {
     }
     public List<AdolescenteDTO> buscarAdolescentesUnidade(Long unidadeId) {
 
+        // 1. Busca todos os adolescentes da unidade
         Specification<Adolescente> spec =
                 AdolescenteSpecification.unidadeCadastro(unidadeId);
 
-        List<Adolescente> adolescentes =
-                repository.findAll(
-                        spec,
-                        Sort.by(Sort.Direction.ASC, "nome")
-                );
+        List<Adolescente> adolescentes = repository.findAll(
+                spec,
+                Sort.by(Sort.Direction.ASC, "nome")
+        );
 
+        // 2. 🔥 FILTRA APENAS OS QUE TÊM INTERNAÇÃO ATIVA NA UNIDADE
         return adolescentes.stream()
+                .filter(adolescente -> {
+                    // Usa o método que JÁ EXISTE no seu repository (traz todas as internações)
+                    List<Internacao> internacoes = internacaoRepository
+                            .findByAdolescenteIdOrderByDataInicioDesc(adolescente.getId());
+
+                    // Verifica se alguma delas é ATIVA e é na mesma unidade
+                    return internacoes.stream()
+                            .anyMatch(i ->
+                                    i.getStatus() == StatusInternacaoEnum.ATIVA &&
+                                            i.getUnidade() != null &&
+                                            i.getUnidade().getId().equals(unidadeId)
+                            );
+                })
                 .map(mapper::toDTO)
                 .toList();
     }
+
+
+
+
+
+
 }
