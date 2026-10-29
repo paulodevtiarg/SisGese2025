@@ -1,10 +1,7 @@
 package br.com.sysgese.utils;
 
-import br.com.sysgese.dtos.AtendimentoEnfermagemDTO;
+import br.com.sysgese.dtos.*;
 import org.springframework.stereotype.Component;
-
-import br.com.sysgese.dtos.AdolescenteDTO;
-import br.com.sysgese.dtos.InternacaoDTO;
 
 @Component
 public class UrlUtils {
@@ -59,6 +56,33 @@ public class UrlUtils {
 						? filtro.getSize()
 						: 10,
 
+				page
+		);
+	}
+	public String cargoQuery(CargoDTO filtro, int page) {
+		return String.format(
+				"filtroDescricao=%s&filtroStatus=%s&size=%s&page=%d",
+				filtro.getFiltroDescricao() != null ? filtro.getFiltroDescricao() : "",
+				filtro.getFiltroStatus() != null ? filtro.getFiltroStatus() : "",
+				filtro.getSize() != null ? filtro.getSize() : 10,
+				page
+		);
+	}
+	public String funcaoQuery(FuncaoDTO filtro, int page) {
+		return String.format(
+				"filtroDescricao=%s&filtroStatus=%s&size=%s&page=%d",
+				filtro.getFiltroDescricao() != null ? filtro.getFiltroDescricao() : "",
+				filtro.getFiltroStatus() != null ? filtro.getFiltroStatus() : "",
+				filtro.getSize() != null ? filtro.getSize() : 10,
+				page
+		);
+	}
+	public String perfilQuery(PerfilDTO filtro, int page) {
+		return String.format(
+				"filtroDescricao=%s&filtroStatus=%s&size=%s&page=%d",
+				filtro.getFiltroDescricao() != null ? filtro.getFiltroDescricao() : "",
+				filtro.getFiltroStatus() != null ? filtro.getFiltroStatus() : "",
+				filtro.getSize() != null ? filtro.getSize() : 10,
 				page
 		);
 	}

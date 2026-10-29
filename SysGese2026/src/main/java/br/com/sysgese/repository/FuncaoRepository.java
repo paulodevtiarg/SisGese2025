@@ -5,9 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.sysgese.models.Funcao;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 
-public interface FuncaoRepository extends JpaRepository<Funcao, Long>{
+public interface FuncaoRepository extends JpaRepository<Funcao, Long>, JpaSpecificationExecutor<Funcao> {
 	// Busca com Funcao por nome e status
     Page<Funcao> findByDescricaoContainingIgnoreCaseAndStatusIn(
             String descricao,

@@ -9,6 +9,14 @@ public class PerfilDTO {
     private Integer status;
     private LocalDate dataCad;
     private LocalDate dataAlt;
+
+
+	//filtro:
+	private String filtroDescricao;
+	private String filtroStatus;
+	private Integer size = 10;
+
+
 	public Long getId() {
 		return id;
 	}
@@ -41,5 +49,28 @@ public class PerfilDTO {
 	}
 
     // getters e setters
-    
+
+	public String getFiltroDescricao() {
+		return filtroDescricao;
+	}
+
+	public void setFiltroDescricao(String filtroDescricao) {
+		this.filtroDescricao = filtroDescricao;
+	}
+
+	public String getFiltroStatus() {
+		return filtroStatus;
+	}
+
+	public void setFiltroStatus(String filtroStatus) {
+		this.filtroStatus = filtroStatus;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
 }

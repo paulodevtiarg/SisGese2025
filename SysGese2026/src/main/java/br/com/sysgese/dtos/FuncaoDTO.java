@@ -10,6 +10,15 @@ public class FuncaoDTO {
     @NotBlank(message = "Descrição da Função é obrigatório")
     private String descricao;
     private Integer status;
+
+
+	//filtro:
+	private String filtroDescricao;
+	private String filtroStatus;
+	private Integer size = 10;
+
+
+
     private LocalDateTime dataCad;
     private LocalDateTime dataAlt;
 	public Long getId() {
@@ -44,5 +53,28 @@ public class FuncaoDTO {
 	}
 
     // getters e setters
-    
+
+	public String getFiltroDescricao() {
+		return filtroDescricao;
+	}
+
+	public void setFiltroDescricao(String filtroDescricao) {
+		this.filtroDescricao = filtroDescricao;
+	}
+
+	public String getFiltroStatus() {
+		return filtroStatus;
+	}
+
+	public void setFiltroStatus(String filtroStatus) {
+		this.filtroStatus = filtroStatus;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
 }

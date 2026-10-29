@@ -1,5 +1,9 @@
 package br.com.sysgese.controllers;
 
+import br.com.sysgese.dtos.CargoDTO;
+import br.com.sysgese.dtos.FuncaoDTO;
+import br.com.sysgese.models.Cargo;
+import br.com.sysgese.utils.UrlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.sysgese.mappers.FuncaoMapper;
@@ -17,6 +23,7 @@ import br.com.sysgese.utils.StatusUtil;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/funcoes")
 public class FuncaoController {
 	
 	@Autowired
@@ -24,31 +31,33 @@ public class FuncaoController {
 	
 	@Autowired
 	private FuncaoMapper funcaoMapper;
-	
-	@GetMapping("/funcao")
-	public String index(
-			HttpSession session,
-			Model model,
-			 @RequestParam(value = "nome", required = false, defaultValue = "") String nome,
-	            @RequestParam(value = "status", required = false, defaultValue = "1") String statusFiltro,
-	            @RequestParam(value = "pagina", required = false, defaultValue = "0") int pagina,
-	            @RequestParam(value = "tamanho", required = false, defaultValue = "10") int tamanho
-	){
-		Integer[] status = StatusUtil.parseStatusFiltro(statusFiltro);
 
-		Pageable pageable = PageRequest.of(pagina, tamanho);
-		Page<Funcao> page =  funcaoService.buscar(nome, status, pageable);
+	@Autowired
+	private UrlUtils urlUtils;
+	
+	@GetMapping
+	public String index(
+			@ModelAttribute("filtro") FuncaoDTO filtro,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size,
+			HttpSession session,
+			Model model
+	){
+		boolean isMaster = (Boolean) session.getAttribute("isMaster");
+
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Funcao> pagina =  funcaoService.buscarComFiltro(filtro,pageable);
+
+		Page<FuncaoDTO> funcaoDTO = pagina.map(funcaoMapper::toDTO);
 		
 		//Converter para DTO
-		model.addAttribute("pageTitle", "Função");
-        model.addAttribute("activeMenu", "administrativo");
-		model.addAttribute("funcoes", funcaoMapper.toDTOList(page.getContent()));
-		model.addAttribute("paginaAtual", page.getNumber());
-        model.addAttribute("totalPaginas", page.getTotalPages());
-        model.addAttribute("tamanhoPagina", tamanho);
-        model.addAttribute("nomeBusca", nome);
-        model.addAttribute("statusFiltro", statusFiltro);
-        model.addAttribute("isMaster", AuthUtil.isMaster(session));
+		model.addAttribute("activeMenu", "pessoal");
+		model.addAttribute("funcoes", funcaoDTO);
+		model.addAttribute("lista", funcaoDTO.getContent());
+		model.addAttribute("pageTitle", "Funcao");
+		model.addAttribute("size", size);
+		model.addAttribute("queryParams", urlUtils.funcaoQuery(filtro, page));
+		model.addAttribute("isMaster", AuthUtil.isMaster(session));
         
         return "funcao/index";
 		

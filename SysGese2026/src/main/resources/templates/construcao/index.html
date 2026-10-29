@@ -5,74 +5,131 @@
       layout:decorate="~{layout/base}">
 
 <head>
-    <title>Home</title>
+	<title>Em Construção</title>
 </head>
 
 <body>
 
 <div layout:fragment="content">
-		<div class="container-fluid">
-			<div class="row" style="margin-top: -15px;">
-				<div class="col-12">
-					<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-						<ol class="breadcrumb">
-							<li class="breadcrumb-item active"><a th:href="@{/home}">
-									<i class="fa-duotone fa-solid fa-house fs-6"></i> Home
-							</a></li>
-							<li class="breadcrumb-item"><span class="text-muted"><i class="fa-duotone fa-solid fa-triangle-person-digging"></i> Em Construção</span></li>
-						</ol>
-					</nav>
-				</div>
-				
 
-				<div class="col-12" style="margin-top: -15px;">
-					<div class="card">
-						<div
-							class="card-header card-header-clinisys d-flex justify-content-between align-items-center fs-6 fw-semibold ">
+	<!-- ESTILOS ESPECÍFICOS DA PÁGINA -->
+	<style>
+		.construcao-wrapper {
+			background: linear-gradient(135deg, #f8f9fc 0%, #eaecf4 100%);
+			border-radius: 12px;
+			min-height: 65vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+		}
 
-							<h5 class="mb-0">Em Construção</h5>
-							<a th:href="@{/home}"
-								class="btn btn-outline-sistema " data-bs-toggle="tooltip"
-								data-bs-placement="top" title="Voltar para Home"> <i class="fa-duotone fa-solid fa-backward"></i> Voltar
+		.glass-card {
+			background: rgba(255, 255, 255, 0.85);
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			border-radius: 16px;
+			padding: 3rem 2rem;
+			text-align: center;
+			box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+			max-width: 500px;
+			z-index: 2;
+		}
+
+		.icone-construcao {
+			font-size: 5rem;
+			margin-bottom: 1rem;
+			animation: flutuar 3s ease-in-out infinite;
+			background: -webkit-linear-gradient(#0e2583, #6574fb);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		@keyframes flutuar {
+			0% { transform: translateY(0px); }
+			50% { transform: translateY(-15px); }
+			100% { transform: translateY(0px); }
+		}
+
+		.bg-imagem {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			width: 400px;
+			opacity: 0.1;
+			z-index: 1;
+			pointer-events: none;
+		}
+	</style>
+
+	<div class="container-fluid p-2">
+		<div class="row" style="margin-top: -15px;">
+
+			<!-- BREADCRUMB -->
+			<div class="col-12 mb-3">
+				<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a th:href="@{/home}">
+								<i class="fa-duotone fa-solid fa-house fs-6"></i> Home
 							</a>
+						</li>
+						<li class="breadcrumb-item active">
+                            <span class="text-muted">
+                                <i class="fa-duotone fa-solid fa-triangle-person-digging"></i> Em Construção
+                            </span>
+						</li>
+					</ol>
+				</nav>
+			</div>
 
-						</div>
-						<div class="card-body">
-						<div class="row">
-    <div class="col-12 d-flex align-items-start justify-content-start"
-         th:style="'background-image: url(/img/construcao.png); 
-                     background-size: contain;  
-                    background-position: center;
-                    background-repeat: no-repeat;
-                    height: 70vh;'">
-       
-   <div class="text-white p-4" style="background: rgba(0,0,0,0.5); border-radius: 8px;">
-    <h3>Sistema em construção</h3>
-    <p>Estamos trabalhando para trazer novidades em breve.</p>
-</div>
+			<!-- CARD PRINCIPAL -->
+			<div class="col-12" style="margin-top: -10px;">
+				<div class="card shadow-sm border-0">
 
-    </div>
-</div>
-						</div>
-						
+					<!-- HEADER DO CARD -->
+					<div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom-0">
+						<h5 class="mb-0 fw-bold text-dark">
+							<i class="fa-duotone fa-solid fa-helmet-safety text-warning me-2"></i> Módulo em Desenvolvimento
+						</h5>
+						<a th:href="@{/home}" class="btn btn-outline-sistema btn-sm px-3" data-bs-toggle="tooltip" title="Voltar para o Dashboard">
+							<i class="fa-duotone fa-solid fa-arrow-left me-1"></i> Voltar ao Início
+						</a>
 					</div>
-					<!-- fim do card principal -->
 
+					<!-- CORPO DO CARD -->
+					<div class="card-body p-0">
+						<div class="construcao-wrapper">
 
+							<!-- Imagem de fundo decorativa -->
+							<img th:src="@{/img/construcao.png}" class="bg-imagem" alt="">
 
+							<!-- CARD DE VIDRO CENTRAL -->
+							<div class="glass-card">
+								<div class="icone-construcao">
+									<i class="fa-duotone fa-solid fa-trowel-bricks"></i>
+								</div>
+								<h3 class="fw-bold text-dark mb-3">Estamos Construindo!</h3>
+								<p class="text-muted mb-4">
+									Este módulo está em fase de desenvolvimento. Em breve você poderá acessar todos os recursos e gerenciar essas informações de forma integrada ao sistema.
+								</p>
+								<a th:href="@{/home}" class="btn btn-primary btn-modern px-4 py-2">
+									<i class="fa-duotone fa-solid fa-house me-2"></i> Ir para o Dashboard
+								</a>
+							</div>
+
+						</div>
+					</div>
 
 				</div>
-				<!-- fim da terceira col -->
-
 			</div>
-			<!-- fim da row dentro do container -->
-
-
 
 		</div>
-		<!-- fim do container-fluid -->
 	</div>
-	<!-- fim do content do fragmento -->
-	   
+
+</div> <!-- Fim do layout:fragment="content" -->
+
 </body>
 </html>
