@@ -8,8 +8,7 @@ import java.util.Map;
 
 import br.com.sysgese.dtos.RelatorioDashboardDTO;
 import br.com.sysgese.dtos.RelatorioDashboardFiltroDTO;
-import br.com.sysgese.services.HomeService;
-import br.com.sysgese.services.PdfService;
+import br.com.sysgese.services.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.sysgese.models.Servidor;
-import br.com.sysgese.services.AdolescenteService;
-import br.com.sysgese.services.InternacaoService;
 import jakarta.servlet.http.HttpSession;
 import tools.jackson.databind.ObjectMapper;
 @Controller
@@ -31,6 +28,9 @@ public class HomeController {
 
 	@Autowired
 	private InternacaoService internacaoService;
+
+	@Autowired
+	private AtendimentoEnfermagemService atendimentoEnfermagemService;
 
 	@Autowired
 	private HomeService homeService;
@@ -56,21 +56,37 @@ public class HomeController {
 			return "redirect:/login";
 		}
 
-		Long totalAdolescentes = adolescenteService
-				.contarPorUnidade(unidadeId);
+		Long totalAdolescentes = adolescenteService.contarPorUnidade(unidadeId);
 
-		Long totalGeral = adolescenteService
-				.contarTodos();
+		Long totalGeral = adolescenteService.contarTodos();
 
-		Long internadosUnidade = internacaoService
-				.contarInternadosPorUnidade(unidadeId);
+		Long internadosUnidade = internacaoService.contarInternadosPorUnidade(unidadeId);
 
-		Long internadosGeral = internacaoService
-				.contarInternadosGeral();
+		Long internadosGeral = internacaoService.contarInternadosGeral();
+
+		//Totais
+		Long atendimentosEnfermagemGeral = atendimentoEnfermagemService.contarAtendimentosGeral();
+	    Long atendimentosEnfermagemPorUnidade = atendimentoEnfermagemService.contarAtendimentosPorUnidade(unidadeId);
+
+		// Totais do ano
+		Long totalAtendEnf = atendimentoEnfermagemService.contarAtendimentosNoAno(unidadeId, anoAtual);
+
+		model.addAttribute("atendimentosEnfermagemGeral", atendimentosEnfermagemGeral);
+		model.addAttribute("atendimentosEnfermagemPorUnidade", atendimentosEnfermagemPorUnidade);
+		model.addAttribute("totalAtendEnf", totalAtendEnf);
+
+
+
+		//Atendimentos Enfermagem (Grafico)
+		Map<Integer, Long> atendEnfPorMes = atendimentoEnfermagemService.buscarAtendimentosEnfermagemPorMes(unidadeId, anoAtual);
+		model.addAttribute("atendEnfJson", objectMapper.writeValueAsString(atendEnfPorMes));
+
+		//TOTAL TODAS AS ESPECIALIDADES NO ANO
+		Long totalTodasAno = totalAtendEnf; //aqui se somarao todas os atendimentos
+		model.addAttribute("totalTodasAno", totalTodasAno);
 
 		// ✅ GRAFICO
-		Map<Integer, Long> internacoesPorMes =
-				internacaoService.buscarInternacoesPorMesPorUnidade(unidadeId, anoAtual);
+		Map<Integer, Long> internacoesPorMes =	internacaoService.buscarInternacoesPorMesPorUnidade(unidadeId, anoAtual);
 
 		try {
 			String json = objectMapper.writeValueAsString(internacoesPorMes);
@@ -89,9 +105,8 @@ public class HomeController {
 			e.printStackTrace();
 		}
 
-
-		Map<String, Long> internacoesPorUnidade =
-				internacaoService.buscarInternacoesPorUnidade(anoAtual);
+        //Grafico pizza
+		Map<String, Long> internacoesPorUnidade =	internacaoService.buscarInternacoesPorUnidade(anoAtual);
 
 		try {
 			String json = objectMapper.writeValueAsString(internacoesPorUnidade);
@@ -126,7 +141,6 @@ public class HomeController {
 		Map<String, Long> cidadeGeral = internacaoService.buscarInternacoesPorCidade(null);
 
 		ObjectMapper mapper = new ObjectMapper();
-
 
 		List<String> listaCidades = internacaoService.listarCidades();
 		model.addAttribute("listaCidades", listaCidades);

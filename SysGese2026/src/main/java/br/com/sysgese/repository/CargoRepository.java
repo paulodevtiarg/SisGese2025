@@ -5,9 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.sysgese.models.Cargo;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 
-public interface CargoRepository extends JpaRepository<Cargo, Long> {
+public interface CargoRepository extends JpaRepository<Cargo, Long>, JpaSpecificationExecutor<Cargo> {
 	// Busca com Funcao por nome e status
     Page<Cargo> findByDescricaoContainingIgnoreCaseAndStatusIn(
             String descricao,

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import br.com.sysgese.dtos.AtendimentoEnfermagemResumoDTO;
+import br.com.sysgese.models.Internacao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -257,5 +258,11 @@ public interface AtendimentoEnfermagemRepository
             @Param("buscaAtiva") boolean buscaAtiva,
             @Param("statusAtiva") StatusInternacaoEnum statusAtiva,
             Pageable pageable
+    );
+
+    List<AtendimentoEnfermagem> findByUnidadeIdAndDataBetween(
+            Long unidadeId,
+            LocalDate inicio,
+            LocalDate fim
     );
 }

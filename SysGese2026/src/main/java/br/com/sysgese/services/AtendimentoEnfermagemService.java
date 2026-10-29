@@ -1,6 +1,9 @@
 package br.com.sysgese.services;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.sysgese.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -348,4 +351,50 @@ public class AtendimentoEnfermagemService {
 
         return paginaEntity.map(mapper::toDTO);
     }
+
+    public Map<Integer, Long> buscarAtendimentosEnfermagemPorMes(Long unidadeId, int ano) {
+
+        LocalDate inicio = LocalDate.of(ano, 1, 1);
+        LocalDate fim = LocalDate.of(ano, 12, 31);
+
+        // 🔥 Agora busca pela DATA do atendimento
+        List<AtendimentoEnfermagem> lista = atendimentoRepository.findByUnidadeIdAndDataBetween(
+                unidadeId, inicio, fim
+        );
+
+        Map<Integer, Long> mapa = new HashMap<>();
+
+        // Inicializa todos os meses com zero
+        for (int i = 1; i <= 12; i++) {
+            mapa.put(i, 0L);
+        }
+
+        // Agrupa pela data
+        for (AtendimentoEnfermagem atendimento : lista) {
+            if (atendimento.getData() != null) {
+                int mes = atendimento.getData().getMonthValue();
+                mapa.put(mes, mapa.get(mes) + 1);
+            }
+        }
+
+        return mapa;
+    }
+
+    public Long contarAtendimentosNoAno(Long unidadeId, int ano) {
+        // Reaproveita o método que já busca os dados para o gráfico
+        Map<Integer, Long> mapa = buscarAtendimentosEnfermagemPorMes(unidadeId, ano);
+
+        // Soma todos os meses
+        return mapa.values().stream().mapToLong(Long::longValue).sum();
+    }
+
+    public Long contarAtendimentosGeral() {
+        return atendimentoRepository.count();
+    }
+
+    public Long contarAtendimentosPorUnidade(Long unidadeId) {
+        return atendimentoRepository.countByUnidadeId(unidadeId);
+    }
+
+
 }

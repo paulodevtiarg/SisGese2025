@@ -87,6 +87,7 @@ public String index(
     Page<InternacaoDTO> internacaoDTO = pagina.map(internacaoMapper::toDTO);
 
     model.addAttribute("internacoes", internacaoDTO);
+
     model.addAttribute("lista", internacaoDTO.getContent());
 
     if (isMaster) {
