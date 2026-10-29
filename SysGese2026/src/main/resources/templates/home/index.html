@@ -130,6 +130,227 @@
                         
                         </div>
                         <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                    Atendimentos Enfermagem
+                                                </div>
+
+                                                <!-- Número Principal: Total no Ano (o que mais importa para a gestão) -->
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    <span th:text="${totalAtendEnf}">0</span>
+                                                    <small class="text-muted" style="font-size: 0.7rem;"
+                                                           th:text="'neste ano (' + ${anoSelecionado} + ')'">
+                                                    </small>                                                </div>
+
+                                                <!-- Números secundários: Geral e da Unidade -->
+                                                <div class="mt-1">
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-building"></i> Unidade: <strong th:text="${atendimentosEnfermagemPorUnidade}">0</strong>
+                                                    </small>
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-globe"></i> Geral: <strong th:text="${atendimentosEnfermagemGeral}">0</strong>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa-duotone fa-solid fa-user-nurse fa-2x text-gray-500"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ================= CARDS DE OUTRAS ESPECIALIDADES ================= -->
+
+                            <!-- PSICOLÓGICO -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-warning shadow h-100 py-2 opacity-75">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                    Atendimentos Psicológicos
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    0
+                                                    <small class="text-muted" style="font-size: 0.7rem;"
+                                                           th:text="'neste ano (' + ${anoSelecionado} + ')'">
+                                                    </small>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-building"></i> Unidade: <strong>0</strong>
+                                                    </small>
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-globe"></i> Geral: <strong>0</strong>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa-duotone fa-solid fa-brain fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PEDAGÓGICO -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2 opacity-75">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    Atendimentos Pedagógicos
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    0
+                                                    <small class="text-muted" style="font-size: 0.7rem;"
+                                                           th:text="'neste ano (' + ${anoSelecionado} + ')'">
+                                                    </small>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-building"></i> Unidade: <strong>0</strong>
+                                                    </small>
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-globe"></i> Geral: <strong>0</strong>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa-duotone fa-solid fa-graduation-cap fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SERVIÇO SOCIAL -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2 opacity-75">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                    Atendimentos Serviço Social
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    0
+                                                    <small class="text-muted" style="font-size: 0.7rem;"
+                                                           th:text="'neste ano (' + ${anoSelecionado} + ')'">
+                                                    </small>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-building"></i> Unidade: <strong>0</strong>
+                                                    </small>
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-globe"></i> Geral: <strong>0</strong>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa-duotone fa-solid fa-hands-holding-child fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- JURÍDICO -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-danger shadow h-100 py-2 opacity-75">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                    Atendimentos Jurídicos
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    0
+                                                    <small class="text-muted" style="font-size: 0.7rem;"
+                                                           th:text="'neste ano (' + ${anoSelecionado} + ')'">
+                                                    </small>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-building"></i> Unidade: <strong>0</strong>
+                                                    </small>
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-globe"></i> Geral: <strong>0</strong>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa-duotone fa-solid fa-scale-balanced fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MÉDICO -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-secondary shadow h-100 py-2 opacity-75">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                                    Atendimentos Médicos
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    0
+                                                    <small class="text-muted" style="font-size: 0.7rem;">neste ano (2026)</small>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-building"></i> Unidade: <strong>0</strong>
+                                                    </small>
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-globe"></i> Geral: <strong>0</strong>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa-duotone fa-solid fa-stethoscope fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-md-12 mb-4">
+                                <div class="card border-left-dark shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
+                                                    Total Geral de Atendimentos (Todas as Especialidades)
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    <!-- Aqui você pode somar tudo no Controller ou deixar um número fixo -->
+                                                    <span th:text="${totalTodasAno}">0</span> <small class="text-muted" style="font-size: 0.7rem;"
+                                                               th:text="'neste ano (' + ${anoSelecionado} + ')'">
+                                                </small>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                        Soma de Enfermagem, Psico, Serviço Social, Jurídico e Médico.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa-duotone fa-solid fa-chart-pie fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             
                             <!-- GRAFICO LINHA -->
                             <div class="col-xl-8 col-lg-7 d-flex">
