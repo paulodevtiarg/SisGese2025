@@ -87,5 +87,19 @@ public class UrlUtils {
 		);
 	}
 
+	public String servidorQuery(ServidorDTO filtro, int page) {
+		return String.format(
+				"filtroNome=%s&filtroMatricula=%s&filtroCidade=%s&filtroCpf=%s&filtroUnidadeId=%s&filtroStatus=%s&size=%s&page=%d",
+				filtro.getFiltroNome() != null ? filtro.getFiltroNome() : "",
+				filtro.getFiltroMatricula() != null ? filtro.getFiltroMatricula() : "",
+				filtro.getFiltroCidade() != null ? filtro.getFiltroCidade() : "",
+				filtro.getFiltroCpf() != null ? filtro.getFiltroCpf() : "",
+				filtro.getFiltroUnidadeId() != null ? filtro.getFiltroUnidadeId() : "",
+				filtro.getFiltroStatus() != null ? filtro.getFiltroStatus() : "ATIVO",
+				filtro.getSize() != null ? filtro.getSize() : 10,
+				page
+		);
+	}
+
 
 }
