@@ -79,9 +79,7 @@ public class ServidorDTO {
 
    
     private String codigoSeguranca;
-    
-    
- 
+
     private LocalDateTime dataExpiracao;
     
     
@@ -89,6 +87,21 @@ public class ServidorDTO {
 
     private LocalDate dataCad;
     private LocalDate dataAlt;
+
+	private String nomeUnidadeLotacao;
+
+	public String getNomeUnidadeLotacao() { return nomeUnidadeLotacao; }
+	public void setNomeUnidadeLotacao(String nomeUnidadeLotacao) { this.nomeUnidadeLotacao = nomeUnidadeLotacao; }
+
+
+	/* CAMPOS DE FILTROS*/
+	private String filtroNome;
+	private String filtroMatricula;
+	private String filtroCidade;
+	private String filtroCpf;
+	private Long filtroUnidadeId;
+	private String filtroStatus;
+	private Integer size = 10;
     
     
 	public Long getId() {
@@ -236,9 +249,60 @@ public class ServidorDTO {
 	public void setDataExpiracao(LocalDateTime dataExpiracao) {
 		this.dataExpiracao = dataExpiracao;
 	}
-	
-	
 
+	public String getFiltroNome() {
+		return filtroNome;
+	}
 
-   
+	public void setFiltroNome(String filtroNome) {
+		this.filtroNome = filtroNome;
+	}
+
+	public String getFiltroMatricula() {
+		return filtroMatricula;
+	}
+
+	public void setFiltroMatricula(String filtroMatricula) {
+		this.filtroMatricula = filtroMatricula;
+	}
+
+	public String getFiltroCidade() {
+		return filtroCidade;
+	}
+
+	public void setFiltroCidade(String filtroCidade) {
+		this.filtroCidade = filtroCidade;
+	}
+
+	public String getFiltroCpf() {
+		return filtroCpf;
+	}
+
+	public void setFiltroCpf(String filtroCpf) {
+		this.filtroCpf = filtroCpf;
+	}
+
+	public Long getFiltroUnidadeId() {
+		return filtroUnidadeId;
+	}
+
+	public void setFiltroUnidadeId(Long filtroUnidadeId) {
+		this.filtroUnidadeId = filtroUnidadeId;
+	}
+
+	public String getFiltroStatus() {
+		return filtroStatus;
+	}
+
+	public void setFiltroStatus(String filtroStatus) {
+		this.filtroStatus = filtroStatus;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
 }
