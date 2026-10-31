@@ -319,7 +319,7 @@
 																<label class="form-label fw-semibold text-secondary">
 																	Registro Civil <small>(Cert; Nasc.)</small>)
 																</label> <input type="text" th:field="*{registroCivil}"
-																	id="identidade" placeholder="Dados do Registro Civil"
+																	id="registroCivil" placeholder="Dados do Registro Civil"
 																	class="form-control">
 
 															</div>
@@ -586,60 +586,56 @@
 											<div class="tab-pane fade" id="parentesco">
 
 												<div class="row">
-													<div class="col-md-6">
-														<div class="row">
-															<div class="col-md-12">
-																<label class="form-label text-muted fw-medium">Pai</label>
-																<input type="text" th:field="*{pai}"
-																	class="form-control" placeholder="Digite o nome do Pai">
+													<div class="col-12">
+														<h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">Familiares</h6>
 
+														<!-- Onde as linhas vão aparecer -->
+														<div id="containerFamiliares">
+
+															<!-- 🔥 Se estiver editando, o Thymeleaf vai renderizar os familiares que já existem -->
+															<div class="row mb-3 border-bottom pb-3 familiar-item align-items-end"
+															     th:each="familiar, stat : ${adolescente.familiares}">
+
+																<input type="hidden" th:name="'familiares[' + ${stat.index} + '].id'" th:value="${familiar.id}">
+
+																<div class="col-md-5">
+																	<label class="form-label fw-semibold text-secondary">Nome do Familiar *</label>
+																	<input type="text" class="form-control"
+																	       th:name="'familiares[' + ${stat.index} + '].nomeFamiliar'"
+																	       th:value="${familiar.nomeFamiliar}"
+																	       placeholder="Nome completo" required>
+																</div>
+
+																<div class="col-md-4">
+																	<label class="form-label fw-semibold text-secondary">Parentesco *</label>
+																	<select class="form-select" th:name="'familiares[' + ${stat.index} + '].parentesco'" required>
+																		<option value="">Selecione...</option>
+																		<option th:each="p : ${parentescos}" th:value="${p}" th:text="${p.descricao}" th:selected="${familiar.parentesco == p}"></option>
+																	</select>
+																</div>
+
+																<div class="col-md-2">
+																	<label class="form-label fw-semibold text-secondary">Status</label>
+																	<select class="form-select" th:name="'familiares[' + ${stat.index} + '].status'">
+																		<option value="true" th:selected="${familiar.status == true}">Ativo</option>
+																		<option value="false" th:selected="${familiar.status == false}">Inativo</option>
+																	</select>
+																</div>
+
+																<div class="col-md-1">
+																	<button type="button" class="btn btn-danger w-100" onclick="removerFamiliar(this)" title="Remover">
+																		<i class="fa-solid fa-trash"></i>
+																	</button>
+																</div>
 															</div>
-
-
-														</div>
-														<div class="row mt-3">
-															<div class="col-md-12">
-																<label class="form-label text-muted fw-medium">Mãe</label>
-																<input type="text" th:field="*{mae}"
-																	class="form-control" placeholder="Digite o nome da mãe">
-
-															</div>
 														</div>
 
+														<!-- Botão Adicionar -->
+														<button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="adicionarFamiliar()">
+															<i class="fa-solid fa-plus"></i> Adicionar Familiar
+														</button>
 													</div>
-													<div class="col-md-6">
-														<div class="row">
-															<div class="col-md-12">
-																<label for="telefoneRecado"
-																	class="form-label text-muted fw-medium">Responsavel</label>
-																<input type="text" th:field="*{responsavel}"
-																	class="form-control"
-																	placeholder="Digite o nome do responsável">
-
-															</div>
-
-
-														</div>
-														<div class="row mt-3">
-															<div class="col-md-12">
-																<label
-																	class="form-label text-muted fw-medium">Parentesco
-																	do Responsável</label> <input type="text"
-																	th:field="*{parentescoResponsavel}"
-																	class="form-control"
-																	placeholder="Tio, Tia, Avós, Irmãos....">
-
-															</div>
-														</div>
-
-
-
-													</div>
-
 												</div>
-
-
-
 											</div>
 											<!-- CARACTERISTICAS -->
 
@@ -1041,10 +1037,84 @@
 
 			</div>
 		</template>
+
+
+		<!-- TEMPLATE DO FAMILIAR (Vai no final do HTML, escondido) -->
+		<template id="templateFamiliar">
+			<div class="row mb-3 border-bottom pb-3 familiar-item align-items-end">
+				<div class="col-md-5">
+					<label class="form-label fw-semibold text-secondary">Nome do Familiar *</label>
+					<input type="text" class="form-control" name="familiares[INDEX].nomeFamiliar" placeholder="Nome completo" required>
+				</div>
+
+				<div class="col-md-4">
+					<label class="form-label fw-semibold text-secondary">Parentesco *</label>
+					<select class="form-select selectParentesco" name="familiares[INDEX].parentesco" required>
+						<option value="">Selecione...</option>
+						<!-- O JS vai popular esta parte -->
+					</select>
+				</div>
+
+				<div class="col-md-2">
+					<label class="form-label fw-semibold text-secondary">Status</label>
+					<select class="form-select" name="familiares[INDEX].status">
+						<option value="true" selected>Ativo</option>
+						<option value="false">Inativo</option>
+					</select>
+				</div>
+
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger w-100" onclick="removerFamiliar(this)" title="Remover">
+						<i class="fa-solid fa-trash"></i>
+					</button>
+				</div>
+			</div>
+		</template>
+
+		<!-- SELECT ESPELHO PARA PEGAR AS OPÇÕES DO ENUM -->
+		<div style="display: none;">
+			<select id="espelhoParentesco">
+				<option th:each="p : ${parentescos}" th:value="${p}" th:text="${p.descricao}"></option>
+			</select>
+		</div>
+
 		<div id="modalImagem" class="modal-img">
 			<span class="fechar" onclick="fecharModal()">&times;</span> <img
 				id="imgModalConteudo">
 		</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+
+				// 🔥 Lógica para adicionar familiares dinamicamente
+				let familiarIndex = document.querySelectorAll('.familiar-item').length; // Começa de onde o Thymeleaf parou
+
+				window.adicionarFamiliar = function() {
+					const template = document.getElementById('templateFamiliar').innerHTML;
+					const html = template.replace(/INDEX/g, familiarIndex);
+
+					const div = document.createElement('div');
+					div.innerHTML = html.trim();
+					const item = div.firstElementChild;
+
+					// Copia as opções do select espelho
+					const espelhoParentesco = document.getElementById('espelhoParentesco');
+					const selectParentescoItem = item.querySelector('.selectParentesco');
+
+					if (espelhoParentesco && selectParentescoItem) {
+						selectParentescoItem.innerHTML += espelhoParentesco.innerHTML;
+					}
+
+					document.getElementById('containerFamiliares').appendChild(item);
+					familiarIndex++;
+				};
+
+				window.removerFamiliar = function(btn) {
+					btn.closest('.familiar-item').remove();
+				};
+
+			});
+		</script>
 	</div>
 </body>
 </html>

@@ -1,23 +1,11 @@
 package br.com.sysgese.dtos;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-import br.com.sysgese.enumerators.AnoEscolaridadeEnum;
-import br.com.sysgese.enumerators.BiofisicoEnum;
-import br.com.sysgese.enumerators.CabeloEnum;
-import br.com.sysgese.enumerators.CorOlhosEnum;
-import br.com.sysgese.enumerators.EstaturaEnum;
-import br.com.sysgese.enumerators.GeneroEnum;
-import br.com.sysgese.enumerators.NarizEnum;
-import br.com.sysgese.enumerators.NivelEscolaridadeEnum;
-import br.com.sysgese.enumerators.OlhosEnum;
-import br.com.sysgese.enumerators.OrelhaEnum;
-import br.com.sysgese.enumerators.PescocoEnum;
-import br.com.sysgese.enumerators.RacaCorEnum;
-import br.com.sysgese.enumerators.ReligiaoEnum;
-import br.com.sysgese.enumerators.RostoEnum;
-import br.com.sysgese.enumerators.SobrancelhaEnum;
+import br.com.sysgese.enumerators.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -63,17 +51,7 @@ public class AdolescenteDTO {
 	    // Responsáveis
 	    // ==============================
 
-	    @Size(max = 255)
-	    private String pai;
 
-	    @Size(max = 255)
-	    private String mae;
-
-	    @Size(max = 255)
-	    private String responsavel;
-
-	    @Size(max = 255)
-	    private String parentescoResponsavel;
 
 	    // ==============================
 	    // Endereço
@@ -212,6 +190,23 @@ private List<EnderecoDTO> enderecos;
 	public Boolean getPossuiInternacaoAtiva() {
 		return possuiInternacaoAtiva;
 	}
+
+
+
+	// Adicione junto com a lista de endereços
+	@Valid // Para validar os familiares também
+	private List<FamiliarDTO> familiares = new ArrayList<>();
+
+	// ... getters e setters ...
+	public List<FamiliarDTO> getFamiliares() {
+		return familiares;
+	}
+
+	public void setFamiliares(List<FamiliarDTO> familiares) {
+		this.familiares = familiares;
+	}
+
+
 
 	public void setPossuiInternacaoAtiva(Boolean possuiInternacaoAtiva) {
 		this.possuiInternacaoAtiva = possuiInternacaoAtiva;
@@ -461,30 +456,8 @@ private List<EnderecoDTO> enderecos;
 		public void setRacaCor(RacaCorEnum racaCor) {
 			this.racaCor = racaCor;
 		}
-		public String getPai() {
-			return pai;
-		}
-		public void setPai(String pai) {
-			this.pai = pai  != null ? pai.toUpperCase() : null;
-		}
-		public String getMae() {
-			return mae;
-		}
-		public void setMae(String mae) {
-			this.mae = mae != null ? mae.toUpperCase() : null;
-		}
-		public String getResponsavel() {
-			return responsavel;
-		}
-		public void setResponsavel(String responsavel) {
-			this.responsavel = responsavel  != null ? responsavel.toUpperCase() : null;
-		}
-		public String getParentescoResponsavel() {
-			return parentescoResponsavel;
-		}
-		public void setParentescoResponsavel(String parentescoResponsavel) {
-			this.parentescoResponsavel = parentescoResponsavel  != null ? parentescoResponsavel.toUpperCase() : null;
-		}
+
+
 		
 		public EnderecoDTO getEnderecoAtual() {
 			return enderecoAtual;
@@ -783,8 +756,33 @@ private List<EnderecoDTO> enderecos;
 		public void setQtdFilhos(Integer qtdFilhos) {
 			this.qtdFilhos = qtdFilhos;
 		}
-	    
-		
+
+	/**
+	 * Mãe derivada da lista de familiares (parentesco = MAE).
+	 * Mantido para compatibilidade com templates que usam ${adolescente.mae}.
+	 */
+	public String getMae() {
+		return nomeFamiliarPorParentesco(ParentescoEnum.MAE);
+	}
+
+	/**
+	 * Pai derivado da lista de familiares (parentesco = PAI).
+	 * Mantido para compatibilidade com templates que usam ${adolescente.pai}.
+	 */
+	public String getPai() {
+		return nomeFamiliarPorParentesco(ParentescoEnum.PAI);
+	}
+
+	private String nomeFamiliarPorParentesco(ParentescoEnum parentesco) {
+		if (this.familiares == null || this.familiares.isEmpty()) {
+			return null;
+		}
+		return this.familiares.stream()
+				.filter(f -> f.getParentesco() == parentesco)
+				.map(FamiliarDTO::getNomeFamiliar)
+				.findFirst()
+				.orElse(null);
+	}
 	    
 
 }

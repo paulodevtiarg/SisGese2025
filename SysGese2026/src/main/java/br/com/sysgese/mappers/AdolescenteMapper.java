@@ -1,6 +1,9 @@
 package br.com.sysgese.mappers;
+
 import java.util.List;
 
+import br.com.sysgese.dtos.FamiliarDTO;
+import br.com.sysgese.models.Familiar;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -18,13 +21,14 @@ import br.com.sysgese.models.Endereco;
         uses = { CicatrizMapper.class, TatuagemMapper.class, FotoMapper.class, EnderecoMapper.class }
 )
 public interface AdolescenteMapper {
-    
+
     // ==============================
     // ENTITY -> DTO
     // ==============================
     @Mapping(target = "cicatrizes", source = "cicatrizes")
     @Mapping(target = "tatuagens", source = "tatuagens")
     @Mapping(target = "fotos", source = "fotos")
+    @Mapping(target = "familiares", source = "familiares") // 🔥 Adicionado
     AdolescenteDTO toDTO(Adolescente entity);
 
     List<AdolescenteDTO> toDTOList(List<Adolescente> entities);
@@ -32,10 +36,11 @@ public interface AdolescenteMapper {
     // ==============================
     // DTO -> ENTITY
     // ==============================
-    @Mapping(target = "dataCad", ignore = true) // backend controla
+    @Mapping(target = "dataCad", ignore = true)
     @Mapping(target = "dataAlt", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "internacoes", ignore = true) // evitar problemas de referência cíclica
+    @Mapping(target = "internacoes", ignore = true)
+    @Mapping(target = "familiares", source = "familiares") // 🔥 Adicionado
     Adolescente toEntity(AdolescenteDTO dto);
 
     // ==============================
@@ -45,59 +50,24 @@ public interface AdolescenteMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dataCad", ignore = true)
     @Mapping(target = "internacoes", ignore = true)
+    @Mapping(target = "familiares", ignore = true) // 🔥 Ignorado aqui (faremos manual no service)
     void updateEntityFromDTO(AdolescenteDTO dto, @MappingTarget Adolescente entity);
 
+    // ... (os @AfterMapping de cicatriz, tatuagem, foto, endereco continuam iguais) ...
+
     // ==============================
-    // Ajuste de relacionamento bidirecional
+    // MAPPER DA PRESCRIÇÃO/FAMILIAR
     // ==============================
+    List<Familiar> toFamiliarEntityList(List<FamiliarDTO> dtos);
+    List<FamiliarDTO> toFamiliarDTOList(List<Familiar> entities);
+
+    Familiar toFamiliarEntity(FamiliarDTO dto);
+    FamiliarDTO toFamiliarDTO(Familiar entity);
+
     @AfterMapping
-    default void linkCicatrizes(@MappingTarget Adolescente adolescente) {
-        if (adolescente.getCicatrizes() != null) {
-            adolescente.getCicatrizes()
-                .forEach(c -> c.setAdolescente(adolescente));
+    default void linkFamiliares(@MappingTarget Adolescente adolescente) {
+        if (adolescente.getFamiliares() != null) {
+            adolescente.getFamiliares().forEach(familiar -> familiar.setAdolescente(adolescente));
         }
     }
-
-    @AfterMapping
-    default void linkTatuagens(@MappingTarget Adolescente adolescente) {
-        if (adolescente.getTatuagens() != null) {
-            adolescente.getTatuagens()
-                .forEach(t -> t.setAdolescente(adolescente));
-        }
-    }
-
-    @AfterMapping
-    default void linkFotos(@MappingTarget Adolescente adolescente) {
-        if (adolescente.getFotos() != null) {
-            adolescente.getFotos()
-                .forEach(f -> f.setAdolescente(adolescente));
-        }
-    }
-    @AfterMapping
-    default void preencherEnderecoAtual(
-            @MappingTarget AdolescenteDTO dto,
-            Adolescente entity) {
-
-        if (entity.getEnderecos() == null) return;
-
-        entity.getEnderecos().stream()
-            .filter(e -> Boolean.TRUE.equals(e.getAtivo()))
-            .findFirst()
-            .ifPresent(endereco -> 
-                dto.setEnderecoAtual(toEnderecoDTO(endereco))
-            );
-    }
-    
-    default EnderecoDTO toEnderecoDTO(Endereco endereco) {
-        return endereco == null ? null : new EnderecoDTO() {{
-            setCidade(endereco.getCidade());
-            setBairro(endereco.getBairro());
-            setUf(endereco.getUf());
-            setLogradouro(endereco.getLogradouro());
-            setNumero(endereco.getNumero());
-            setCep(endereco.getCep());
-            setReferencia(endereco.getReferencia());
-        }};
-    }
-    
 }
