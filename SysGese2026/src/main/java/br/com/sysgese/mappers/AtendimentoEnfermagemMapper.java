@@ -3,6 +3,9 @@ package br.com.sysgese.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.sysgese.enumerators.ParentescoEnum;
+import br.com.sysgese.models.Adolescente;
+import br.com.sysgese.models.Familiar;
 import org.mapstruct.*;
 
 import br.com.sysgese.dtos.AtendimentoEnfermagemDTO;
@@ -26,7 +29,10 @@ public interface AtendimentoEnfermagemMapper {
     @Mapping(source = "adolescente.cidadeNascimento", target = "cidadeAdolescente")
     @Mapping(source = "adolescente.ufNascimento", target = "ufAdolescente")
     @Mapping(source = "adolescente.fotoRegistro", target = "fotoAdolescente")
-    @Mapping(source = "adolescente.mae", target = "maeDoAdolescente")
+    @Mapping(
+            target = "maeDoAdolescente",
+            expression = "java(nomeDaMae(entity.getAdolescente()))"
+    )
     @Mapping(source = "adolescente.idade", target = "idadeAdolescente")
     @Mapping(source = "unidade.nome", target = "nomeUnidade")
     @Mapping(source = "unidade.nome", target = "nomeUnidadeInternacao")
@@ -99,5 +105,19 @@ public interface AtendimentoEnfermagemMapper {
             entity.getPrescricoes().clear();
             entity.getPrescricoes().addAll(listaEntity);
         }
+    }
+
+    /**
+     * Retorna o nome da mãe a partir da lista de familiares do adolescente.
+     */
+    default String nomeDaMae(Adolescente adolescente) {
+        if (adolescente == null || adolescente.getFamiliares() == null) {
+            return null;
+        }
+        return adolescente.getFamiliares().stream()
+                .filter(f -> f.getParentesco() == ParentescoEnum.MAE)  // ajuste o enum
+                .map(Familiar::getNomeFamiliar)
+                .findFirst()
+                .orElse(null);
     }
 }

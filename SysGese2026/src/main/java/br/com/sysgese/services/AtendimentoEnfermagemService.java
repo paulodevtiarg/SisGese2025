@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysgese.enumerators.ParentescoEnum;
 import br.com.sysgese.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -314,6 +315,7 @@ public class AtendimentoEnfermagemService {
                 filtro.getFiltroCidadeAdolescente(),
                 buscaAtiva,
                 StatusInternacaoEnum.ATIVA,
+                ParentescoEnum.MAE,   // 👈 novo parâmetro
                 pageable
         );
 

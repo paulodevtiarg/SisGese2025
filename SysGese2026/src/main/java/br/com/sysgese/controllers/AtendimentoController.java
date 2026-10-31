@@ -164,15 +164,15 @@ public class AtendimentoController {
         atendimentoEnfermagemDTO.setData(LocalDate.now());
         atendimentoEnfermagemDTO.setHora(LocalTime.now());
 
-        // Se não for master, já define a unidade
-        if (!isMaster) {
-            atendimentoEnfermagemDTO.setIdUnidade(lotacaoAtiva.getUnidade().getId());
-        }
-
-        // Master recebe lista de unidades
+        // Master recebe todas, não-master recebe só a dele (ou todas — o th:disabled já bloqueia)
         if (isMaster) {
             model.addAttribute("unidades", unidadeService.listarTodas());
+        } else {
+            // Não-master: só a unidade do usuário
+            model.addAttribute("unidades", List.of(lotacaoAtiva.getUnidade()));
         }
+
+
 
         //Carregar Enums
         model.addAttribute("condutas", CondutaEnum.values());
