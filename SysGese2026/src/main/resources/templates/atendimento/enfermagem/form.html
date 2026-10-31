@@ -38,7 +38,7 @@
 					<form th:action="@{/atendimentos/enfermagem/salvar}" th:object="${atendimento}" method="post" id="formAtendimento" >
 						<!-- Dentro do form, junto com os outros hidden -->
 						<input type="hidden" th:field="*{idServidor}">
-						<input type="hidden" th:if="${!usuarioMaster}" th:field="*{idUnidade}"/>
+
 
 						<input type="hidden" th:field="*{data}">
 						<input type="hidden"  th:field="*{hora}"/>
@@ -148,30 +148,42 @@
 															</div>
 
 															<div class="row">
-																<div class="col-md-3 mb-2">
-																	<!-- envia valor quando select estiver disabled -->
-																	<input type="hidden"
-																		   th:if="${!usuarioMaster}"
-																		   th:field="*{idUnidade}"/>
-																	<label   class="form-label fw-semibold text-secondary">  Unidade para Internação * </label>
+																<!-- ============================================ -->
+																<!-- UNIDADE — MASTER (select normal)             -->
+																<!-- ============================================ -->
+																<div th:if="${usuarioMaster}" class="col-md-3 mb-2">
+																	<label class="form-label fw-semibold text-secondary">Unidade para Internação *</label>
 																	<select class="form-select"
-																			th:field="*{idUnidade}"   th:classappend="${#fields.hasErrors('idUnidade')} ? 'is-invalid' : ''"
-																			th:disabled="${!usuarioMaster}">
-
+																	        th:field="*{idUnidade}"
+																	        th:classappend="${#fields.hasErrors('idUnidade')} ? 'is-invalid' : ''">
 																		<option value="">Selecione</option>
-
 																		<option th:each="u : ${unidades}"
-																				th:value="${u.id}"
-																				th:text="${u.nome}">
+																		        th:value="${u.id}"
+																		        th:text="${u.nome}">
 																		</option>
-
 																	</select>
-
 																	<div class="invalid-feedback d-block"
-																		 style="min-height: 20px;"
-																		 th:if="${#fields.hasErrors('idUnidade')}"
-																		 th:errors="*{idUnidade}">
+																	     style="min-height: 20px;"
+																	     th:if="${#fields.hasErrors('idUnidade')}"
+																	     th:errors="*{idUnidade}">
+																	</div>
+																</div>
 
+																<!-- ============================================ -->
+																<!-- UNIDADE — NÃO-MASTER (input readonly)        -->
+																<!-- ============================================ -->
+																<div th:unless="${usuarioMaster}" class="col-md-3 mb-2">
+																	<label class="form-label fw-semibold text-secondary">Unidade para Internação *</label>
+																	<input type="text"
+																	       class="form-control"
+																	       th:value="${unidades != null and !#lists.isEmpty(unidades) ? unidades[0].nome : ''}"
+																	       readonly>
+																	<!-- Hidden com o valor real, usando name (não th:field, para não duplicar binding) -->
+																	<input type="hidden" name="idUnidade" th:value="*{idUnidade}"/>
+																	<div class="invalid-feedback d-block"
+																	     style="min-height: 20px;"
+																	     th:if="${#fields.hasErrors('idUnidade')}"
+																	     th:errors="*{idUnidade}">
 																	</div>
 																</div>
 																<div class="col-md-9 mb-2" id="colMotivoAtendimento">
@@ -459,7 +471,7 @@
 										</div><!-- segunda row do body -->
 								</div>
 									<div class="row">
-										<div class="accordion mt-4" id="accordionConduta" th:classappend="${(modoConduta ?: false)} ? '' : 'd-none'">>
+										<div class="accordion mt-4" id="accordionConduta" th:classappend="${(modoConduta ?: false)} ? '' : 'd-none'">
 											<div class="accordion-item">
 												<h2 class="accordion-header">
 													<button class="accordion-button"
@@ -526,7 +538,7 @@
 															</div>
 															<div class="col-md-3 mb-2">
 																<label class="form-label fw-semibold text-secondary">Tipo de Encaminhamento *</label>
-																<select class="form-select" th:field="*{tipoEncaminhamento}" id="selectTipoEncaminhamento">
+																<select class="form-select" th:field="*{tipoEncaminhamento}" id="selectTipoEncaminhamento" disabled>
 																	<option value="">Selecione...</option>
 																	<option th:each="e : ${tiposEncaminhamento}" th:value="${e}" th:text="${e.descricao}"></option>
 																</select>
@@ -893,8 +905,8 @@
 				// =========================================================
 				// 5. CARREGAMENTO INICIAL DA CONDUTA
 				// =========================================================
-				if (selectConduta && selectConduta.value) {
-					atualizarCamposConduta();
+				if (selectConduta) {
+					atualizarCamposConduta();  // sempre roda, mesmo com valor vazio
 				}
 
 				// =========================================================

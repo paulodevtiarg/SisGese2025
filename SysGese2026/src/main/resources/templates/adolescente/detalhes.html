@@ -527,43 +527,29 @@
 										<!-- fim aba endereco -->
 
 										<!-- PARENTESCO -->
+										<!-- PARENTESCO -->
 										<div class="tab-pane fade" id="parentesco">
 
+											<!-- Se não houver familiares -->
+											<div th:if="${#lists.isEmpty(adolescente.familiares)}"
+											     class="alert alert-light border text-muted d-flex align-items-center gap-2">
+												<i class="fa-duotone fa-solid fa-circle-info"></i>
+												Nenhum familiar cadastrado.
+											</div>
 
-											<div class="row g-2">
-
-												<!-- Mãe -->
-												<div class="col-md-6">
-													<div class="detalhe-item">
-														<span class="detalhe-label">Mãe</span>
-														<span class="detalhe-valor" th:text="${adolescente.mae}"></span>
+											<!-- Lista de familiares -->
+											<div class="row g-2" th:if="${!#lists.isEmpty(adolescente.familiares)}">
+												<div class="col-12" th:each="f : ${adolescente.familiares}">
+													<div class="detalhe-item d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+														<div>
+															<span class="detalhe-label" th:text="${f.parentesco?.descricao}">Parentesco</span>
+															<span class="detalhe-valor" th:text="${f.nomeFamiliar}">Nome</span>
+														</div>
+														<span class="badge"
+														      th:classappend="${f.status} ? 'badge-soft-success' : 'badge-soft-secondary'"
+														      th:text="${f.status} ? 'Ativo' : 'Inativo'">Ativo</span>
 													</div>
 												</div>
-
-												<!-- Pai -->
-												<div class="col-md-6">
-													<div class="detalhe-item">
-														<span class="detalhe-label">Pai</span>
-														<span class="detalhe-valor" th:text="${adolescente.pai}"></span>
-													</div>
-												</div>
-
-												<!-- Responsável -->
-												<div class="col-md-6">
-													<div class="detalhe-item">
-														<span class="detalhe-label">Responsável</span>
-														<span class="detalhe-valor" th:text="${adolescente.responsavel}"></span>
-													</div>
-												</div>
-
-												<!-- Grau de Parentesco -->
-												<div class="col-md-6">
-													<div class="detalhe-item">
-														<span class="detalhe-label">Grau de Parentesco</span>
-														<span class="detalhe-valor" th:text="${adolescente.parentescoResponsavel}"></span>
-													</div>
-												</div>
-
 											</div>
 
 										</div>

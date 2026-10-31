@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import br.com.sysgese.enumerators.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,23 +26,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.sysgese.dtos.AdolescenteDTO;
 import br.com.sysgese.dtos.EnderecoDTO;
-import br.com.sysgese.enumerators.AnoEscolaridadeEnum;
-import br.com.sysgese.enumerators.BiofisicoEnum;
-import br.com.sysgese.enumerators.BocaEnum;
-import br.com.sysgese.enumerators.CabeloEnum;
-import br.com.sysgese.enumerators.CorOlhosEnum;
-import br.com.sysgese.enumerators.EstadosEnum;
-import br.com.sysgese.enumerators.EstaturaEnum;
-import br.com.sysgese.enumerators.GeneroEnum;
-import br.com.sysgese.enumerators.NarizEnum;
-import br.com.sysgese.enumerators.NivelEscolaridadeEnum;
-import br.com.sysgese.enumerators.OlhosEnum;
-import br.com.sysgese.enumerators.OrelhaEnum;
-import br.com.sysgese.enumerators.PescocoEnum;
-import br.com.sysgese.enumerators.RacaCorEnum;
-import br.com.sysgese.enumerators.ReligiaoEnum;
-import br.com.sysgese.enumerators.RostoEnum;
-import br.com.sysgese.enumerators.SobrancelhaEnum;
 import br.com.sysgese.mappers.CicatrizMapper;
 import br.com.sysgese.mappers.TatuagemMapper;
 import br.com.sysgese.models.Adolescente;
@@ -157,6 +141,8 @@ public class AdolescenteController {
 	        @RequestParam(defaultValue = "0") int page,
 	        Model model
 	) {
+
+		model.addAttribute("parentescos", ParentescoEnum.values());
 	    model.addAttribute("adolescente", new AdolescenteDTO());
 	    model.addAttribute("endereco", new EnderecoDTO());
 	    model.addAttribute("generos", GeneroEnum.values());
@@ -216,6 +202,7 @@ public class AdolescenteController {
 
 		    model.addAttribute("errosEndereco", errosEndereco);
 
+			model.addAttribute("parentescos", ParentescoEnum.values());
 		    model.addAttribute("generos", GeneroEnum.values());
 		    model.addAttribute("racas", RacaCorEnum.values());
 		    model.addAttribute("estados", EstadosEnum.values());

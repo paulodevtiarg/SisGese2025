@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import br.com.sysgese.dtos.*;
+import br.com.sysgese.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,19 +18,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.sysgese.dtos.AdolescenteDTO;
-import br.com.sysgese.dtos.CicatrizDTO;
-import br.com.sysgese.dtos.EnderecoDTO;
-import br.com.sysgese.dtos.FotoDTO;
-import br.com.sysgese.dtos.TatuagemDTO;
 import br.com.sysgese.enumerators.StatusInternacaoEnum;
 import br.com.sysgese.mappers.AdolescenteMapper;
-import br.com.sysgese.models.Adolescente;
-import br.com.sysgese.models.Cicatriz;
-import br.com.sysgese.models.Endereco;
-import br.com.sysgese.models.Foto;
-import br.com.sysgese.models.Internacao;
-import br.com.sysgese.models.Tatuagem;
 import br.com.sysgese.repository.AdolescenteRepository;
 import br.com.sysgese.repository.CicatrizRepository;
 import br.com.sysgese.repository.FotoRepository;
@@ -228,12 +219,9 @@ public class AdolescenteService {
         Adolescente entity;
 
         if (dto.getId() != null) {
-            // 🔥 BUSCA EXISTENTE (IMPORTANTE)
             entity = repository.findById(dto.getId())
                     .orElseThrow(() -> new RuntimeException("Adolescente não encontrado"));
-
             mapper.updateEntityFromDTO(dto, entity);
-
         } else {
             entity = mapper.toEntity(dto);
             entity.setDataCad(LocalDate.now());
@@ -242,15 +230,12 @@ public class AdolescenteService {
         entity.setDataAlt(LocalDate.now());
         entity.setStatus(true);
 
-        // 🔥 REGRA DE ENDEREÇO (AQUI ESTÁ O PONTO)
+        // ========================= ENDEREÇO =========================
         if (dto.getEnderecoAtual() != null) {
-
-            // desativa antigos
             if (entity.getEnderecos() != null) {
                 entity.getEnderecos().forEach(e -> e.setAtivo(false));
             }
 
-            // cria novo
             Endereco novo = new Endereco();
             novo.setCep(dto.getEnderecoAtual().getCep());
             novo.setLogradouro(dto.getEnderecoAtual().getLogradouro());
@@ -259,12 +244,29 @@ public class AdolescenteService {
             novo.setCidade(dto.getEnderecoAtual().getCidade());
             novo.setUf(dto.getEnderecoAtual().getUf());
             novo.setReferencia(dto.getEnderecoAtual().getReferencia());
-
             novo.setDataInicio(LocalDate.now());
             novo.setAtivo(true);
             novo.setAdolescente(entity);
 
             entity.getEnderecos().add(novo);
+        }
+
+        // ========================= FAMILIARES =========================
+        // Se vieram familiares no DTO, nós limpamos a lista atual e inserimos os novos.
+        // Como o cascade é ALL e orphanRemoval é true, os que não estiverem na nova lista
+        // serão deletados do banco, e os novos serão inseridos.
+        if (dto.getFamiliares() != null) {
+            entity.getFamiliares().clear(); // Limpa a lista antiga
+
+            for (FamiliarDTO fDto : dto.getFamiliares()) {
+                Familiar familiar = new Familiar();
+                familiar.setNomeFamiliar(fDto.getNomeFamiliar());
+                familiar.setParentesco(fDto.getParentesco());
+                familiar.setStatus(true);
+                familiar.setAdolescente(entity); // 🔥 Vincula o familiar ao adolescente
+
+                entity.getFamiliares().add(familiar);
+            }
         }
 
         return repository.save(entity);
@@ -276,20 +278,20 @@ public class AdolescenteService {
                 .orElseThrow(() -> new RuntimeException("Adolescente não encontrado"));
 
         AdolescenteDTO dto = mapper.toDTO(adol);
-        
+
         ///lista das fotos
         List<FotoDTO> fotos = fotoService.listarFotos(id);
         dto.setFotos(fotos);
-        
+
         //lista das tatuagens
         List<TatuagemDTO> tatuagens = tatuagemService.listarTatuagens(id);
         dto.setTatuagens(tatuagens);
-        
+
         //Lista das Cicatrizes
         List<CicatrizDTO> cicatrizes = cicatrizService.listarCicatrizes(id);
         dto.setCicatrizes(cicatrizes);
-        
-        
+
+
 
         // 🔥 usa seu método pronto
         List<EnderecoDTO> enderecos = enderecoService.listarHistorico(id);
@@ -299,15 +301,29 @@ public class AdolescenteService {
                 .filter(e -> Boolean.TRUE.equals(e.getAtivo()))
                 .findFirst()
                 .orElse(!enderecos.isEmpty() ? enderecos.get(0) : null);
-        
-        
-     
+
+
+
 
         dto.setEnderecoAtual(enderecoAtual);
         dto.setEnderecos(enderecos);
-        
-        
-     // 🔥 UNIDADE (AQUI 👇)
+
+        // 🔥 MAPEANDO OS FAMILIARES
+        if (adol.getFamiliares() != null) {
+            List<FamiliarDTO> familiaresDTO = adol.getFamiliares().stream()
+                    .map(f -> {
+                        FamiliarDTO fDto = new FamiliarDTO();
+                        fDto.setId(f.getId());
+                        fDto.setNomeFamiliar(f.getNomeFamiliar());
+                        fDto.setParentesco(f.getParentesco());
+                        fDto.setStatus(f.getStatus());
+                        return fDto;
+                    })
+                    .toList();
+            dto.setFamiliares(familiaresDTO);
+        }
+
+        // 🔥 UNIDADE (AQUI 👇)
         if (adol.getIdUnidadeCadastro() != null) {
             Map<Long, String> mapa = unidadeService.buscarNomesPorIds(
                     Set.of(adol.getIdUnidadeCadastro().longValue())
@@ -317,7 +333,6 @@ public class AdolescenteService {
                     mapa.get(adol.getIdUnidadeCadastro().longValue())
             );
         }
-        
 
         return dto;
     }
@@ -374,6 +389,21 @@ public class AdolescenteService {
                 }
 
                 fotoRepository.save(foto);
+            }
+            // ========================= FAMILIARES =========================
+            if (dto.getFamiliares() != null) {
+                // Limpa a lista antiga (orphanRemoval vai deletar os que sumirem)
+                entity.getFamiliares().clear();
+
+                for (FamiliarDTO fDto : dto.getFamiliares()) {
+                    Familiar familiar = new Familiar();
+                    familiar.setNomeFamiliar(fDto.getNomeFamiliar());
+                    familiar.setParentesco(fDto.getParentesco());
+                    familiar.setStatus(true);
+                    familiar.setAdolescente(entity);
+
+                    entity.getFamiliares().add(familiar);
+                }
             }
         }
 

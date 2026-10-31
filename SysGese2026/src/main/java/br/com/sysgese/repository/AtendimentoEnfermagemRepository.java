@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import br.com.sysgese.dtos.AtendimentoEnfermagemResumoDTO;
+import br.com.sysgese.enumerators.ParentescoEnum;
 import br.com.sysgese.models.Internacao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -227,7 +228,11 @@ public interface AtendimentoEnfermagemRepository
     // Se for Master (ou não tiver unidade), busca todos. Se não, busca da unidade.
     Page<AtendimentoEnfermagem> findByAdolescenteIdAndUnidadeId(Long adolescenteId, Long unidadeId, Pageable pageable);
     @Query("""
-    SELECT ae.adolescente.id, a.nome, a.cidadeNascimento, a.ufNascimento, a.fotoRegistro, a.mae, 
+    SELECT ae.adolescente.id, a.nome, a.cidadeNascimento, a.ufNascimento, a.fotoRegistro,
+           (SELECT f.nomeFamiliar
+              FROM Familiar f
+             WHERE f.adolescente = a
+               AND f.parentesco = :parentescoMae),
            u.nome, uc.nome, a.dataNascimento, count(ae.id), max(ae.data)
     FROM AtendimentoEnfermagem ae
     JOIN ae.adolescente a
@@ -247,7 +252,7 @@ public interface AtendimentoEnfermagemRepository
               SELECT 1 FROM Internacao i WHERE i.adolescente = a AND i.unidade.id = ae.unidade.id AND i.status = :statusAtiva
           ))
       )
-    GROUP BY ae.adolescente.id, a.nome, a.cidadeNascimento, a.ufNascimento, a.fotoRegistro, a.mae, 
+    GROUP BY ae.adolescente.id, a.nome, a.cidadeNascimento, a.ufNascimento, a.fotoRegistro,
              u.nome, uc.nome, a.dataNascimento
     ORDER BY max(ae.data) DESC, max(ae.hora) DESC
 """)
@@ -257,9 +262,9 @@ public interface AtendimentoEnfermagemRepository
             @Param("filtroCidade") String filtroCidade,
             @Param("buscaAtiva") boolean buscaAtiva,
             @Param("statusAtiva") StatusInternacaoEnum statusAtiva,
+            @Param("parentescoMae") ParentescoEnum parentescoMae,
             Pageable pageable
     );
-
     List<AtendimentoEnfermagem> findByUnidadeIdAndDataBetween(
             Long unidadeId,
             LocalDate inicio,

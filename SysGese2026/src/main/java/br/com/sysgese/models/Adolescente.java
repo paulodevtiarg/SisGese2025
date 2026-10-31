@@ -69,17 +69,7 @@ public class Adolescente {
     @Column(name = "RACA_COR", nullable = false, columnDefinition = "ENUM('BRANCO','NEGRO','PARDO','AMARELO','INDIGENA','OUTRO','NAO_INFORMADO')")
     private RacaCorEnum racaCor = RacaCorEnum.NAO_INFORMADO;
     
-    @Column(name = "PAI", length = 255)
-    private String pai;
-    
-    @Column(name = "MAE", length = 255)
-    private String mae;
-    
-    @Column(name = "RESPONSAVEL", length = 255)
-    private String responsavel;
-    
-    @Column(name = "PARENTESCO_RESPONSAVEL", length = 255)
-    private String parentescoResponsavel;
+
     
     /*ADICIONAR AO DTO*/
     @Enumerated(EnumType.STRING)
@@ -218,6 +208,28 @@ public class Adolescente {
     
     @OneToMany(mappedBy = "adolescente", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Endereco> enderecos;
+
+    @OneToMany(mappedBy = "adolescente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Familiar> familiares = new ArrayList<>();
+
+    // E os métodos auxiliares (opcional, mas boa prática):
+    public void adicionarFamiliar(Familiar familiar) {
+        familiares.add(familiar);
+        familiar.setAdolescente(this);
+    }
+
+    public void removerFamiliar(Familiar familiar) {
+        familiares.remove(familiar);
+        familiar.setAdolescente(null);
+    }
+
+    public List<Familiar> getFamiliares() {
+        return familiares;
+    }
+
+    public void setFamiliares(List<Familiar> familiares) {
+        this.familiares = familiares;
+    }
 
     
     public Boolean getStatus() {
@@ -492,37 +504,7 @@ public class Adolescente {
         this.racaCor = racaCor;
     }
     
-    public String getPai() {
-        return pai;
-    }
-    
-    public void setPai(String pai) {
-        this.pai = pai;
-    }
-    
-    public String getMae() {
-        return mae;
-    }
-    
-    public void setMae(String mae) {
-        this.mae = mae;
-    }
-    
-    public String getResponsavel() {
-        return responsavel;
-    }
-    
-    public void setResponsavel(String responsavel) {
-        this.responsavel = responsavel;
-    }
-    
-    public String getParentescoResponsavel() {
-        return parentescoResponsavel;
-    }
-    
-    public void setParentescoResponsavel(String parentescoResponsavel) {
-        this.parentescoResponsavel = parentescoResponsavel;
-    }
+
     
     
     
