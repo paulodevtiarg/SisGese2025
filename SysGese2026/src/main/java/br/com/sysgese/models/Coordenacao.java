@@ -38,7 +38,7 @@ public class Coordenacao {
     @Column(name = "DATA_INICIO_COORDENACAO", nullable = false)
     private LocalDate dataInicioCoordenacao;
 
-    @Column(name = "DATA_FIM_CORRDENACAO", nullable = false)
+    @Column(name = "DATA_FIM_COORDENACAO", nullable = false)
     private LocalDate dataFimCoordenacao;
 
     @Column(name = "DATA_CAD", nullable = false)

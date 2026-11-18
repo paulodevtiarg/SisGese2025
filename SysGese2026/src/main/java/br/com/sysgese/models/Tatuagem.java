@@ -29,14 +29,14 @@ public class Tatuagem {
 	    @Column(name = "FORMA", nullable = false, length = 255)
 	    private String forma;
 	    
-	    @Lob
+
 	    @Column(name = "DESCRICAO", nullable = false)
 	    private String descricao;
 	    
 	    @Column(name = "TEM_SIGNIFICADO", nullable = false)
 	    private Boolean temSignificado = false;
 	    
-	    @Lob
+
 	    @Column(name = "QUAL_SIGNIFICADO")
 	    private String qualSignificado;
 	    

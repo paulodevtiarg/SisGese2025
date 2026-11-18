@@ -14,4 +14,8 @@ public interface ServidorRepository extends JpaRepository<Servidor, Long>, JpaSp
             String login,
             String cpf,
             String matricula);
+
+	Optional<Servidor> findByLogin(String login);
+	Optional<Servidor> findByCpf(String cpf);
+	Optional<Servidor> findByMatricula(String matricula);
 }
